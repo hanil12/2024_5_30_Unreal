@@ -11,13 +11,13 @@ public:
 
 	World();
 	~World();
-	void Init(); // �ʱ�ȭ
+	void Init();
 
 	bool End();
 	bool MonstersCheck();
 
 	void Battle1();
-	void Battle2(); // ����
+	void Battle2();
 
 private:
 	void SelectPlayer(int num, string name, Creature** creature);

@@ -41,5 +41,5 @@ void Player::LevelUp()
 	_maxHp += maxHp * (0.2f);
 	_atk += atk * (0.2f);
 
-	cout << "�����!!" << endl;
+	cout << "레벨업!!" << endl;
 }
