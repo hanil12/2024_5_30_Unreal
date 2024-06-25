@@ -17,7 +17,6 @@ void Knight::Attack(Creature* other)
 
 	if (ratio < 0.5f)
 	{
-		// ���� ü���� 50���� �̸�
 		other->TakeDamage(_atk * 2, this);
 	}
 	else

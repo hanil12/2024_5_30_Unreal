@@ -4,20 +4,17 @@
 
 int main()
 {
-	srand(time(nullptr));
+	World_1* world = new World_1();
 
-	Creature* player = new Knight("hanil", 100, 10);
-	Creature* Hop = new HopGoblin();
+	while (true)
+	{
+		world->Battle();
 
-	player->Attack(Hop);
+		if(world->End())
+			break;
+	}
 
-	delete player;
-	delete Hop;
-	//World* world = new World();
-
-	//world->Battle1();
-
-	//delete world;
+	delete world;
 
 	return 0;
 }

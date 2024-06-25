@@ -165,6 +165,7 @@
     </ClCompile>
     <ClCompile Include="Contents\Creature\Player.cpp" />
     <ClCompile Include="Contents\World\World.cpp" />
+    <ClCompile Include="Contents\World\World_1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Contents\Creature\Archer.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Contents\Creature\Player.h" />
     <ClInclude Include="Contents\World\World.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Contents\World\World_1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
