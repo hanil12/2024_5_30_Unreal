@@ -1,0 +1,6 @@
+24-06-26
+과제 :
+1. Battle 스마트포인터로 변경
+2. Algorithm -> WINAPI 켜서 Vector2 클래스, Lenth(), Normallize(), NormalVector2()  구현하기
+
+- 수학공부 삼각함수, Vector 공부하기
