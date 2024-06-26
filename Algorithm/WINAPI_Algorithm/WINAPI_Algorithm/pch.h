@@ -17,5 +17,14 @@
 
 using namespace std;
 
+// FrameWork
+#include "Framework/Vector2.h"
+#include "Framework/Rect.h"
+#include "Framework/Circle.h"
+
 // Program
 #include "Program/Program.h"
+
+// Scene
+#include "Scene/Scene.h"
+#include "Scene/PaintScene.h"

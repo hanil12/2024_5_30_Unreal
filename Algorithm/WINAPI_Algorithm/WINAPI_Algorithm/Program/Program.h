@@ -10,9 +10,6 @@ public:
 	void Render(HDC hdc);
 
 private:
-	float _left = 0;
-	float _top = 0; 
-	float _right = 50;
-	float _bottom = 50;
+	shared_ptr<class Scene> _scene;
 };
 
