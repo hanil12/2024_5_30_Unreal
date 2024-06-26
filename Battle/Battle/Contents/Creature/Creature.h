@@ -9,7 +9,9 @@ public:
 
 	void PrintInfo();
 	void PreAttack(Creature* other);
+	void PreAttack(shared_ptr<Creature> other);
 	virtual void Attack(Creature* other) abstract;
+	virtual void Attack(shared_ptr<Creature> other) abstract;
 
 	virtual void TakeDamage(int amount, Creature* attacker = nullptr);
 

@@ -10,7 +10,8 @@ public:
 	void Attack_Hop();
 	virtual void TakeDamage(int amount, Creature* attacker) override;
 
-	// Table
-	vector<class AggroInfo> _aggroTable;
+	// 디자인 패턴 ... 컴포넌트 패턴
+	AggroSystem* _aggroSystem;
+	int _attackRange = 4;
 };
 

@@ -24,3 +24,18 @@ void Knight::Attack(Creature* other)
 		other->TakeDamage(_atk, this);
 	}
 }
+
+void Knight::Attack(shared_ptr<Creature> other)
+{
+	this->Creature::PreAttack(other);
+	float ratio = (float)_curHp / (float)_maxHp;
+
+	if (ratio < 0.5f)
+	{
+		other->TakeDamage(_atk * 2, this);
+	}
+	else
+	{
+		other->TakeDamage(_atk, this);
+	}
+}

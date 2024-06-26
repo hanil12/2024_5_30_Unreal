@@ -16,3 +16,10 @@ void Monster::Attack(Creature* other)
 
 	other->TakeDamage(_atk, this);
 }
+
+void Monster::Attack(shared_ptr<Creature> other)
+{
+	this->Creature::PreAttack(other);
+
+	other->TakeDamage(_atk, this);
+}

@@ -7,6 +7,8 @@ public:
 
 	// Player��(��) ���� ��ӵ�
 	virtual void Attack(Creature* other) override;
+	virtual void Attack(shared_ptr<Creature> other) override;
+
 private:
 };
 
