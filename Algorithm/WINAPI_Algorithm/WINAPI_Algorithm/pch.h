@@ -17,6 +17,8 @@
 
 using namespace std;
 
+#include "Types.h"
+
 // FrameWork
 #include "Framework/Vector2.h"
 #include "Framework/Rect.h"
@@ -28,3 +30,5 @@ using namespace std;
 // Scene
 #include "Scene/Scene.h"
 #include "Scene/PaintScene.h"
+
+extern Vector2 mousePos;

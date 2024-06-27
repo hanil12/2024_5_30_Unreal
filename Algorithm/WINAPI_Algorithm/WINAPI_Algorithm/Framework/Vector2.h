@@ -79,6 +79,7 @@ public:
 	}
 
 	float Length() const;
+	float Distance(Vector2 other) const;
 
 	void Normalize();
 
