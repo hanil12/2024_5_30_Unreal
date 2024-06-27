@@ -41,6 +41,16 @@ bool CircleCollider::IsCollision(Vector2 point)
 
 bool CircleCollider::IsCollision(shared_ptr<CircleCollider> other)
 {
+	float distance = _center.Distance(other->_center);
+
+	return distance < _radius + other->_radius;
+}
+
+bool CircleCollider::IsCollision(shared_ptr<RectCollider> other)
+{
+	// 과제
+	// AABB(회전하지 않는다는 조건), OBB(회전이 가능하다)
+
 	return false;
 }
 
