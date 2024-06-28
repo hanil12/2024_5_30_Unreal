@@ -15,14 +15,25 @@ float Vector2::Distance(Vector2 other) const
 
 void Vector2::Normalize()
 {
-	_x = _x / Length();
-	_y = _y / Length();
+	float length = Length();
+	_x = _x / length;
+	_y = _y / length;
 }
 
 Vector2 Vector2::NormalVector2()
 {
 	Vector2 result = *this;
 	result.Normalize();
+
+	return result;
+}
+
+bool Vector2::IsBetween(Vector2 v1, Vector2 v2)
+{
+	float Cross1 = this->Cross(v1); // +
+	float Cross2 = this->Cross(v2); // -
+
+	bool result = (Cross1 * Cross2) < 0;
 
 	return result;
 }

@@ -25,7 +25,7 @@ void CollisionScene::Update()
 	_rect1->Update();
 	_moveRect->Update();
 
-	if (_circle1->IsCollision(mousePos))
+	if (_circle1->IsCollision(_moveRect))
 		_circle1->SetRed();
 	else
 		_circle1->SetGreen();

@@ -10,9 +10,9 @@ public:
 	void Render(HDC hdc) override;
 
 private:
-	shared_ptr<CircleCollider> _circle1;
-	shared_ptr<CircleCollider> _moveCircle;
-	shared_ptr<RectCollider> _rect1;
-	shared_ptr<RectCollider> _moveRect;
+	shared_ptr<Collider> _circle1;
+	shared_ptr<Collider> _moveCircle;
+	shared_ptr<Collider> _rect1;
+	shared_ptr<Collider> _moveRect;
 };
 

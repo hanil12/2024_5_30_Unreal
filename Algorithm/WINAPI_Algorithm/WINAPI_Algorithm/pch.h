@@ -22,8 +22,9 @@ using namespace std;
 // FrameWork
 #include "Framework/Vector2.h"
 #include "Framework/Line.h"
-#include "Framework/Rect.h"
-#include "Framework/Circle.h"
+#include "Framework/Collider.h"
+#include "Framework/RectCollider.h"
+#include "Framework/CircleCollider.h"
 
 // Program
 #include "Program/Program.h"
