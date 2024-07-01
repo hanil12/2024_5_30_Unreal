@@ -106,8 +106,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    // 연출감독
    // 배우
    // ...
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindowW(
+   szWindowClass,
+   szTitle
+   , WS_OVERLAPPEDWINDOW,
+     0, 0, WIN_WIDTH, WIN_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
