@@ -14,6 +14,8 @@ Cannon::Cannon()
 		bullet->SetActive(false);
 		_bullets.push_back(bullet);
 	}
+
+	Move();
 }
 
 Cannon::~Cannon()
@@ -22,8 +24,11 @@ Cannon::~Cannon()
 
 void Cannon::Update()
 {
-	Move();
-	Fire();
+	if (isControlled)
+	{
+		Move();
+		Fire();
+	}
 
 	_body->Update();
 	_barrel->Update();
@@ -74,6 +79,27 @@ void Cannon::Fire()
 		// -> 꺼진 애를 찾아서 Fire
 
 		//_bullet->Fire(_barrel->GetEndPos(), _barrel->GetDirection());
+
+		//for (auto bullet : _bullets)
+		//{
+		//	if (bullet->IsActive() == false)
+		//	{
+		//		bullet->Fire(_barrel->GetEndPos(), _barrel->GetDirection());
+		//		break;
+		//	}
+		//}
+
+		auto iter = std::find_if(_bullets.begin(), _bullets.end(), 
+		[](shared_ptr<Bullet> bullet)->bool 
+		{
+			if(!bullet->IsActive()) return true;
+			return false;
+		});
+
+		if (iter != _bullets.end())
+		{
+			(*iter)->Fire(_barrel->GetEndPos(), _barrel->GetDirection());
+		}
 	}
 
 }
