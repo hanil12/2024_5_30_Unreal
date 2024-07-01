@@ -51,6 +51,22 @@ public:
 		return (*this);
 	}
 
+	Vector2& operator+=(const Vector2& other)
+	{
+		this->_x += other._x;
+		this->_y += other._y;
+
+		return (*this);
+	}
+
+	Vector2& operator-=(const Vector2& other)
+	{
+		this->_x -= other._x;
+		this->_y -= other._y;
+
+		return (*this);
+	}
+
 	Vector2 operator++(int)
 	{
 		Vector2 result = *this;
