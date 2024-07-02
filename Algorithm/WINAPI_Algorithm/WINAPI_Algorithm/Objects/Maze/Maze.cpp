@@ -59,6 +59,22 @@ void Maze::Render(HDC hdc)
 void Maze::CreateMaze()
 {
 	// 프로그래머를 위한 미로만들기
+	// 갈 수 있는 노드들을 만들기
+	for (int y = 0; y < MAXCOUNT_Y; y++)
+	{
+		for (int x = 0; x < MAXCOUNT_X; x++)
+		{
+			if (x % 2 == 0 || y % 2 == 0)
+			{
+				_blocks[y][x]->SetBlockType(Block::BlockType::DISABLE);
+			}
+			else
+			{
+				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
+			}
+		}
+	}
+
 	for (int y = 0; y < MAXCOUNT_Y; y++)
 	{
 		for (int x = 0; x < MAXCOUNT_X; x++)
@@ -71,19 +87,30 @@ void Maze::CreateMaze()
 			if (x == MAXCOUNT_X - 2 && y == MAXCOUNT_Y - 2) // 끝점
 			{
 				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
-			}
-
-			if (x % 2 == 0 || y % 2 == 0)
-			{
-				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
 				continue;
 			}
 
-			//int randValue = rand() % 2;
-			//if(randValue == 0)
-			//	_blocks[y][x + 1]->SetBlockType(Block::BlockType::ABLE);
-			//else
-			//	_blocks[y+1][x]->SetBlockType(Block::BlockType::ABLE);
+			if (x % 2 == 0 || y % 2 == 0)
+				continue;
+
+			if (x == MAXCOUNT_X - 2)
+			{
+				_blocks[y + 1][x]->SetBlockType(Block::BlockType::ABLE);
+				continue;
+			}
+
+			if (y == MAXCOUNT_Y - 2)
+			{
+				_blocks[y][x + 1]->SetBlockType(Block::BlockType::ABLE);
+				continue;
+			}
+
+			// 난수를 이용하여 오른쪽 혹은 아래 쪽 선택해서 뚫기
+			int randValue = rand() % 2;
+			if(randValue == 0)
+				_blocks[y][x + 1]->SetBlockType(Block::BlockType::ABLE);
+			else
+				_blocks[y+1][x]->SetBlockType(Block::BlockType::ABLE);
 		}
 	}
 }
