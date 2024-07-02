@@ -9,6 +9,8 @@ public:
 	Player(shared_ptr<Maze> maze);
 	~Player();
 
+	void BeginPlay();
+
 	void FindPath();
 	bool Cango(int y, int x);
 

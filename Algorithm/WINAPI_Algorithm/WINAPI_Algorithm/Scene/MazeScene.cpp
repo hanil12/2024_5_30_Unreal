@@ -8,6 +8,8 @@ MazeScene::MazeScene()
 {
 	_maze = make_shared<Maze>();
 	_mazeRunner = make_shared<Player>(_maze);
+
+	_mazeRunner->BeginPlay();
 }
 
 MazeScene::~MazeScene()
@@ -17,6 +19,7 @@ MazeScene::~MazeScene()
 void MazeScene::Update()
 {
 	_maze->Update();
+	_mazeRunner->Update();
 }
 
 void MazeScene::Render(HDC hdc)

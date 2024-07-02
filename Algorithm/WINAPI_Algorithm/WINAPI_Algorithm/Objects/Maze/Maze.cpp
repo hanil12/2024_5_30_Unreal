@@ -119,3 +119,8 @@ Block::BlockType Maze::GetBlockType(int y, int x)
 {
 	return _blocks[y][x]->GetBlockType();
 }
+
+void Maze::SetPlayerPos(Vector2 pos)
+{
+	_blocks[pos._y][pos._x]->SetBlockType(Block::BlockType::PLAYER_POS);
+}

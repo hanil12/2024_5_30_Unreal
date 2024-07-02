@@ -6,7 +6,8 @@ public:
 	{
 		NONE,
 		ABLE,
-		DISABLE
+		DISABLE,
+		PLAYER_POS
 	};
 
 	Block();

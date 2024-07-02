@@ -19,6 +19,8 @@ public:
 	void CreateMaze();
 	Block::BlockType GetBlockType(int y, int x);
 
+	void SetPlayerPos(Vector2 pos);
+
 private:
 	vector<vector<shared_ptr<Block>>> _blocks;
 };
