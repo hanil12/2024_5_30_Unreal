@@ -10,5 +10,6 @@ public:
 
 private:
 	shared_ptr<class Maze> _maze;
+	shared_ptr<class Player> _mazeRunner;
 };
 

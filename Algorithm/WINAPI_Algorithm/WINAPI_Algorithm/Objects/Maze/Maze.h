@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Block.h"
+
 class Block;
 
 #define MAXCOUNT_X 25
@@ -15,6 +17,7 @@ public:
 	void Render(HDC hdc);
 
 	void CreateMaze();
+	Block::BlockType GetBlockType(int y, int x);
 
 private:
 	vector<vector<shared_ptr<Block>>> _blocks;

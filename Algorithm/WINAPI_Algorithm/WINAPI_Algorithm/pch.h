@@ -9,6 +9,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <time.h>
 
 #include <vector>
 #include <unordered_map>

@@ -114,3 +114,8 @@ void Maze::CreateMaze()
 		}
 	}
 }
+
+Block::BlockType Maze::GetBlockType(int y, int x)
+{
+	return _blocks[y][x]->GetBlockType();
+}
