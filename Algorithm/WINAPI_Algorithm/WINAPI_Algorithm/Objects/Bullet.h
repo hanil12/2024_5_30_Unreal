@@ -13,6 +13,7 @@ public:
 	void SetActive(bool isActive);
 	bool IsActive() { return _isActive; }
 	bool IsOut();
+	void OutControll();
 
 	// Attack1
 	void Attack_Cannon(shared_ptr<class Cannon> cannon);

@@ -20,10 +20,15 @@ void Bullet::Update()
 	_col->Update();
 	_col->_center += _direction * _speed;
 
-	_col->_center += _downVector;
-	_downVector += Vector2(0, 1) * GRAVITY;
+	// TODO(과제) : 중력 적용
+	//_col->_center += _downVector;
+	//_downVector += Vector2(0, 1) * GRAVITY;
 
-	bool isOut = IsOut();
+	// TODO(과제) : 화면 밖으로 나갔을 시 사라지는 코드
+	// OutControll : 반사를 위한 함수
+	//bool isOut = IsOut();
+	OutControll();
+	bool isOut = false;
 	if (_lifeTime > _delayTime || isOut)
 	{
 		_lifeTime = 0.0f;
@@ -64,6 +69,21 @@ bool Bullet::IsOut()
 		return true;
 
 	return false;
+}
+
+void Bullet::OutControll()
+{
+	Vector2 center = _col->_center;
+	// 화면 좌우로 나갔냐?
+	if (center._x > WIN_WIDTH || center._x < 0)
+	{
+		_direction._x *= -1.0f;
+	}
+
+	if (center._y > WIN_HEIGHT || center._y < 0)
+	{
+		_direction._y *= -1.0f;
+	}
 }
 
 void Bullet::Attack_Cannon(shared_ptr<Cannon> cannon)

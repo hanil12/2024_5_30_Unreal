@@ -7,6 +7,7 @@
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
+HWND hWnd;
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
@@ -78,7 +79,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINAPIALGORITHM));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = (HBRUSH)(CreateSolidBrush(RGB(50,50,50)));
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINAPIALGORITHM);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -106,7 +107,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    // 연출감독
    // 배우
    // ...
-   HWND hWnd = CreateWindowW(
+   hWnd = CreateWindowW(
    szWindowClass,
    szTitle
    , WS_OVERLAPPEDWINDOW,
@@ -164,7 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_TIMER:
     {
         program->Update();
-        InvalidateRect(hWnd, nullptr, true); // WM_PAINT 메시지와 관련된 얘
+        InvalidateRect(hWnd, nullptr, false); // WM_PAINT 메시지와 관련된 얘
     }
     break;
 

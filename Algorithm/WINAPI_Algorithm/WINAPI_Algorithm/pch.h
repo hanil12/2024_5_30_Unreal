@@ -34,3 +34,4 @@ using namespace std;
 #include "Scene/PaintScene.h"
 
 extern Vector2 mousePos;
+extern HWND hWnd;
