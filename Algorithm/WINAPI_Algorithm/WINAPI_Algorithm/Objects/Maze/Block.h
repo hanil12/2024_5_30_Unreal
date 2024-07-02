@@ -2,6 +2,13 @@
 class Block : public RectCollider
 {
 public:
+	enum class BlockType
+	{
+		NONE,
+		ABLE,
+		DISABLE
+	};
+
 	Block();
 	~Block();
 
@@ -10,10 +17,11 @@ public:
 
 	void SetPosition(Vector2 pos);
 
-	virtual void SetRed() override;
-	virtual void SetGreen() override;
+	void SetBlockType(BlockType type);
+	BlockType GetBlockType() { return _type; }
 
 private:
+	BlockType _type = BlockType::NONE;
+
 	vector<HBRUSH> _brushes;
-	int _curBrush = 0;
 };

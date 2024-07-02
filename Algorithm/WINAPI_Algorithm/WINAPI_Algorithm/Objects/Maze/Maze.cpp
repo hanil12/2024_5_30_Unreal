@@ -19,6 +19,7 @@ Maze::Maze()
 			Vector2 blockOffset = offSet + Vector2(16.0f * j, 16.0f * i);
 
 			shared_ptr<Block> block = make_shared<Block>();
+			block->SetBlockType(Block::BlockType::DISABLE);
 			block->SetPosition(blockOffset);
 			blocks_X.push_back(block);
 		}
@@ -57,5 +58,32 @@ void Maze::Render(HDC hdc)
 
 void Maze::CreateMaze()
 {
+	// 프로그래머를 위한 미로만들기
+	for (int y = 0; y < MAXCOUNT_Y; y++)
+	{
+		for (int x = 0; x < MAXCOUNT_X; x++)
+		{
+			if (x == 1 && y == 1) // 시작점
+			{
+				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
+			}
 
+			if (x == MAXCOUNT_X - 2 && y == MAXCOUNT_Y - 2) // 끝점
+			{
+				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
+			}
+
+			if (x % 2 == 0 || y % 2 == 0)
+			{
+				_blocks[y][x]->SetBlockType(Block::BlockType::ABLE);
+				continue;
+			}
+
+			//int randValue = rand() % 2;
+			//if(randValue == 0)
+			//	_blocks[y][x + 1]->SetBlockType(Block::BlockType::ABLE);
+			//else
+			//	_blocks[y+1][x]->SetBlockType(Block::BlockType::ABLE);
+		}
+	}
 }

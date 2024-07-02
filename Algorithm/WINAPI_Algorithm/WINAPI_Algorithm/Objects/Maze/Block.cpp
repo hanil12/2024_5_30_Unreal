@@ -4,6 +4,7 @@
 Block::Block()
 : RectCollider(Vector2(), Vector2(5,5))
 {
+	_brushes.push_back(CreateSolidBrush(RGB(0,0,0)));
 	_brushes.push_back(CreateSolidBrush(GREEN));
 	_brushes.push_back(CreateSolidBrush(RED));
 	SetGreen();
@@ -22,7 +23,7 @@ void Block::Update()
 
 void Block::Render(HDC hdc)
 {
-	SelectObject(hdc,_brushes[_curBrush]);
+	SelectObject(hdc,_brushes[static_cast<int>(_type)]);
 	RectCollider::Render(hdc);
 }
 
@@ -31,14 +32,29 @@ void Block::SetPosition(Vector2 pos)
 	_center = pos;
 }
 
-void Block::SetRed()
+void Block::SetBlockType(BlockType type)
 {
-	Collider::SetRed();
-	_curBrush = 1;
+	switch (type)
+	{
+	case Block::BlockType::NONE:
+	{
+		_type = type;
+	}
+		break;
+	case Block::BlockType::ABLE:
+	{
+		_type = type;
+		SetGreen();
+	}
+		break;
+	case Block::BlockType::DISABLE:
+	{
+		_type = type;
+		SetRed();
+	}
+		break;
+	default:
+		break;
+	}
 }
 
-void Block::SetGreen()
-{
-	Collider::SetGreen();
-	_curBrush = 0;
-}
