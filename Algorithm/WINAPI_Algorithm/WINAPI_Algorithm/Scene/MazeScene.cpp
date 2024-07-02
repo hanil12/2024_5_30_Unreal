@@ -24,5 +24,8 @@ void MazeScene::Update()
 
 void MazeScene::Render(HDC hdc)
 {
+	wstring temp = L"Hello Maze!!!";
+	TextOut(hdc, CENTER._x - 100, 100, temp.c_str(),temp.size());
+
 	_maze->Render(hdc);
 }
