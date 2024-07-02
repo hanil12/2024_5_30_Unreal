@@ -9,6 +9,6 @@ public:
 	void Render(HDC hdc) override;
 
 private:
-
+	shared_ptr<class Maze> _maze;
 };
 

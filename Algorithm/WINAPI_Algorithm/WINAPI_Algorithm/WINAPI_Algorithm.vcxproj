@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Objects\Maze\Maze.h" />
     <ClInclude Include="Objects\Maze\Block.h" />
     <ClInclude Include="Scene\MazeScene.h" />
     <ClInclude Include="Objects\Bullet.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="WINAPI_Algorithm.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Objects\Maze\Maze.cpp" />
     <ClCompile Include="Objects\Maze\Block.cpp" />
     <ClCompile Include="Scene\MazeScene.cpp" />
     <ClCompile Include="Objects\Bullet.cpp" />
