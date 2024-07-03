@@ -25,20 +25,6 @@ void Player::FindPath()
 	// 실습
 	// 우수법을 이용해서 미로를 끝점까지 가면 된다.
 	// 찾은 길은 _path에다 넣는다.
-	vector<Vector2> temp = 
-	{
-	Vector2(2,1),
-	Vector2(3,1),
-	Vector2(4,1),
-	Vector2(5,1),
-	Vector2(6,1),
-	Vector2(7,1),
-	Vector2(8,1),
-	Vector2(9,1),
-	Vector2(10,1)
-	};
-
-	_path = temp;
 }
 
 bool Player::Cango(int y, int x)
