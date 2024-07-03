@@ -1,6 +1,16 @@
 #include "pch.h"
 #include "Vector2.h"
 
+bool Vector2::operator==(const Vector2& other)
+{
+	return this->_x == other._x && this->_y == other._y;;
+}
+
+bool Vector2::operator!=(const Vector2& other)
+{
+	return !((*this) == other);
+}
+
 float Vector2::Length() const
 {
 	return sqrt(_x * _x + _y * _y);
