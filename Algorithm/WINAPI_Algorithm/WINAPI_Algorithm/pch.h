@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <stack>
 
 using namespace std;
 

@@ -82,6 +82,31 @@ void Player::RightHand()
 			dir = static_cast<Direction>((dir + 1 + DIR_COUNT) % DIR_COUNT);
 		}
 	}
+
+	stack<Vector2> s;
+
+	for (int i = 0; i < _path.size() - 1; i++)
+	{
+		if (s.empty() == false && s.top() == _path[i + 1])
+			s.pop();
+		else
+			s.push(_path[i]);
+	}
+
+	s.push(_path.back());
+
+	_path.clear();
+
+	while (true)
+	{
+		if(s.empty() == true)
+			break;
+
+		_path.push_back(s.top());
+		s.pop();
+	}
+
+	std::reverse(_path.begin(), _path.end());
 }
 
 bool Player::Cango(int y, int x)

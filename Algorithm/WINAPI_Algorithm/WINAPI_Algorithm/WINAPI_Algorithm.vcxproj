@@ -147,6 +147,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Objects\Alkanoid\PlayerBar.h" />
+    <ClInclude Include="Objects\Alkanoid\PlayerBall.h" />
+    <ClInclude Include="Scene\AlkanoidScene.h" />
     <ClInclude Include="Objects\Maze\Maze.h" />
     <ClInclude Include="Objects\Maze\Block.h" />
     <ClInclude Include="Objects\Maze\Player.h" />
@@ -173,6 +176,9 @@
     <ClInclude Include="WINAPI_Algorithm.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Objects\Alkanoid\PlayerBar.cpp" />
+    <ClCompile Include="Objects\Alkanoid\PlayerBall.cpp" />
+    <ClCompile Include="Scene\AlkanoidScene.cpp" />
     <ClCompile Include="Objects\Maze\Maze.cpp" />
     <ClCompile Include="Objects\Maze\Block.cpp" />
     <ClCompile Include="Objects\Maze\Player.cpp" />
