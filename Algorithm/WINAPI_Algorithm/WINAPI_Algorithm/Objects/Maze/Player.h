@@ -13,6 +13,9 @@ public:
 
 	// Find Path 알고리즘
 	void RightHand();
+	void DFS(Vector2 start);
+	void BFS(Vector2 start);
+	void Djikstra(Vector2 start);
 
 	bool Cango(int y, int x);
 

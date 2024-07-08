@@ -17,7 +17,8 @@ Player::~Player()
 void Player::BeginPlay()
 {
 	_maze->SetPlayerPos(_pos);
-	RightHand();
+	_pos = _maze->GetStartPos();
+	BFS(_pos);
 }
 
 void Player::RightHand()
@@ -38,7 +39,7 @@ void Player::RightHand()
 
 	Vector2 pos = _pos;
 	_path.push_back(pos);
-	Vector2 endPos = Vector2(23,23);
+	Vector2 endPos = _maze->GetEndPos();
 
 	Direction dir = Direction::BOTTOM;
 
@@ -107,6 +108,78 @@ void Player::RightHand()
 	}
 
 	std::reverse(_path.begin(), _path.end());
+}
+
+void Player::DFS(Vector2 start)
+{
+}
+
+void Player::BFS(Vector2 start)
+{
+	// 4방향
+	Vector2 frontPos[4] =
+	{
+		Vector2 {0,-1}, // UP
+		Vector2 {-1,0}, // LEFT
+		Vector2 {0,1}, // BOTTOM
+		Vector2 {1,0}, // RIGHT
+	};
+
+	vector<vector<bool>> discovered = vector<vector<bool>>(MAXCOUNT_Y, vector<bool>(MAXCOUNT_X, false));
+	vector<vector<Vector2>> parent = vector<vector<Vector2>>(MAXCOUNT_Y, vector<Vector2>(MAXCOUNT_X, Vector2(-1,-1)));
+
+	Vector2 pos = start;
+	Vector2 endPos = _maze->GetEndPos();
+
+	discovered[start._y][start._x] = true;
+	parent[start._y][start._x] = start;
+
+	queue<Vector2> q;
+	q.push(start);
+
+	while (true)
+	{
+		if(q.empty()) break;
+
+		Vector2 here = q.front();
+		q.pop();
+
+		// 지금 큐의 front가 도착점이면 break
+		if(here == endPos)
+			break;
+
+		for (int i = 0; i < 4; i++)
+		{
+			Vector2 there = here + frontPos[i];
+
+			// there가 갈 수 있는 블럭인지 확인.
+			if(!Cango(there._y, there._x))
+				continue;
+			// there가 방문되어있었는지 확인
+			if(discovered[there._y][there._x] == true)
+				continue;
+
+			q.push(there);
+			discovered[there._y][there._x] = true;
+			parent[there._y][there._x] = here;
+		}
+	}
+
+	Vector2 check = endPos;
+	_path.push_back(check);
+	while (true)
+	{
+		if(check == start) break;
+
+		check = parent[check._y][check._x];
+		_path.push_back(check);
+	}
+
+	std::reverse(_path.begin(), _path.end());
+}
+
+void Player::Djikstra(Vector2 start)
+{
 }
 
 bool Player::Cango(int y, int x)
