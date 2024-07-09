@@ -47,3 +47,11 @@ bool Vector2::IsBetween(Vector2 v1, Vector2 v2)
 
 	return result;
 }
+
+int Vector2::ManhattanDistance(Vector2 other)
+{
+	int xDistance = int(_x - other._x);
+	int yDistance = int(_y - other._y);
+
+	return abs(xDistance) + abs(yDistance);
+}

@@ -6,21 +6,43 @@ class Block;
 class Player
 {
 public:
-	struct Vertex
+	struct Vertex_Djikstra
 	{
-		bool operator<(const Vertex& other) const
+		bool operator<(const Vertex_Djikstra& other) const
 		{
 			if(g < other.g)	return true;
 			return false;
 		}
 
-		bool operator>(const Vertex& other) const
+		bool operator>(const Vertex_Djikstra& other) const
 		{
 			if(g > other.g) return true;
 			return false;
 		}
 		
 		float g;
+		Vector2 pos;
+	};
+
+	struct Vertex
+	{
+		bool operator<(const Vertex& other) const
+		{
+			if (f < other.f)	
+				return true;
+			return false;
+		}
+
+		bool operator>(const Vertex& other) const
+		{
+			if (f > other.f) 
+				return true;
+			return false;
+		}
+
+		float g;
+		float h; // 휴리스틱 함수 => 맨하튼 거리 함수
+		float f; // g + h
 		Vector2 pos;
 	};
 
@@ -34,6 +56,7 @@ public:
 	void DFS(Vector2 here);
 	void BFS(Vector2 start);
 	void Djikstra(Vector2 start);
+	void AStart(Vector2 start, Vector2 end);
 
 	bool Cango(int y, int x);
 
