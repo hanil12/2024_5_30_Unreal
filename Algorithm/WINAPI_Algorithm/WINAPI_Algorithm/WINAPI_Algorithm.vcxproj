@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\DisJointSet.h" />
     <ClInclude Include="Objects\Alkanoid\PlayerBar.h" />
     <ClInclude Include="Objects\Alkanoid\PlayerBall.h" />
     <ClInclude Include="Scene\AlkanoidScene.h" />
