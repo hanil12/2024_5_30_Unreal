@@ -1,0 +1,110 @@
+#include<vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+struct Vector2
+{
+    Vector2() {}
+    Vector2(int y, int x) : y(y), x(x) {}
+    
+    int y = 0;
+    int x = 0;
+    
+    bool operator==(const Vector2& other)
+    {
+        if(y != other.y) return false;
+        if(x != other.x) return false;
+        
+        return true;
+    }
+};
+
+Vector2 dir[4] =
+{
+    {1,0},
+    {-1,0},
+    {0,1},
+    {0,-1}
+};
+
+vector<vector<bool>> discovered;
+vector<vector<Vector2>> parent;
+vector<vector<int>> adjacent;
+int n,m = 0;
+
+bool Cango(Vector2 pos)
+{
+    if(pos.x < 0 || pos.x >= n)
+        return false;
+    if(pos.y < 0 || pos.y >= m)
+        return false;
+    
+    if(adjacent[pos.y][pos.x] == 0)
+        return false;
+    
+    return true;
+}
+
+void BFS(Vector2 start)
+{
+    discovered[start.y][start.x] = true;
+    parent[start.y][start.x] = start;
+    
+    queue<Vector2> q;
+    q.push(start);
+    
+    while(true)
+    {
+        if(q.empty())
+            break;
+        
+        Vector2 here = q.front();
+        q.pop();
+        
+        for(int i=0;i<4;i++)
+        {
+            Vector2 there;
+            there.y = here.y + dir[i].y;
+            there.x = here.x + dir[i].x;
+            
+            if(!Cango(there))
+                continue;
+            if(discovered[there.y][there.x])
+                continue;
+            
+            q.push(there);
+            discovered[there.y][there.x] = true;
+            parent[there.y][there.x] = here;
+        }
+    }
+}
+
+int solution(vector<vector<int> > maps)
+{
+    int answer = 1;
+    m = maps.size();
+    n = maps[0].size();
+    
+    discovered = vector<vector<bool>>(m, vector<bool>(n, false));
+    parent = vector<vector<Vector2>>(m, vector<Vector2>(n, {-1,-1}));
+    adjacent = maps;
+    
+    BFS({0,0});
+    
+    Vector2 end = {m - 1, n - 1};
+    while(true)
+    {
+        if(parent[end.y][end.x] == Vector2(-1,-1))
+            return -1;
+        
+        if(parent[end.y][end.x] == end)
+            break;
+        
+        end = parent[end.y][end.x];
+        answer++;
+    }
+    
+    return answer;
+}
