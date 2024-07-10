@@ -1,0 +1,114 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class DisjoinSet
+{
+public:
+    DisjoinSet(int n)
+    {
+        _parent = vector<int>(n, 0);
+        _rank = vector<int>(n,1);
+        
+        for(int i=0;i<n;i++)
+        {
+            _parent[i] = i;
+        }
+    }
+    
+    int FindLeader(int u)
+    {
+        if(u == _parent[u])
+            return u;
+        
+        return FindLeader(_parent[u]);
+    }
+    
+    void Merge(int u, int v)
+    {
+        int uLeader = FindLeader(u);
+        int vLeader = FindLeader(v);
+        
+        if(uLeader == vLeader)
+            return;
+        
+        if(_rank[uLeader] > _rank[vLeader])
+            std::swap(uLeader, vLeader);
+        
+        _parent[uLeader] = vLeader;
+        
+        if(_rank[uLeader] == _rank[vLeader])
+            _rank[vLeader]++;
+    }
+    
+private:
+    vector<int> _parent;
+    vector<int> _rank;
+};
+
+struct Edge
+{
+    Edge(int u, int v, int cost) : u(u),v(v),cost(cost) {}
+    
+    int u;
+    int v;
+    int cost;
+};
+
+vector<Edge> edges;
+
+void CreateEdges(vector<vector<int>>& costs)
+{
+    for(auto cost : costs)
+    {
+        int u = cost[0];
+        int v = cost[1];
+        int c = cost[2];
+        
+        Edge edge = Edge(u,v,c);
+        edges.push_back(edge);
+    }
+}
+
+vector<Edge> Kruskal(int n)
+{
+    vector<Edge> result;
+    
+    std::sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b)->bool
+              {
+                 if(a.cost < b.cost)
+                    return true;
+                 return false;
+              });
+    
+    DisjoinSet set(n);
+    
+    for(auto edge : edges)
+    {
+        int u = edge.u;
+        int v = edge.v;
+        if(set.FindLeader(u) == set.FindLeader(v))
+            continue;
+        
+        set.Merge(u,v);
+        result.push_back(edge);
+    }
+    
+    return result;
+}
+
+int solution(int n, vector<vector<int>> costs) {
+    int answer = 0;
+    CreateEdges(costs);
+    auto result = Kruskal(n);
+    
+    for(auto edge : result)
+    {
+        answer += edge.cost;
+    }
+    
+    
+    return answer;
+}
