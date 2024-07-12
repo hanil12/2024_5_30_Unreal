@@ -33,10 +33,10 @@ public:
 
 	void Delete(Node* node);
 
+	Node* _root = nullptr;
+
 private:
 	Node* Previous(Node* node);
 	Node* Next(Node* node);
 	void Replace(Node* node1, Node* node2);
-
-	Node* _root = nullptr;
 };
