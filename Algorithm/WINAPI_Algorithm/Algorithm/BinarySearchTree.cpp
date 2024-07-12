@@ -99,18 +99,65 @@ Node* BinarySearchTree::Max(Node* node)
 
 Node* BinarySearchTree::Previous(Node* node)
 {
-	return nullptr;
+	if(node == nullptr)
+		return nullptr;
+
+	if(node->left == nullptr)
+		return node;
+
+	return Max(node->left);
 }
 
 Node* BinarySearchTree::Next(Node* node)
 {
-	return nullptr;
+	if(node == nullptr)
+		return nullptr;
+
+	if(node->right == nullptr)
+		return node;
+
+	return Min(node->right);
 }
 
 void BinarySearchTree::Delete(Node* node)
 {
+	if(node == nullptr)
+		return;
+
+	if (node->left == nullptr)
+	{
+		Replace(node, node->right);
+	}
+	else if (node->right == nullptr)
+	{
+		Replace(node, node->left);
+	}
+	else
+	{
+		Node* prev = Previous(node);
+		node->key = prev->key;
+		node->data = prev->data;
+
+		Delete(prev);
+	}
 }
 
 void BinarySearchTree::Replace(Node* node1, Node* node2)
 {
+	if(node1->parent == nullptr)
+		_root = node2;
+
+	else if (node1 == node1->parent->left)
+	{
+		node1->parent->left = node2;
+	}
+	else
+	{
+		node1->parent->right = node2;
+	}
+
+	if(node2 != nullptr)
+		node2->parent = node1->parent;
+
+	delete node1;
 }
