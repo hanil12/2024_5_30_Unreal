@@ -1,0 +1,42 @@
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+string solution(vector<string> participant, vector<string> completion) {
+    string answer = "";
+    
+    // 1000,000만 회 순회는 효율성검사 X
+    
+    unordered_map<string, int> um;
+    
+    for(auto p : participant)
+    {
+        if(um.count(p) == 0)
+        {
+            um[p] = 1;
+        }
+        else if(um.count(p) > 0)
+        {
+            um[p]++;
+        }
+    }
+    
+    for(auto c : completion)
+    {
+        if(um.count(c) != 0)
+        {
+            um[c]--;
+        }
+    }
+    
+    for(auto myPair : um)
+    {
+        if(myPair.second == 1)
+            return myPair.first;
+    }
+    
+    
+    return answer;
+}

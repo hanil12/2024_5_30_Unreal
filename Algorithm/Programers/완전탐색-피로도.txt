@@ -1,0 +1,49 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+int answer = 0;
+vector<vector<int>> d;
+vector<bool> visited;
+
+void DFS(int here,int k, int count)
+{
+    // 필요피로도가 k보다 낮다라는 전제
+    visited[here] = true;
+    k -= d[here][1];
+    
+    for(int there = 0; there < d.size(); there++)
+    {
+        if(here == there) continue;
+        if(visited[there]) continue;
+        int needK = d[there][0];
+        if(needK > k) continue;
+        
+        DFS(there, k, count + 1);
+        visited[there] = false;
+    }
+    
+    answer = std::max(answer, count);
+}
+
+void DFS_ALL(int k)
+{
+    for(int i = 0; i < d.size(); i++)
+    {
+        visited = vector<bool>(d.size(), false);
+        
+        int needK = d[i][0];
+        // 처음 방문하기 전에 필요피로도가 k보다 높은 경우 다음 꺼.
+        if(needK > k) continue;
+        DFS(i,k,1);
+    }
+
+}
+
+int solution(int k, vector<vector<int>> dungeons) {
+    d = dungeons;
+    visited = vector<bool>(d.size(), false);
+    DFS_ALL(k);
+    
+    return answer;
+}
