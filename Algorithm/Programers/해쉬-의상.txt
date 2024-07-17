@@ -1,0 +1,28 @@
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+int solution(vector<vector<string>> clothes) {
+    int answer = 1;
+    
+    unordered_map<string, int> um;
+    
+    for(auto cloth : clothes)
+    {
+        string category = cloth[1];
+        if(um.count(category) == 0)
+            um[category] = 1;
+        else
+            um[category]++;
+    }
+    
+    for(auto myPair : um)
+    {
+        int count = myPair.second;
+        answer *= (count + 1);
+    }
+    
+    return answer - 1;
+}

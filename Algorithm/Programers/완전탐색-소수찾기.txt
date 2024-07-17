@@ -1,0 +1,75 @@
+#include <string>
+#include <vector>
+#include <math.h>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+bool IsPrime(int num)
+{
+    if(num <= 1)
+        return false;
+    if(num == 2 || num == 3)
+        return true;
+    
+    int root = sqrtf(num);
+    for(int i=2; i <= root; i++)
+    {
+        if(num % i == 0) return false;
+    }
+    
+    return true;
+}
+
+string num;
+vector<bool> visited;
+vector<string> numArr;
+unordered_map<int,int> um;
+
+void DFS(int here, string str)
+{
+    visited[here] = true;
+    str += num[here];
+    numArr.push_back(str);
+    
+    for(int there = 0; there < num.length(); there++)
+    {
+        if(here == there) continue;
+        if(visited[there]) continue;
+        
+        DFS(there, str);
+        
+        visited[there] = false;
+    }
+}
+
+int solution(string numbers) {
+    int answer = 0;
+    num = numbers;
+
+    // 모든 문자열 만들어보기
+    for(int i=0; i<num.length(); i++)
+    {
+        visited = vector<bool>(num.size(), false);
+        DFS(i,"");
+    }
+    
+    // 문자열을 숫자로 바꾼 뒤에 중복삭제
+    for(auto str : numArr)
+    {
+        int num = stoi(str);
+        um[num] = 1;
+    }
+    
+    // 해당 숫자들이 소수인지 판별
+    for(auto myPair : um)
+    {
+        int num = myPair.first;
+        if(IsPrime(num))
+            answer++;
+    }
+    
+    
+    return answer;
+}

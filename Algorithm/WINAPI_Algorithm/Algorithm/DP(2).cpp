@@ -9,7 +9,7 @@ using namespace std;
 // LIS (Longest Increasing Subsequence)
 // 최장 증가 부분 수열
 
-vector<int> v = {5,6,7,1,2,3,4};
+vector<int> v = { 3, 8, 5, 7, 9, 2, 1, 4 };
 // 증가 부분 수열 : 점점 증가되는 부분 수열
 // 최장 증가 부분 수열 : 증가 부분 수열 중에 가장 긴 것
 

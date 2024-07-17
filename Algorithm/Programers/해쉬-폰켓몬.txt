@@ -1,0 +1,25 @@
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+int solution(vector<int> nums)
+{
+    int answer = 0;
+    int N = nums.size() / 2;
+    unordered_map<int,int> um;
+    
+    for(auto num : nums)
+    {
+        if(um.count(num) == 0) um[num] = 1;
+        else um[num]++;
+    }
+    
+    if(um.size() < N)
+        return um.size();
+    else if(um.size() == N)
+        return N;
+    else
+        return N;
+    
+    return answer;
+}

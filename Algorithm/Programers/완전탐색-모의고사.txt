@@ -1,0 +1,36 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<int> solution(vector<int> answers) {
+    vector<int> answer;
+    vector<int> score = vector<int>(3, 0);
+    
+    vector<int> num0 = {1, 2, 3, 4, 5};
+    vector<int> num1 = {2, 1, 2, 3, 2, 4, 2, 5};
+    vector<int> num2 = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
+    
+    for(int i=0;i<answers.size();i++)
+    {
+        if(answers[i] == num0[i % num0.size()])
+            score[0]++;
+        if(answers[i] == num1[i % num1.size()])
+            score[1]++;
+        if(answers[i] == num2[i % num2.size()])
+            score[2]++;
+    }
+    
+    int maxScore = -1;
+    maxScore = max(score[0],max(score[1],score[2]));
+    
+    for(int i=0;i<score.size();i++)
+    {
+        if(score[i] == maxScore)
+        {
+            answer.push_back(i+1);
+        }
+    }
+    
+    return answer;
+}
