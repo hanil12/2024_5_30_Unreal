@@ -1,0 +1,51 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<vector<int>> t;
+vector<vector<int>> cache = vector<vector<int>>(501, vector<int>(501,-1));
+
+int DP_BottomUp(int y, int x)
+{
+    if(y == 0 && x == 0)
+        return t[0][0];
+    if(y < 0 || x < 0 || x > y)
+        return -1;
+    
+    int& ref = cache[y][x];
+    if(ref != -1)
+        return ref;
+    
+    return ref = max(DP_BottomUp(y-1,x-1), DP_BottomUp(y-1,x)) + t[y][x];
+}
+
+int DP_TopDown(int y, int x)
+{
+    if(y == t.size() - 1)
+        return t[y][x];
+    
+    int& ref = cache[y][x];
+    
+    if(ref != -1)
+        return ref;
+    
+    return ref = max(DP_TopDown(y + 1,x), DP_TopDown(y + 1, x + 1)) + t[y][x];
+}
+
+int solution(vector<vector<int>> triangle) {
+    int answer = 0;
+    t = triangle;
+    
+    int y = triangle.size() - 1;
+    // Bottom Up
+    //for(int x = 0; x <= y; x++)
+    //{
+        //answer = max(answer, DP_BottomUp(y,x));
+    //}
+    
+    // Top Down
+    return DP_TopDown(0,0);
+    
+    return answer;
+}
