@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "UE_Hanil",
+			"Path": "..\\Source\\UE_Hanil.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "UE_HanilEditor",
+			"Path": "..\\Source\\UE_HanilEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

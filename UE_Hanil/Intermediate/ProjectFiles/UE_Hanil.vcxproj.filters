@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\UE_Hanil.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\UE_Hanil.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\UE_HanilEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <None Include="..\..\ReadMe.txt" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\UE_Hanil">
+      <UniqueIdentifier>{8F9BD134-4960-3C29-B80B-D31F9F7F495A}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyActor.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyActor.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\UE_Hanil\UE_Hanil.Build.cs">
+      <Filter>Source\UE_Hanil</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\UE_Hanil\UE_Hanil.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\UE_Hanil.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
