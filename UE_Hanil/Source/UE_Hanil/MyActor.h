@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* _sm;
 
-	UPROPERTY(VisibleAnywhere, Category = "Transform Value")
+	UPROPERTY(EditAnywhere, Category = "Transform Value")
 	float _rotationSpeed = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Transform Value")
+	float _moveSpeed = 600.0f;
 };

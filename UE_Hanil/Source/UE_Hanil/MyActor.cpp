@@ -2,6 +2,7 @@
 
 
 #include "MyActor.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -36,7 +37,26 @@ void AMyActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//UE_LOG(LogTemp, Log, TEXT("Tick : %f"), DeltaTime);
 
-	FRotator rot = FRotator(0.0f,90.0f,0.0f);
-	AddActorLocalRotation(rot * _rotationSpeed * DeltaTime);
+	if (GetAttachParentActor() != nullptr)
+	{
+		FVector parentV = GetAttachParentActor()->GetActorLocation();
+		FVector myV = GetActorLocation();
+		FRotator rot = UKismetMathLibrary::FindLookAtRotation(myV, parentV);
+
+		SetActorRotation(rot);
+	}
+	else
+	{
+		FRotator rot = FRotator(0.0f, 90.0f, 0.0f);
+		AddActorLocalRotation(rot * _rotationSpeed * DeltaTime);
+	}
+
+	FVector moveV = FVector(0.0f,_moveSpeed,0.0f);
+	// AddActorWorldOffset(moveV * DeltaTime);
+	// 2. SetActorLocation() 이 함수로 위와 똑같이 동작하게 만들기
+	//AddActorLocalOffset(moveV * DeltaTime); 이 함수의 문제점 찾기
+
+	// 3. Quaternion (사원수)
+	// 사원수 회전에 대해서 조사해보기
 }
 
