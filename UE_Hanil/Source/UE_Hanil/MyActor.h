@@ -30,5 +30,5 @@ public:
 	float _rotationSpeed = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Transform Value")
-	float _moveSpeed = 600.0f;
+	float _moveSpeed = 10.0f;
 };

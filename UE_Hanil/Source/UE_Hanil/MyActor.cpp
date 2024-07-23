@@ -49,12 +49,11 @@ void AMyActor::Tick(float DeltaTime)
 	{
 		FRotator rot = FRotator(0.0f, 90.0f, 0.0f);
 		AddActorLocalRotation(rot * _rotationSpeed * DeltaTime);
-	}
 
-	FVector moveV = FVector(0.0f,_moveSpeed,0.0f);
-	// AddActorWorldOffset(moveV * DeltaTime);
-	// 2. SetActorLocation() 이 함수로 위와 똑같이 동작하게 만들기
-	//AddActorLocalOffset(moveV * DeltaTime); 이 함수의 문제점 찾기
+		FVector moveV = FVector(0.0f, _moveSpeed, 0.0f);
+		FVector destPos = GetActorLocation() + moveV;
+		SetActorLocation(destPos);
+	}
 
 	// 3. Quaternion (사원수)
 	// 사원수 회전에 대해서 조사해보기
