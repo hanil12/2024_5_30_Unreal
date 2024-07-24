@@ -67,7 +67,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0AFF0AEB-4C7A-3BA9-9E87-65E496EACDE1}</ProjectGuid>
+    <ProjectGuid>{D2817625-157A-3258-8E03-B59565286E8C}</ProjectGuid>
     <RootNamespace>UE_Hanil</RootNamespace>
   </PropertyGroup>
   <Import Project="UECommon.props" />
@@ -270,6 +270,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPawn.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyPlayerController.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h"/>
     <None Include="..\..\Source\UE_Hanil\UE_Hanil.Build.cs"/>
     <ClCompile Include="..\..\Source\UE_Hanil\UE_Hanil.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
