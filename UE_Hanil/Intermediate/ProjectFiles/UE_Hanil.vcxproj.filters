@@ -37,6 +37,12 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyActor.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyAnimInstance.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyAnimInstance.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyCharacter.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>

@@ -5,6 +5,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -21,6 +24,18 @@ AMyCharacter::AMyCharacter()
 	{
 		GetMesh()->SetSkeletalMesh(sm.Object);
 	}
+
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f,0.0f,-88.0f), FRotator(0.0f, -90.0f, 0.0f));
+
+	_springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+
+	// 상속관계 설정
+	_springArm->SetupAttachment(GetCapsuleComponent());
+	_camera->SetupAttachment(_springArm);
+
+	_springArm->TargetArmLength = 500.0f;
+	_springArm->SetRelativeRotation(FRotator(-35.0f,0.0f,0.0f));
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +49,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

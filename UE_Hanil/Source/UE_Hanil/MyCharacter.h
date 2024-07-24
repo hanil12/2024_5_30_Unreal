@@ -42,4 +42,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* _moveAction;
 
+	// Camera
+	class USpringArmComponent* _springArm;
+	class UCameraComponent* _camera;
+
 };
