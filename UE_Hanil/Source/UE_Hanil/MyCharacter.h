@@ -34,6 +34,7 @@ public:
 protected:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
+	void JumpA(const FInputActionValue& value);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -41,6 +42,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* _moveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* _jumpAction;
 
 	// Camera
 	class USpringArmComponent* _springArm;

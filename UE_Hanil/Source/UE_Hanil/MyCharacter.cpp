@@ -63,6 +63,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		// Looking
 		EnhancedInputComponent->BindAction(_lookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
+
+		// Jumping
+		EnhancedInputComponent->BindAction(_jumpAction, ETriggerEvent::Started, this, &AMyCharacter::JumpA);
 	}
 }
 
@@ -84,6 +87,17 @@ void AMyCharacter::Look(const FInputActionValue& value)
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(LookAxisVector.X);
+	}
+}
+
+void AMyCharacter::JumpA(const FInputActionValue& value)
+{
+	bool isPressed = value.Get<bool>();
+
+	if (isPressed)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Jump!!"));
+		ACharacter::Jump();
 	}
 }
 
