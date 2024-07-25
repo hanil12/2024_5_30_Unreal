@@ -11,6 +11,10 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+DECLARE_DELEGATE(DelegateTest1);
+DECLARE_DELEGATE_OneParam(DelegateTestOneParam, int32);
+DECLARE_DELEGATE_TwoParams(DelegateTestTwoParams, int32 hp, int32 mp);
+
 UCLASS()
 class UE_HANIL_API AMyCharacter : public ACharacter
 {
@@ -31,6 +35,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void OnAttackEnded(class UAnimMontage* Montage, bool bInterrupted);
 protected:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
@@ -56,5 +62,4 @@ public:
 	// Camera
 	class USpringArmComponent* _springArm;
 	class UCameraComponent* _camera;
-
 };

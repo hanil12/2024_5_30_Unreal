@@ -44,6 +44,9 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	auto animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	// 몽타주가 끝날 때 _isAttack 을 false로 만들어줬으면 좋겠다.
+	animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
 }
 
 // Called every frame
@@ -71,6 +74,12 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		// Attack
 		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::Attack);
 	}
+}
+
+void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Error, TEXT("Attack End!!!"));
+	_isAttcking = false;
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)

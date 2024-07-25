@@ -14,3 +14,9 @@ UPROPERTY( ? )
 
 ConstructorHelpers
  -  생성자에서 언리얼에디터에 존재(프로젝트 파일에 저장되어있는)하는 정보들을 읽어올 수 있게 도와준다.
+
+// 과제
+- ConstructHelper::FindObject, FindClass 용도
+
+-  언리얼의 Cast
+
