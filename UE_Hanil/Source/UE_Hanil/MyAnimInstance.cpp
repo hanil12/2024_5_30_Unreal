@@ -4,9 +4,17 @@
 #include "MyAnimInstance.h"
 #include "MyCharacter.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Animation/AnimMontage.h"
 
 UMyAnimInstance::UMyAnimInstance()
 {
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> am
+	(TEXT("/Script/Engine.AnimMontage'/Game/BluePrint/Animation/MyAnimMontage.MyAnimMontage'"));
+
+	if (am.Succeeded())
+	{
+		_myAnimMontage = am.Object;
+	}
 }
 
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -17,5 +25,13 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		_speed = myCharacter->GetVelocity().Size();
 		_isFalling = myCharacter->GetMovementComponent()->IsFalling();
+	}
+}
+
+void UMyAnimInstance::PlayAttackMontage()
+{
+	if (!Montage_IsPlaying(_myAnimMontage))
+	{
+		Montage_Play(_myAnimMontage);
 	}
 }

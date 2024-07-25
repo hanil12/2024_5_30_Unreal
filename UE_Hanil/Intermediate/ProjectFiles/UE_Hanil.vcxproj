@@ -67,7 +67,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D2817625-157A-3258-8E03-B59565286E8C}</ProjectGuid>
+    <ProjectGuid>{9784D55D-5E3C-3709-8B76-CB0BD02A6ADB}</ProjectGuid>
     <RootNamespace>UE_Hanil</RootNamespace>
   </PropertyGroup>
   <Import Project="UECommon.props" />

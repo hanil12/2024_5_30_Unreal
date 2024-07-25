@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "MyAnimInstance.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -66,6 +67,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		// Jumping
 		EnhancedInputComponent->BindAction(_jumpAction, ETriggerEvent::Started, this, &AMyCharacter::JumpA);
+		
+		// Attack
+		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::Attack);
 	}
 }
 
@@ -96,8 +100,19 @@ void AMyCharacter::JumpA(const FInputActionValue& value)
 
 	if (isPressed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Jump!!"));
 		ACharacter::Jump();
+	}
+}
+
+void AMyCharacter::Attack(const FInputActionValue& value)
+{
+	bool isPressed = value.Get<bool>();
+
+	if (isPressed && _isAttcking == false)
+	{
+		auto myAnimI = GetMesh()->GetAnimInstance();
+		Cast<UMyAnimInstance>(myAnimI)->PlayAttackMontage();
+		_isAttcking = true;
 	}
 }
 
