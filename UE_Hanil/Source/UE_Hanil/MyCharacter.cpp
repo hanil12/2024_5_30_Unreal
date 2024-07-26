@@ -47,6 +47,7 @@ void AMyCharacter::BeginPlay()
 	auto animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
 	// 몽타주가 끝날 때 _isAttack 을 false로 만들어줬으면 좋겠다.
 	animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
+	animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
 }
 
 // Called every frame
@@ -72,7 +73,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(_jumpAction, ETriggerEvent::Started, this, &AMyCharacter::JumpA);
 		
 		// Attack
-		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::Attack);
+		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::AttackA);
 	}
 }
 
@@ -82,12 +83,20 @@ void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 	_isAttcking = false;
 }
 
+void AMyCharacter::AttackHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Attack!!!"));
+}
+
 void AMyCharacter::Move(const FInputActionValue& value)
 {
 	FVector2D MovementVector = value.Get<FVector2D>();
 
 	if (Controller != nullptr)
 	{
+		_vertical = MovementVector.Y;
+		_horizontal = MovementVector.X;
+
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
@@ -113,7 +122,7 @@ void AMyCharacter::JumpA(const FInputActionValue& value)
 	}
 }
 
-void AMyCharacter::Attack(const FInputActionValue& value)
+void AMyCharacter::AttackA(const FInputActionValue& value)
 {
 	bool isPressed = value.Get<bool>();
 
@@ -122,6 +131,11 @@ void AMyCharacter::Attack(const FInputActionValue& value)
 		auto myAnimI = GetMesh()->GetAnimInstance();
 		Cast<UMyAnimInstance>(myAnimI)->PlayAttackMontage();
 		_isAttcking = true;
+
+		_curAttackIndex %= 3;
+		_curAttackIndex++;
+
+		Cast<UMyAnimInstance>(myAnimI)->JumpToSection(_curAttackIndex);
 	}
 }
 

@@ -25,6 +25,8 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		_speed = myCharacter->GetVelocity().Size();
 		_isFalling = myCharacter->GetMovementComponent()->IsFalling();
+		_vertical = _vertical + ( myCharacter->_vertical - _vertical) * (DeltaSeconds);
+		_horizontal = _horizontal +( myCharacter->_horizontal - _horizontal) * (DeltaSeconds);
 	}
 }
 
@@ -50,6 +52,19 @@ void UMyAnimInstance::DelegateTest()
 void UMyAnimInstance::DelegateTest2(int32 hp, int32 mp)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HP : %d , MP : %d"),hp,mp);
+}
+
+void UMyAnimInstance::JumpToSection(int32 sectionIndex)
+{
+	FName sectionName = FName(*FString::Printf(TEXT("Attack%d"), sectionIndex));
+	Montage_JumpToSection(sectionName);
+}
+
+void UMyAnimInstance::AnimNotify_AttackHit()
+{
+	// 공격 시점
+	// 이 함수에서 캐릭터들의 충돌체 등장 혹은 사운드가 출력
+	_attackDelegate.Broadcast();
 }
 
 
