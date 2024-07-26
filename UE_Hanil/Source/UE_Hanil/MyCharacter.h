@@ -73,6 +73,8 @@ public:
 	float _horizontal = 0.0f;
 
 	// Camera
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* _springArm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* _camera;
 };
