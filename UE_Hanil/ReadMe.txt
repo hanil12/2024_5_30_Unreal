@@ -10,13 +10,10 @@
 ... Actor만 제외. 그리고  Actor를 상속받는 자식들은 앞에 A가 붙는다.
 ... F가 붙으면 UObject를 상속받은 객체가 아니다.
 
-UPROPERTY( ? )
-
-ConstructorHelpers
- -  생성자에서 언리얼에디터에 존재(프로젝트 파일에 저장되어있는)하는 정보들을 읽어올 수 있게 도와준다.
 
 // 과제
-- ConstructHelper::FindObject, FindClass 용도
+1. 지금까지 한 작업들 본인 프로젝트로 새로 파서 다시 한번 만들기
 
--  언리얼의 Cast
+sub : 현재 레벨에 Actor(Character형) 배치( C++로 해보길 추천)
+ - 멤버변수에 hp, attackDamage 
 
