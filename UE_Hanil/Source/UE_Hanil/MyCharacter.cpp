@@ -77,6 +77,15 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 }
 
+float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// TODO : 
+	// 1. hp -=  Damage
+	// 2. 공격자 이름 출력
+
+	return 0.0f;
+}
+
 void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Error, TEXT("Attack End!!!"));
@@ -85,7 +94,37 @@ void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AMyCharacter::AttackHit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attack!!!"));
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false,this);
+
+	float attackRange = 500.0f;
+	float attackRadius = 100.0f;
+
+	bool bResult = GetWorld()->SweepSingleByChannel
+	(
+	hitResult,
+	GetActorLocation(),
+	GetActorLocation() + GetActorForwardVector() * attackRange,
+	FQuat::Identity,
+	ECollisionChannel::ECC_GameTraceChannel2,
+	FCollisionShape::MakeSphere(attackRadius),
+	params
+	);
+
+	FVector vec = GetActorForwardVector() * attackRange;
+	UE_LOG(LogTemp, Log, TEXT("%s"), *vec.ToString());
+	FVector center = GetActorLocation() + vec * 0.5f;
+	
+	FColor drawColor = FColor::Green;
+
+	if (bResult && hitResult.GetActor()->IsValidLowLevel())
+	{
+		//UE_LOG(LogTemp, Log, TEXT("HitActor : %s"), *hitResult.GetActor()->GetName());
+		drawColor = FColor::Red;
+
+		// TODO : TakeDamage
+	}
+	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)
