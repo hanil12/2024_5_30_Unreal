@@ -4,6 +4,7 @@
 #include "MyGameModeBase.h"
 #include "MyPawn.h"
 #include "MyCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -37,7 +38,8 @@ void AMyGameModeBase::BeginPlay()
 		location.X += 500.0 * i;
 		location.Z += 500.0f;
 
-		AMyCharacter* SpawnedActor = GetWorld()->SpawnActor<AMyCharacter>(AMyCharacter::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+		AMyCharacter* SpawnedActor = GetWorld()->SpawnActor<AMyCharacter>(_monsterClass, FVector::ZeroVector, FRotator::ZeroRotator);
+		SpawnedActor->SetActorLocation(location);
 
 		_monsters.Add(SpawnedActor);
 	}

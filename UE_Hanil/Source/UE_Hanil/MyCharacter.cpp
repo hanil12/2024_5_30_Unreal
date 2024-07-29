@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "MyAnimInstance.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -37,17 +38,26 @@ AMyCharacter::AMyCharacter()
 
 	_springArm->TargetArmLength = 500.0f;
 	_springArm->SetRelativeRotation(FRotator(-35.0f,0.0f,0.0f));
+
+	RootComponent = GetCapsuleComponent();
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	auto animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+
+	Init();
+}
+
+void AMyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
 	// 몽타주가 끝날 때 _isAttack 을 false로 만들어줬으면 좋겠다.
-	animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
-	animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
+	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
+	_animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
 }
 
 // Called every frame
@@ -79,11 +89,19 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	// TODO : 
 	// 1. hp -=  Damage
 	// 2. 공격자 이름 출력
 
-	return 0.0f;
+	_curHp -= Damage;
+
+	UE_LOG(LogTemp, Log, TEXT("Attack : %s, CurHp : %d"), *DamageCauser->GetName(), _curHp);
+
+	if(_curHp < 0)
+		_curHp = 0;
+
+	return _curHp;
 }
 
 void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -121,8 +139,8 @@ void AMyCharacter::AttackHit()
 	{
 		//UE_LOG(LogTemp, Log, TEXT("HitActor : %s"), *hitResult.GetActor()->GetName());
 		drawColor = FColor::Red;
-
-		// TODO : TakeDamage
+		FDamageEvent damageEvent;
+		hitResult.GetActor()->TakeDamage(_attackDamage, damageEvent, GetController(), this);
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
 }
@@ -165,16 +183,20 @@ void AMyCharacter::AttackA(const FInputActionValue& value)
 {
 	bool isPressed = value.Get<bool>();
 
-	if (isPressed && _isAttcking == false)
+	if (isPressed && _isAttcking == false && _animInstance != nullptr)
 	{
-		auto myAnimI = GetMesh()->GetAnimInstance();
-		Cast<UMyAnimInstance>(myAnimI)->PlayAttackMontage();
+		_animInstance->PlayAttackMontage();
 		_isAttcking = true;
 
 		_curAttackIndex %= 3;
 		_curAttackIndex++;
 
-		Cast<UMyAnimInstance>(myAnimI)->JumpToSection(_curAttackIndex);
+		_animInstance->JumpToSection(_curAttackIndex);
 	}
+}
+
+void AMyCharacter::Init()
+{
+	_curHp = _maxHp;
 }
 
