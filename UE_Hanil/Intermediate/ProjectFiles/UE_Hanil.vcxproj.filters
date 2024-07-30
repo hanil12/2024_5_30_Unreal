@@ -55,6 +55,12 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyGameModeBase.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyItem.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyItem.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyPawn.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>

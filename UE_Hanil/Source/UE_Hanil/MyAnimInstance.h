@@ -8,6 +8,7 @@
 
 
 DECLARE_MULTICAST_DELEGATE(AttackDelegate);
+DECLARE_MULTICAST_DELEGATE(DeathDelegate);
 /**
  * 
  */
@@ -30,13 +31,19 @@ public:
 	UFUNCTION()
 	void AnimNotify_AttackHit();
 
+	UFUNCTION()
+	void AnimNotify_Deadth();
+
 	AttackDelegate _attackDelegate;
+	DeathDelegate _deathDelegate;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float _speed;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool _isFalling;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool _isDead;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float _vertical;

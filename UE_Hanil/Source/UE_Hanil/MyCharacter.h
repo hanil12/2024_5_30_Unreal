@@ -51,6 +51,8 @@ protected:
 	void AttackA(const FInputActionValue& value);
 
 	void Init();
+	UFUNCTION()
+	void Disable();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -84,7 +86,7 @@ public:
 	int32 _maxHp = 300;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _attackDamage = 10;
+	int32 _attackDamage = 250;
 
 	// Animation
 	class UMyAnimInstance* _animInstance;

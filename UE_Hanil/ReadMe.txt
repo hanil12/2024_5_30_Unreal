@@ -10,10 +10,11 @@
 ... Actor만 제외. 그리고  Actor를 상속받는 자식들은 앞에 A가 붙는다.
 ... F가 붙으면 UObject를 상속받은 객체가 아니다.
 
+-  동적할당
+-- Actor => SpwanActor
+-- Component => CreateDefaultSubObject
 
-// 과제
-1. 지금까지 한 작업들 본인 프로젝트로 새로 파서 다시 한번 만들기
-
-sub : 현재 레벨에 Actor(Character형) 배치( C++로 해보길 추천)
- - 멤버변수에 hp, attackDamage 
-
+- 충돌
+-- Block
+-- Overlap
+-- Ignore

@@ -27,6 +27,7 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		_isFalling = myCharacter->GetMovementComponent()->IsFalling();
 		_vertical = _vertical + ( myCharacter->_vertical - _vertical) * (DeltaSeconds);
 		_horizontal = _horizontal +( myCharacter->_horizontal - _horizontal) * (DeltaSeconds);
+		_isDead = (myCharacter->_curHp <= 0);
 	}
 }
 
@@ -65,6 +66,11 @@ void UMyAnimInstance::AnimNotify_AttackHit()
 	// 공격 시점
 	// 이 함수에서 캐릭터들의 충돌체 등장 혹은 사운드가 출력
 	_attackDelegate.Broadcast();
+}
+
+void UMyAnimInstance::AnimNotify_Deadth()
+{
+	_deathDelegate.Broadcast();
 }
 
 

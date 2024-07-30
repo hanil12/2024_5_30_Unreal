@@ -32,7 +32,6 @@ AMyCharacter::AMyCharacter()
 	_springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
-	// 상속관계 설정
 	_springArm->SetupAttachment(GetCapsuleComponent());
 	_camera->SetupAttachment(_springArm);
 
@@ -55,9 +54,12 @@ void AMyCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
-	// 몽타주가 끝날 때 _isAttack 을 false로 만들어줬으면 좋겠다.
-	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
-	_animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
+	if (_animInstance->IsValidLowLevel())
+	{
+		_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackEnded);
+		_animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
+		_animInstance->_deathDelegate.AddUObject(this, &AMyCharacter::Disable);
+	}
 }
 
 // Called every frame
@@ -90,23 +92,20 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	// TODO : 
-	// 1. hp -=  Damage
-	// 2. 공격자 이름 출력
 
 	_curHp -= Damage;
 
-	UE_LOG(LogTemp, Log, TEXT("Attack : %s, CurHp : %d"), *DamageCauser->GetName(), _curHp);
 
-	if(_curHp < 0)
+	if (_curHp < 0)
+	{
 		_curHp = 0;
+	}
 
 	return _curHp;
 }
 
 void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	UE_LOG(LogTemp, Error, TEXT("Attack End!!!"));
 	_isAttcking = false;
 }
 
@@ -130,14 +129,12 @@ void AMyCharacter::AttackHit()
 	);
 
 	FVector vec = GetActorForwardVector() * attackRange;
-	UE_LOG(LogTemp, Log, TEXT("%s"), *vec.ToString());
 	FVector center = GetActorLocation() + vec * 0.5f;
 	
 	FColor drawColor = FColor::Green;
 
 	if (bResult && hitResult.GetActor()->IsValidLowLevel())
 	{
-		//UE_LOG(LogTemp, Log, TEXT("HitActor : %s"), *hitResult.GetActor()->GetName());
 		drawColor = FColor::Red;
 		FDamageEvent damageEvent;
 		hitResult.GetActor()->TakeDamage(_attackDamage, damageEvent, GetController(), this);
@@ -198,5 +195,15 @@ void AMyCharacter::AttackA(const FInputActionValue& value)
 void AMyCharacter::Init()
 {
 	_curHp = _maxHp;
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMyCharacter::Disable()
+{
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	PrimaryActorTick.bCanEverTick = false;
 }
 
