@@ -35,7 +35,7 @@ AMyItem::AMyItem()
 void AMyItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Init();
 }
 
 void AMyItem::PostInitializeComponents()
@@ -51,7 +51,22 @@ void AMyItem::OnMyCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	if (myCharacter)
 	{
 		UE_LOG(LogTemp, Log, TEXT("%s Collision"), *myCharacter->GetName());
+		// myCharacter 클래스의 객체가 충돌했다.
+		myCharacter->AddAttackDamage(this,50);
+		Disable();
 	}
+}
+
+void AMyItem::Init()
+{
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+}
+
+void AMyItem::Disable()
+{
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
 }
 
 // Called every frame

@@ -44,6 +44,13 @@ public:
 	UFUNCTION()
 	void AttackHit();
 
+	// Stat 관련
+	int GetCurHp() { return _curHp; }
+	void AddAttackDamage(AActor* actor,int amount) { _attackDamage += amount; }
+
+	// Items
+	void AddItem(class AMyItem* item);
+	void DropItem();
 protected:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
@@ -79,6 +86,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	float _horizontal = 0.0f;
 
+
+	// Animation
+	class UMyAnimInstance* _animInstance;
+	// Camera
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* _springArm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* _camera;
+
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
 	int32 _curHp = 0;
 
@@ -88,12 +105,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
 	int32 _attackDamage = 250;
 
-	// Animation
-	class UMyAnimInstance* _animInstance;
-
-	// Camera
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* _springArm;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* _camera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
+	TArray<class AMyItem*> _items;
 };

@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "MyAnimInstance.h"
 #include "Engine/DamageEvents.h"
+#include "MyItem.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -140,6 +141,16 @@ void AMyCharacter::AttackHit()
 		hitResult.GetActor()->TakeDamage(_attackDamage, damageEvent, GetController(), this);
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
+}
+
+void AMyCharacter::AddItem(AMyItem* item)
+{
+	// Add
+}
+
+void AMyCharacter::DropItem()
+{
+	// Drop
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)

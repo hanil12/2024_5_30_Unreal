@@ -27,7 +27,7 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		_isFalling = myCharacter->GetMovementComponent()->IsFalling();
 		_vertical = _vertical + ( myCharacter->_vertical - _vertical) * (DeltaSeconds);
 		_horizontal = _horizontal +( myCharacter->_horizontal - _horizontal) * (DeltaSeconds);
-		_isDead = (myCharacter->_curHp <= 0);
+		_isDead = (myCharacter->GetCurHp() <= 0);
 	}
 }
 
