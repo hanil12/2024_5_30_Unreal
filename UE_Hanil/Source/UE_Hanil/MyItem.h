@@ -30,6 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetItemPos(FVector pos, FRotator rot = FRotator::ZeroRotator);
+
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* _meshComponent;
 

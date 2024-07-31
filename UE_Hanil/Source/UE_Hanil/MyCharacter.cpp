@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "MyAnimInstance.h"
 #include "Engine/DamageEvents.h"
+#include "Math/UnrealMathUtility.h"
 #include "MyItem.h"
 
 // Sets default values
@@ -87,6 +88,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		
 		// Attack
 		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::AttackA);
+	
+		// ItemDrop
+		EnhancedInputComponent->BindAction(_itemDropAction, ETriggerEvent::Started, this, &AMyCharacter::DropItem);
 	}
 }
 
@@ -145,12 +149,26 @@ void AMyCharacter::AttackHit()
 
 void AMyCharacter::AddItem(AMyItem* item)
 {
-	// Add
+	_items.Add(item);
+	UE_LOG(LogTemp, Log, TEXT("ItemSize : %d"), _items.Num());
 }
 
 void AMyCharacter::DropItem()
 {
 	// Drop
+	UE_LOG(LogTemp, Log, TEXT("Item Drop"));
+	if(_items.Num() == 0)
+		return;
+	auto item = _items.Pop();
+
+	float randFloat = FMath::FRandRange(0, PI * 2.0f);
+
+	float X = cosf(randFloat) * 300.0f;
+	float Y = sinf(randFloat) * 300.0f;
+	FVector playerPos = GetActorLocation();
+	playerPos.Z -= GetActorLocation().Z;
+	FVector itemPos = playerPos + FVector(X,Y,0.0f);
+	item->SetItemPos(itemPos);
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)

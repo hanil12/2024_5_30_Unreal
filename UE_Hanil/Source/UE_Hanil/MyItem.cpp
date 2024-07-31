@@ -50,9 +50,8 @@ void AMyItem::OnMyCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	auto myCharacter = Cast<AMyCharacter>(OtherActor);
 	if (myCharacter)
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s Collision"), *myCharacter->GetName());
-		// myCharacter 클래스의 객체가 충돌했다.
 		myCharacter->AddAttackDamage(this,50);
+		myCharacter->AddItem(this);
 		Disable();
 	}
 }
@@ -74,5 +73,12 @@ void AMyItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMyItem::SetItemPos(FVector pos, FRotator rot)
+{
+	Init();
+	SetActorLocation(pos);
+	SetActorRotation(rot);
 }
 
