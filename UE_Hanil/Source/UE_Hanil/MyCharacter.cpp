@@ -12,6 +12,7 @@
 #include "Engine/DamageEvents.h"
 #include "Math/UnrealMathUtility.h"
 #include "MyItem.h"
+#include "MyStatComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -41,6 +42,9 @@ AMyCharacter::AMyCharacter()
 	_springArm->SetRelativeRotation(FRotator(-35.0f,0.0f,0.0f));
 
 	RootComponent = GetCapsuleComponent();
+
+	// Stat
+	_statCom = CreateDefaultSubobject<UMyStatComponent>(TEXT("Stat"));
 }
 
 // Called when the game starts or when spawned
@@ -62,6 +66,8 @@ void AMyCharacter::PostInitializeComponents()
 		_animInstance->_attackDelegate.AddUObject(this, &AMyCharacter::AttackHit);
 		_animInstance->_deathDelegate.AddUObject(this, &AMyCharacter::Disable);
 	}
+
+	_statCom->SetLevelAndInit(_level);
 }
 
 // Called every frame
@@ -98,15 +104,9 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	_curHp -= Damage;
+	float damaged = _statCom->AddCurHp(-Damage);
 
-
-	if (_curHp < 0)
-	{
-		_curHp = 0;
-	}
-
-	return _curHp;
+	return damaged;
 }
 
 void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -142,9 +142,16 @@ void AMyCharacter::AttackHit()
 	{
 		drawColor = FColor::Red;
 		FDamageEvent damageEvent;
-		hitResult.GetActor()->TakeDamage(_attackDamage, damageEvent, GetController(), this);
+		hitResult.GetActor()->TakeDamage(_statCom->GetAttackDamage(), damageEvent, GetController(), this);
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
+}
+
+void AMyCharacter::AddAttackDamage(AActor* actor, int amount)
+{
+	// actor는 나의 공격력을 버프해준 대상
+
+	_statCom->AddAttackDamage(amount);
 }
 
 void AMyCharacter::AddItem(AMyItem* item)
@@ -223,7 +230,7 @@ void AMyCharacter::AttackA(const FInputActionValue& value)
 
 void AMyCharacter::Init()
 {
-	_curHp = _maxHp;
+	_statCom->Reset();
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;

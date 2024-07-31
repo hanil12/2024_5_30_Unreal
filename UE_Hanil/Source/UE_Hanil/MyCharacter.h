@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MyStatComponent.h"
+
 #include "MyCharacter.generated.h"
 
 class UInputComponent;
@@ -45,8 +47,8 @@ public:
 	void AttackHit();
 
 	// Stat 관련
-	int GetCurHp() { return _curHp; }
-	void AddAttackDamage(AActor* actor,int amount) { _attackDamage += amount; }
+	int GetCurHp() { return _statCom->GetCurHp(); }
+	void AddAttackDamage(AActor* actor,int amount);
 
 	// Items
 	void AddItem(class AMyItem* item);
@@ -98,15 +100,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* _camera;
 
+	// Stat
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, meta = (AllowPrivateAccess = "true"))
+	int32 _level = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
+	class UMyStatComponent* _statCom;
+
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _curHp = 0;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _maxHp = 300;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _attackDamage = 250;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
 	TArray<class AMyItem*> _items;

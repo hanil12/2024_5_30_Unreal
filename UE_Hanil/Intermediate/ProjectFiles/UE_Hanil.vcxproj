@@ -270,6 +270,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyGameInstance.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyGameInstance.h"/>
     <ClCompile Include="..\..\Source\UE_Hanil\MyGameModeBase.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -286,6 +290,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyStatComponent.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyStatComponent.h"/>
     <None Include="..\..\Source\UE_Hanil\UE_Hanil.Build.cs"/>
     <ClCompile Include="..\..\Source\UE_Hanil\UE_Hanil.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
