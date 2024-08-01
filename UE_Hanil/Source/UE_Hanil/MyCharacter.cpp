@@ -13,6 +13,8 @@
 #include "Math/UnrealMathUtility.h"
 #include "MyItem.h"
 #include "MyStatComponent.h"
+#include "Components/WidgetComponent.h"
+#include "MyHpBar.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -45,6 +47,18 @@ AMyCharacter::AMyCharacter()
 
 	// Stat
 	_statCom = CreateDefaultSubobject<UMyStatComponent>(TEXT("Stat"));
+
+	_hpbarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBar"));
+	_hpbarWidget->SetupAttachment(GetMesh());
+	_hpbarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	_hpbarWidget->SetRelativeLocation(FVector(0.0f,0.0f, 230.0f));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> hpBar(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/MyHpBar_BP.MyHpBar_BP_C'"));
+
+	if (hpBar.Succeeded())
+	{
+		_hpbarWidget->SetWidgetClass(hpBar.Class);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -68,6 +82,15 @@ void AMyCharacter::PostInitializeComponents()
 	}
 
 	_statCom->SetLevelAndInit(_level);
+	//_statCom->_hpChangedDelegate.Add()
+
+	_hpbarWidget->InitWidget();
+	auto hpBar = Cast<UMyHpBar>(_hpbarWidget->GetUserWidgetObject());
+
+	if (hpBar)
+	{
+		_statCom->_hpChangedDelegate.AddUObject(hpBar, &UMyHpBar::SetHpBarValue);
+	}
 }
 
 // Called every frame
@@ -104,7 +127,7 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	float damaged = _statCom->AddCurHp(-Damage);
+	float damaged = -_statCom->AddCurHp(-Damage);
 
 	return damaged;
 }
