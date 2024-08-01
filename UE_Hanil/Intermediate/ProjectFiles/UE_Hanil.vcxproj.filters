@@ -67,6 +67,12 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyHpBar.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyInventoryUI.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyInventoryUI.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyItem.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
