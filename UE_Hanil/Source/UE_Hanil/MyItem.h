@@ -6,6 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "MyItem.generated.h"
 
+//UENUM()
+//enum class ItemType
+//{
+//
+//};
+//
+//USTRUCT()
+//struct ItemInfo
+//{
+//	int itemId;
+//	ItemType type;
+//};
+
 UCLASS()
 class UE_HANIL_API AMyItem : public AActor
 {
@@ -37,4 +50,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* _trigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 _itemId = -1;
 };

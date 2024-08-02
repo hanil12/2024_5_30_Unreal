@@ -13,5 +13,19 @@ UCLASS()
 class UE_HANIL_API UMyInventoryUI : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void SetItem(int32 itemId,int32 index);
+
+public:
+	UPROPERTY(meta = (BindWidget))
+	class UUniformGridPanel* SlotGrid;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<class UButton*> _slotBtns;
+	TArray<class UImage*> _slotBtnImages;
+	class UTexture2D* _axe;
+	class UTexture2D* _defalut;
 };

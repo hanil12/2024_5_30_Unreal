@@ -31,24 +31,6 @@
     <Filter Include="Source\UE_Hanil">
       <UniqueIdentifier>{8F9BD134-4960-3C29-B80B-D31F9F7F495A}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyActor.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyActor.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyAnimInstance.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyAnimInstance.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyCharacter.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyGameInstance.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
@@ -61,42 +43,6 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyGameModeBase.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyHpBar.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyHpBar.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyInventoryUI.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyInventoryUI.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyItem.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyItem.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyPawn.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyPawn.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyPlayerController.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\UE_Hanil\MyStatComponent.cpp">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\UE_Hanil\MyStatComponent.h">
-      <Filter>Source\UE_Hanil</Filter>
-    </ClInclude>
     <None Include="..\..\Source\UE_Hanil\UE_Hanil.Build.cs">
       <Filter>Source\UE_Hanil</Filter>
     </None>
@@ -106,5 +52,86 @@
     <ClInclude Include="..\..\Source\UE_Hanil\UE_Hanil.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\UE_Hanil\UI">
+      <UniqueIdentifier>{260a8ff5-6d83-480d-b00b-fa58c29ad5bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UE_Hanil\Objects">
+      <UniqueIdentifier>{95ba4e81-ed69-432b-826f-b33a9f18ca71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UE_Hanil\Components">
+      <UniqueIdentifier>{34117637-649b-444a-b1b9-f2eaf2774822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UE_Hanil\Animation">
+      <UniqueIdentifier>{186186d9-391a-4421-8f09-7486e2916846}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UE_Hanil\Controller">
+      <UniqueIdentifier>{7aaef9ed-4c20-4877-b74f-2d648885014c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyActor.h">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyItem.h">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyPawn.h">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyAnimInstance.h">
+      <Filter>Source\UE_Hanil\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyHpBar.h">
+      <Filter>Source\UE_Hanil\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyInvenComponent.h">
+      <Filter>Source\UE_Hanil\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyInventoryUI.h">
+      <Filter>Source\UE_Hanil\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyStatComponent.h">
+      <Filter>Source\UE_Hanil\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h">
+      <Filter>Source\UE_Hanil\Controller</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyActor.cpp">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyCharacter.cpp">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyItem.cpp">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyPawn.cpp">
+      <Filter>Source\UE_Hanil\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyAnimInstance.cpp">
+      <Filter>Source\UE_Hanil\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyHpBar.cpp">
+      <Filter>Source\UE_Hanil\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyInvenComponent.cpp">
+      <Filter>Source\UE_Hanil\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyInventoryUI.cpp">
+      <Filter>Source\UE_Hanil\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyStatComponent.cpp">
+      <Filter>Source\UE_Hanil\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyPlayerController.cpp">
+      <Filter>Source\UE_Hanil\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

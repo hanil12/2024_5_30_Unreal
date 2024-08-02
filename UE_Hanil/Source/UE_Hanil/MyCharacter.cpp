@@ -13,6 +13,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "MyItem.h"
 #include "MyStatComponent.h"
+#include "MyInvenComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "MyHpBar.h"
@@ -54,6 +55,8 @@ AMyCharacter::AMyCharacter()
 	_hpbarWidget->SetupAttachment(GetMesh());
 	_hpbarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	_hpbarWidget->SetRelativeLocation(FVector(0.0f,0.0f, 230.0f));
+
+	_invenCom = CreateDefaultSubobject<UMyInvenComponent>(TEXT("Inventory_Com"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> hpBar(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/MyHpBar_BP.MyHpBar_BP_C'"));
 
@@ -110,6 +113,13 @@ void AMyCharacter::PostInitializeComponents()
 	{
 		_statCom->_hpChangedDelegate.AddUObject(hpBar, &UMyHpBar::SetHpBarValue);
 	}
+	
+	auto invenUI = Cast<UMyInventoryUI>(_invenWidget);
+
+	if (invenUI)
+	{
+		_invenCom->_itemAddedEvent.AddUObject(invenUI, &UMyInventoryUI::SetItem);
+	}
 }
 
 // Called every frame
@@ -138,7 +148,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(_attackAction, ETriggerEvent::Started, this, &AMyCharacter::AttackA);
 	
 		// ItemDrop
-		EnhancedInputComponent->BindAction(_itemDropAction, ETriggerEvent::Started, this, &AMyCharacter::DropItem);
+		EnhancedInputComponent->BindAction(_itemDropAction, ETriggerEvent::Started, this, &AMyCharacter::DropItemFromCharacter);
 	}
 }
 
@@ -196,28 +206,14 @@ void AMyCharacter::AddAttackDamage(AActor* actor, int amount)
 	_statCom->AddAttackDamage(amount);
 }
 
-void AMyCharacter::AddItem(AMyItem* item)
+void AMyCharacter::AddItemToCharacter(AMyItem* item)
 {
-	_items.Add(item);
-	UE_LOG(LogTemp, Log, TEXT("ItemSize : %d"), _items.Num());
+	_invenCom->AddItem(item);
 }
 
-void AMyCharacter::DropItem()
+void AMyCharacter::DropItemFromCharacter()
 {
-	// Drop
-	UE_LOG(LogTemp, Log, TEXT("Item Drop"));
-	if(_items.Num() == 0)
-		return;
-	auto item = _items.Pop();
-
-	float randFloat = FMath::FRandRange(0, PI * 2.0f);
-
-	float X = cosf(randFloat) * 300.0f;
-	float Y = sinf(randFloat) * 300.0f;
-	FVector playerPos = GetActorLocation();
-	playerPos.Z -= GetActorLocation().Z;
-	FVector itemPos = playerPos + FVector(X,Y,0.0f);
-	item->SetItemPos(itemPos);
+	_invenCom->DropItem();
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)

@@ -51,7 +51,7 @@ void AMyItem::OnMyCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	if (myCharacter)
 	{
 		myCharacter->AddAttackDamage(this,50);
-		myCharacter->AddItem(this);
+		myCharacter->AddItemToCharacter(this);
 		Disable();
 	}
 }
