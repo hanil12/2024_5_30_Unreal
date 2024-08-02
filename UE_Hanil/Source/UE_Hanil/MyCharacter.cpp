@@ -14,7 +14,9 @@
 #include "MyItem.h"
 #include "MyStatComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "MyHpBar.h"
+#include "MyInventoryUI.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -59,6 +61,14 @@ AMyCharacter::AMyCharacter()
 	{
 		_hpbarWidget->SetWidgetClass(hpBar.Class);
 	}
+
+	static ConstructorHelpers::FClassFinder<UMyInventoryUI> invenClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/MyInventoryUI_BP.MyInventoryUI_BP_C'"));
+
+	if (invenClass.Succeeded())
+	{
+		auto temp = invenClass.Class;
+		_invenWidget = CreateWidget<UUserWidget>(GetWorld(), invenClass.Class);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +77,15 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
+
+	if (_invenWidget)
+	{
+		_invenWidget->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("inven widget did not Created"));
+	}
 }
 
 void AMyCharacter::PostInitializeComponents()
