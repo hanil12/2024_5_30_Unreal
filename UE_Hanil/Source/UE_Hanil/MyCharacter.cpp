@@ -77,6 +77,15 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
+
+	// TODO : InvenWidget
+	auto invenUI = UIManager->GetInvenUI();
+
+	if (invenUI)
+	{
+		_invenCom->_itemAddedEvent.AddUObject(invenUI, &UMyInventoryUI::SetItem);
+		invenUI->DropBtn->OnClicked.AddDynamic(_invenCom, &UMyInvenComponent::DropItem);
+	}
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -101,15 +110,9 @@ void AMyCharacter::PostInitializeComponents()
 	{
 		_statCom->_hpChangedDelegate.AddUObject(hpBar, &UMyHpBar::SetHpBarValue);
 	}
-	
-	// TODO : InvenWidget
-	auto invenUI = UIManager->GetInvenUI();
 
-	if (invenUI)
-	{
-		_invenCom->_itemAddedEvent.AddUObject(invenUI, &UMyInventoryUI::SetItem);
-		invenUI->DropBtn->OnClicked.AddDynamic(_invenCom, &UMyInvenComponent::DropItem);
-	}
+	// 콘텐츠 브라우져에서 드래그해서 월드에 배치할 경우
+	// 이 함수가 먼저 호출되는 상황
 }
 
 // Called every frame
