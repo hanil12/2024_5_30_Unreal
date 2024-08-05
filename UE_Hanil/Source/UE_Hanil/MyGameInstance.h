@@ -11,6 +11,10 @@
 /**
  * 
  */
+ class AMyUIManager;
+
+ #define UIManager Cast<UMyGameInstance>(GetGameInstance())->GetUIManager()
+
 UCLASS()
 class UE_HANIL_API UMyGameInstance : public UGameInstance
 {
@@ -22,7 +26,12 @@ public:
 
 	FMyStatData* GetStatDataByLevel(int level);
 
+	AMyUIManager* GetUIManager() { return _uiManager; }
+
 private:
 	UPROPERTY()
 	class UDataTable* _statTable;
+
+	UPROPERTY()
+	AMyUIManager* _uiManager;
 };

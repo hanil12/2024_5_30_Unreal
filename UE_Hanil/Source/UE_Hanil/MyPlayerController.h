@@ -18,6 +18,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputMappingContext* _inputMappingContext;
 
+public:
+	void ShowUI();
+	void HideUI();
+
 protected:
 
 	virtual void BeginPlay() override;

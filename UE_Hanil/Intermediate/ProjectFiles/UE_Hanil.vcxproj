@@ -306,6 +306,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyStatComponent.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyUIManager.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyUIManager.h"/>
     <None Include="..\..\Source\UE_Hanil\UE_Hanil.Build.cs"/>
     <ClCompile Include="..\..\Source\UE_Hanil\UE_Hanil.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

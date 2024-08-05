@@ -111,10 +111,4 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inven, meta = (AllowPrivateAccess = "true"))
 	class UMyInvenComponent* _invenCom;
 
-	// UI
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* _invenWidget;
-
-	// UCLASS 매크로가 있고, UObject를 상속받는 클래스 자체를 저장할 수 있는 변수 자료형
-	// TSubclassOf<class UUserWidget> _invenClass;
 };

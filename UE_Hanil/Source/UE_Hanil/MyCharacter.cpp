@@ -2,6 +2,12 @@
 
 
 #include "MyCharacter.h"
+
+// UI
+#include "MyGameInstance.h"
+#include "MyUIManager.h"
+#include "MyInventoryUI.h"
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
@@ -17,7 +23,8 @@
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "MyHpBar.h"
-#include "MyInventoryUI.h"
+#include "MyPlayerController.h"
+#include "Components/Button.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -25,8 +32,6 @@ AMyCharacter::AMyCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// TODO 
-	// skeletal Mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> sm
 	(TEXT("/Script/Engine.SkeletalMesh'/Game/ParagonNarbash/Characters/Heroes/Narbash/Meshes/Narbash.Narbash'"));
 
@@ -64,14 +69,6 @@ AMyCharacter::AMyCharacter()
 	{
 		_hpbarWidget->SetWidgetClass(hpBar.Class);
 	}
-
-	static ConstructorHelpers::FClassFinder<UMyInventoryUI> invenClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/MyInventoryUI_BP.MyInventoryUI_BP_C'"));
-
-	if (invenClass.Succeeded())
-	{
-		auto temp = invenClass.Class;
-		_invenWidget = CreateWidget<UUserWidget>(GetWorld(), invenClass.Class);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -80,15 +77,6 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
-
-	if (_invenWidget)
-	{
-		_invenWidget->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("inven widget did not Created"));
-	}
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -114,11 +102,13 @@ void AMyCharacter::PostInitializeComponents()
 		_statCom->_hpChangedDelegate.AddUObject(hpBar, &UMyHpBar::SetHpBarValue);
 	}
 	
-	auto invenUI = Cast<UMyInventoryUI>(_invenWidget);
+	// TODO : InvenWidget
+	auto invenUI = UIManager->GetInvenUI();
 
 	if (invenUI)
 	{
 		_invenCom->_itemAddedEvent.AddUObject(invenUI, &UMyInventoryUI::SetItem);
+		invenUI->DropBtn->OnClicked.AddDynamic(_invenCom, &UMyInvenComponent::DropItem);
 	}
 }
 
@@ -195,6 +185,13 @@ void AMyCharacter::AttackHit()
 		drawColor = FColor::Red;
 		FDamageEvent damageEvent;
 		hitResult.GetActor()->TakeDamage(_statCom->GetAttackDamage(), damageEvent, GetController(), this);
+
+		// TODO : 삭제할 코드... 버튼 실습용
+		if (GetController())
+		{
+			Cast<AMyPlayerController>(GetController())->ShowUI();
+		}
+
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
 }

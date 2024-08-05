@@ -48,7 +48,9 @@ void UMyInvenComponent::DropItem()
 
 	UE_LOG(LogTemp, Log, TEXT("Item Drop"));
 
+	int itemSize = _items.Num();
 	auto item = _items.Pop();
+	_itemAddedEvent.Broadcast(-1, itemSize - 1);
 
 	float randFloat = FMath::FRandRange(0, PI * 2.0f);
 
