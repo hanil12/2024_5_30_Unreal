@@ -35,11 +35,11 @@ void AMyAIController::RandMove()
 	UNavigationSystemV1* naviSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	if(naviSystem == nullptr)
 		return;
-
+		
 	FNavLocation randLocation;
 
-	if (naviSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, 30.0f, randLocation))
+	if (naviSystem->GetRandomPointInNavigableRadius(currentPawn->GetActorLocation(), 500.0f, randLocation))
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, FVector::ZeroVector);
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, randLocation);
 	}
 }
