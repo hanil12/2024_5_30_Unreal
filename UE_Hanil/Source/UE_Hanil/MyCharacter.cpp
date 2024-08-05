@@ -77,15 +77,6 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
-
-	// TODO : InvenWidget
-	auto invenUI = UIManager->GetInvenUI();
-
-	if (invenUI)
-	{
-		_invenCom->_itemAddedEvent.AddUObject(invenUI, &UMyInventoryUI::SetItem);
-		invenUI->DropBtn->OnClicked.AddDynamic(_invenCom, &UMyInvenComponent::DropItem);
-	}
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -101,7 +92,6 @@ void AMyCharacter::PostInitializeComponents()
 	}
 
 	_statCom->SetLevelAndInit(_level);
-	//_statCom->_hpChangedDelegate.Add()
 
 	_hpbarWidget->InitWidget();
 	auto hpBar = Cast<UMyHpBar>(_hpbarWidget->GetUserWidgetObject());
@@ -110,9 +100,6 @@ void AMyCharacter::PostInitializeComponents()
 	{
 		_statCom->_hpChangedDelegate.AddUObject(hpBar, &UMyHpBar::SetHpBarValue);
 	}
-
-	// 콘텐츠 브라우져에서 드래그해서 월드에 배치할 경우
-	// 이 함수가 먼저 호출되는 상황
 }
 
 // Called every frame
@@ -188,12 +175,6 @@ void AMyCharacter::AttackHit()
 		drawColor = FColor::Red;
 		FDamageEvent damageEvent;
 		hitResult.GetActor()->TakeDamage(_statCom->GetAttackDamage(), damageEvent, GetController(), this);
-
-		// TODO : 삭제할 코드... 버튼 실습용
-		if (GetController())
-		{
-			Cast<AMyPlayerController>(GetController())->ShowUI();
-		}
 
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);

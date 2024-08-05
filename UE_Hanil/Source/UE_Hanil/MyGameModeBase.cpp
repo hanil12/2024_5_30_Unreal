@@ -5,6 +5,7 @@
 #include "MyPawn.h"
 #include "MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MyAIController.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -32,16 +33,16 @@ void AMyGameModeBase::BeginPlay()
 	FVector location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + FVector(100,0.0f,0.0f);
 	FRotator rotator = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 	
+	// TODO : MyMonster.cpp
 	//params.SpawnCollisionHandlingOverride
-	for (int i = 0; i < 3; i++)
-	{
-		location.X += 500.0 * i;
-		location.Z += 500.0f;
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	location.X += 500.0 * i;
+	//	location.Z += 500.0f;
 
-		AMyCharacter* SpawnedActor = GetWorld()->SpawnActor<AMyCharacter>(_monsterClass, FVector::ZeroVector, FRotator::ZeroRotator);
-		SpawnedActor->SetActorLocation(location);
+	//	AMyCharacter* SpawnedActor = GetWorld()->SpawnActor<AMyCharacter>(_monsterClass, FVector::ZeroVector, FRotator::ZeroRotator);
+	//	SpawnedActor->SetActorLocation(location);
 
-		_monsters.Add(SpawnedActor);
-	}
-
+	//	_monsters.Add(SpawnedActor);
+	//}
 }

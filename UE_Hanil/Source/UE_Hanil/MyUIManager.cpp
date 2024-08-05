@@ -17,7 +17,7 @@ AMyUIManager::AMyUIManager()
 	if (invenClass.Succeeded())
 	{
 		auto temp = invenClass.Class;
-		_invenWidget = CreateWidget<UMyInventoryUI>(GetWorld(), invenClass.Class);
+		//_invenWidget = CreateWidget<UMyInventoryUI>(GetWorld(), invenClass.Class);
 	}
 }
 
@@ -26,14 +26,6 @@ void AMyUIManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (_invenWidget)
-	{
-		_invenWidget->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("inven widget did not Created"));
-	}
 }
 
 // Called every frame
