@@ -31,6 +31,24 @@
     <Filter Include="Source\UE_Hanil">
       <UniqueIdentifier>{8F9BD134-4960-3C29-B80B-D31F9F7F495A}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\UE_Hanil\BT_Deco_CanAttack.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\BT_Deco_CanAttack.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\BT_Service_FindTarget.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\BT_Service_FindTarget.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\BT_Task_Attack.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\BT_Task_Attack.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\BT_Task_FindRandomPos.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>

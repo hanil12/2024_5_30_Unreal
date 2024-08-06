@@ -16,6 +16,7 @@ struct FInputActionValue;
 DECLARE_DELEGATE(DelegateTest1);
 DECLARE_DELEGATE_OneParam(DelegateTestOneParam, int32);
 DECLARE_DELEGATE_TwoParams(DelegateTestTwoParams, int32 hp, int32 mp);
+DECLARE_MULTICAST_DELEGATE(Delegate_AttackEnded);
 
 UCLASS()
 class UE_HANIL_API AMyCharacter : public ACharacter
@@ -46,13 +47,17 @@ public:
 	UFUNCTION()
 	void AttackHit();
 
+	UFUNCTION()
+	void Attack_AI();
+
 	// Stat 관련
 	int GetCurHp() { return _statCom->GetCurHp(); }
 	void AddAttackDamage(AActor* actor,int amount);
 
 	void AddItemToCharacter(class AMyItem* item);
 	void DropItemFromCharacter();
-
+	
+	Delegate_AttackEnded _attackEndedDelegate;
 protected:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
@@ -111,4 +116,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inven, meta = (AllowPrivateAccess = "true"))
 	class UMyInvenComponent* _invenCom;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inven, meta = (AllowPrivateAccess = "true"))
+	class AMyAIController* _aiController;
 };

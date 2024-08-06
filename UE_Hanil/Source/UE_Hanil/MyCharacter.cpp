@@ -25,6 +25,7 @@
 #include "MyHpBar.h"
 #include "MyPlayerController.h"
 #include "Components/Button.h"
+#include "MyAIController.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -75,6 +76,8 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_aiController = Cast<AMyAIController>(GetController());
 
 	Init();
 }
@@ -144,6 +147,7 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	_isAttcking = false;
+	_attackEndedDelegate.Broadcast();
 }
 
 void AMyCharacter::AttackHit()
@@ -178,6 +182,20 @@ void AMyCharacter::AttackHit()
 
 	}
 	DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
+}
+
+void AMyCharacter::Attack_AI()
+{
+	if (_isAttcking == false && _animInstance != nullptr)
+	{
+		_animInstance->PlayAttackMontage();
+		_isAttcking = true;
+
+		_curAttackIndex %= 3;
+		_curAttackIndex++;
+
+		_animInstance->JumpToSection(_curAttackIndex);
+	}
 }
 
 void AMyCharacter::AddAttackDamage(AActor* actor, int amount)
@@ -253,6 +271,9 @@ void AMyCharacter::Init()
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
+	
+	if(_aiController && GetController() == nullptr)
+		_aiController->Possess(this);
 }
 
 void AMyCharacter::Disable()
@@ -260,5 +281,9 @@ void AMyCharacter::Disable()
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	PrimaryActorTick.bCanEverTick = false;
+	auto controller = GetController();
+	if(controller)
+		GetController()->UnPossess();
+	UnPossessed();
 }
 
