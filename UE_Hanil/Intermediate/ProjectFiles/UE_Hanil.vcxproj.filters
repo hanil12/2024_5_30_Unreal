@@ -31,6 +31,12 @@
     <Filter Include="Source\UE_Hanil">
       <UniqueIdentifier>{8F9BD134-4960-3C29-B80B-D31F9F7F495A}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\UE_Hanil\BT_Task_FindRandomPos.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\BT_Task_FindRandomPos.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyActor.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>

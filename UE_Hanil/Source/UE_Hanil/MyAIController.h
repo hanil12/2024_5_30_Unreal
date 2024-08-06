@@ -23,5 +23,9 @@ public:
 	void RandMove();
 	
 private:
-	FTimerHandle _timerHandle;
+	UPROPERTY()
+	class UBlackboardData* _bb;
+
+	UPROPERTY()
+	class UBehaviorTree* _bt;
 };
