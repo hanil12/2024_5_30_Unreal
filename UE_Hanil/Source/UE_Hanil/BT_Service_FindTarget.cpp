@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "MyAIController.h"
 #include "MyCharacter.h"
+#include "MyPlayer.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/OverlapResult.h"
 
@@ -49,7 +50,7 @@ void UBT_Service_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	{
 		for (auto& result : overLapResult)
 		{
-			auto myCharacter = Cast<AMyCharacter>(result.GetActor());
+			auto myCharacter = Cast<AMyPlayer>(result.GetActor());
 			if (myCharacter != nullptr && myCharacter->GetController()->IsPlayerController())
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), myCharacter);

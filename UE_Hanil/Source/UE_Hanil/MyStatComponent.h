@@ -8,6 +8,8 @@
 
 #include "MyStatComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(DeathDelegate);
+
 USTRUCT()
 struct FMyStatData : public FTableRowBase
 {
@@ -55,15 +57,15 @@ public:
 	bool IsDead() { return _curHp <=0 ;}
 
 	HpChanged _hpChangedDelegate;
+	DeathDelegate _deathDelegate;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _curHp = 0;
+	int32 _curHp = 100;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _maxHp = 0;
+	int32 _maxHp = 100;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
-	int32 _attackDamage = 0;
-	
+	int32 _attackDamage = 1;
 };

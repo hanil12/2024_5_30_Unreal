@@ -115,10 +115,22 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyItem.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyMonster.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyMonster.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyPawn.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPawn.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyPlayer.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyPlayer.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyPlayerController.cpp">

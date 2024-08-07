@@ -314,10 +314,18 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyItem.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyMonster.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyMonster.h"/>
     <ClCompile Include="..\..\Source\UE_Hanil\MyPawn.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPawn.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyPlayer.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyPlayer.h"/>
     <ClCompile Include="..\..\Source\UE_Hanil\MyPlayerController.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
