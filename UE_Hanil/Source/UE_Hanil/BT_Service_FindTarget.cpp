@@ -58,18 +58,21 @@ void UBT_Service_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 				if (myCharacterController != nullptr && myCharacterController->IsPlayerController())
 				{
 					OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), myCharacter);
-					DrawDebugSphere(world, center, searchRadius, 32, FColor::Red, false, 0.3f);
+					// DEBUG_Hanil
+					//DrawDebugSphere(world, center, searchRadius, 32, FColor::Red, false, 0.3f);
 				}
 
 				return;
 			}
 		}
 
-		DrawDebugSphere(world, center, searchRadius, 32, FColor::Green, false, 0.3f);
+		// DEBUG_Hanil
+		// DrawDebugSphere(world, center, searchRadius, 32, FColor::Green, false, 0.3f);
 	}
 	else
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), nullptr);
-		DrawDebugSphere(world, center, searchRadius, 32, FColor::Green, false, 0.3f);
+		// DEBUG_Hanil
+		// DrawDebugSphere(world, center, searchRadius, 32, FColor::Green, false, 0.3f);
 	}
 }

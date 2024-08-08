@@ -24,9 +24,11 @@
 // AI
 #include "MyAIController.h"
 
-// VFX
-#include "NiagaraComponent.h"
-#include "NiagaraFunctionLibrary.h"
+// Particle
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -67,11 +69,11 @@ AMyCharacter::AMyCharacter()
 
 	APawn::AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> VFX(TEXT("/Script/Niagara.NiagaraSystem'/Game/MegaMagicVFXBundle/VFX/MagicalExplosionsVFX/VFX/ChaosExplosion/Systems/N_ChaosExplosionCharged.N_ChaosExplosionCharged'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PT(TEXT("/Script/Engine.ParticleSystem'/Game/ParagonNarbash/FX/Particles/Abilities/Primary/FX/P_Narbash_Melee_Impact.P_Narbash_Melee_Impact'"));
 
-	if (VFX.Succeeded())
+	if (PT.Succeeded())
 	{
-		_vfx = VFX.Object;
+		_particle = PT.Object;
 	}
 }
 
@@ -81,9 +83,6 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
-
-	UNiagaraComponent* nc = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), _vfx, GetActorLocation());
-	nc->SetNiagaraVariableBool(FString("Blood_Explosion"), false);
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -156,10 +155,15 @@ void AMyCharacter::AttackHit()
 		drawColor = FColor::Red;
 		FDamageEvent damageEvent;
 		hitResult.GetActor()->TakeDamage(_statCom->GetAttackDamage(), damageEvent, GetController(), this);
+		FVector hitPoint = hitResult.ImpactPoint;
 
+		if (_particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), _particle, hitPoint, FRotator::ZeroRotator);
+		}
 	}
-	//DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
-	DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor,false,2.0f);
+	// DEBUG_Hanil : DrawCapsule
+	// DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor,false,2.0f);
 }
 
 void AMyCharacter::AddAttackDamage(AActor* actor, int amount)
