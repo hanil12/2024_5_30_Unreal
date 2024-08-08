@@ -46,7 +46,6 @@ AMyCharacter::AMyCharacter()
 
 	// Stat
 	_statCom = CreateDefaultSubobject<UMyStatComponent>(TEXT("Stat"));
-	_statCom->_deathDelegate.AddLambda([this]()-> void { this->GetController()->UnPossess(); });
 
 	_hpbarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBar"));
 	_hpbarWidget->SetupAttachment(GetMesh());
@@ -61,6 +60,8 @@ AMyCharacter::AMyCharacter()
 	{
 		_hpbarWidget->SetWidgetClass(hpBar.Class);
 	}
+
+	APawn::AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 // Called when the game starts or when spawned
@@ -169,6 +170,8 @@ void AMyCharacter::Init()
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
 	
+	_statCom->_deathDelegate.AddLambda([this]()-> void { this->GetController()->UnPossess(); });
+
 	if (_aiController && GetController() == nullptr)
 	{
 		auto aI_Controller = Cast<AMyAIController>(_aiController);
@@ -185,6 +188,5 @@ void AMyCharacter::Disable()
 	auto controller = GetController();
 	if(controller)
 		GetController()->UnPossess();
-	UnPossessed();
 }
 

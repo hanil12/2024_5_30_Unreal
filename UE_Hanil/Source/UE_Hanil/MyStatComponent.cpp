@@ -63,6 +63,7 @@ void UMyStatComponent::SetHp(int32 hp)
 	 if (_curHp <= 0)
 	 {
 		 _deathDelegate.Broadcast();
+		 _deathDelegate.Clear();
 		_curHp = 0;
 	 }
 	if(_curHp > _maxHp)

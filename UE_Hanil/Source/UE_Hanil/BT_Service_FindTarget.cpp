@@ -51,10 +51,15 @@ void UBT_Service_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		for (auto& result : overLapResult)
 		{
 			auto myCharacter = Cast<AMyPlayer>(result.GetActor());
-			if (myCharacter != nullptr && myCharacter->GetController()->IsPlayerController())
+
+			if (myCharacter != nullptr)
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), myCharacter);
-				DrawDebugSphere(world, center, searchRadius, 32, FColor::Red, false, 0.3f);
+				auto myCharacterController = myCharacter->GetController();
+				if (myCharacterController != nullptr && myCharacterController->IsPlayerController())
+				{
+					OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), myCharacter);
+					DrawDebugSphere(world, center, searchRadius, 32, FColor::Red, false, 0.3f);
+				}
 
 				return;
 			}
