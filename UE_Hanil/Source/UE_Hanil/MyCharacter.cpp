@@ -24,6 +24,10 @@
 // AI
 #include "MyAIController.h"
 
+// VFX
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -62,6 +66,13 @@ AMyCharacter::AMyCharacter()
 	}
 
 	APawn::AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> VFX(TEXT("/Script/Niagara.NiagaraSystem'/Game/MegaMagicVFXBundle/VFX/MagicalExplosionsVFX/VFX/ChaosExplosion/Systems/N_ChaosExplosionCharged.N_ChaosExplosionCharged'"));
+
+	if (VFX.Succeeded())
+	{
+		_vfx = VFX.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -70,6 +81,9 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Init();
+
+	UNiagaraComponent* nc = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), _vfx, GetActorLocation());
+	nc->SetNiagaraVariableBool(FString("Blood_Explosion"), false);
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -115,23 +129,25 @@ void AMyCharacter::AttackHit()
 	FHitResult hitResult;
 	FCollisionQueryParams params(NAME_None, false,this);
 
-	float attackRange = 500.0f;
-	float attackRadius = 100.0f;
-	FQuat quat = FQuat::Identity;
+	float attackRange = 1000.0f;
+	float attackRadius = 20.0f;
+	FVector forward = GetActorForwardVector();
+	FQuat quat = FQuat::FindBetweenVectors(FVector(0,0,1), forward);
+
+	FVector center = GetActorLocation() + forward * attackRange * 0.5f;
+	FVector start = GetActorLocation();
+	FVector end = start + forward * (attackRange * 0.5f);
 
 	bool bResult = GetWorld()->SweepSingleByChannel
 	(
 	hitResult,
-	GetActorLocation(),
-	GetActorLocation() + GetActorForwardVector() * attackRange,
+	start,
+	end,
 	quat,
 	ECollisionChannel::ECC_GameTraceChannel2,
-	FCollisionShape::MakeCapsule(attackRadius, attackRange),
+	FCollisionShape::MakeCapsule(attackRadius, attackRange * 0.5f),
 	params
 	);
-
-	FVector vec = GetActorForwardVector() * attackRange;
-	FVector center = GetActorLocation() + vec * 0.5f;
 	
 	FColor drawColor = FColor::Green;
 
@@ -143,7 +159,7 @@ void AMyCharacter::AttackHit()
 
 	}
 	//DrawDebugSphere(GetWorld(), center, attackRadius, 12, drawColor,false, 2.0f);
-	DrawDebugCapsule(GetWorld(), center, attackRange, attackRadius, quat, drawColor,false,2.0f);
+	DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor,false,2.0f);
 }
 
 void AMyCharacter::AddAttackDamage(AActor* actor, int amount)
