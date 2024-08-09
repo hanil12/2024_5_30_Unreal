@@ -79,6 +79,12 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyEffectManager.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyEffectManager.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyGameInstance.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
@@ -137,6 +143,12 @@
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MySoundManager.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MySoundManager.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyStatComponent.cpp">

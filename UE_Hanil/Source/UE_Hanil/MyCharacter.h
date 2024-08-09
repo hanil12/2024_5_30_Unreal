@@ -17,6 +17,7 @@ DECLARE_DELEGATE(DelegateTest1);
 DECLARE_DELEGATE_OneParam(DelegateTestOneParam, int32);
 DECLARE_DELEGATE_TwoParams(DelegateTestTwoParams, int32 hp, int32 mp);
 DECLARE_MULTICAST_DELEGATE(Delegate_AttackEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_AttackHit);
 
 UCLASS()
 class UE_HANIL_API AMyCharacter : public ACharacter
@@ -50,6 +51,10 @@ public:
 	void DropItemFromCharacter();
 	
 	Delegate_AttackEnded _attackEndedDelegate;
+
+	UPROPERTY(EditAnywhere, BlueprintAssignable, Category = Event, meta = (AllowPrivateAccess = "true"))
+	FDelegate_AttackHit _attackHitEvent;
+	
 protected:
 	virtual void Init();
 
@@ -68,6 +73,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	float _horizontal = 0.0f;
 
+	// AttackHitPoint
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackHit, meta = (AllowPrivateAccess = "true"))
+	FVector _hitPoint;
+
 
 	// Animation
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
@@ -83,7 +92,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 	class AAIController* _aiController;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Paticle, meta = (AllowPrivateAccess = "true"))
-	class UParticleSystem* _particle;
 };

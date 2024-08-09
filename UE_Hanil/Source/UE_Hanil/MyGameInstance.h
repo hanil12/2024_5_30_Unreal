@@ -12,8 +12,10 @@
  * 
  */
  class AMyUIManager;
+ class AMyEffectManager;
 
  #define UIManager Cast<UMyGameInstance>(GetGameInstance())->GetUIManager()
+ #define EffectManager Cast<UMyGameInstance>(GetGameInstance())->GetEffectManager()
 
 UCLASS()
 class UE_HANIL_API UMyGameInstance : public UGameInstance
@@ -27,11 +29,15 @@ public:
 	FMyStatData* GetStatDataByLevel(int level);
 
 	AMyUIManager* GetUIManager() { return _uiManager; }
+	AMyEffectManager* GetEffectManager() { return _effectManager; }
 
 private:
 	UPROPERTY()
 	class UDataTable* _statTable;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	AMyUIManager* _uiManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	AMyEffectManager* _effectManager;
 };

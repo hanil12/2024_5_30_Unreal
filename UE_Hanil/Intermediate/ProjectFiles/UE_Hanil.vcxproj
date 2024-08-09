@@ -290,6 +290,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyEffectManager.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyEffectManager.h"/>
     <ClCompile Include="..\..\Source\UE_Hanil\MyGameInstance.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -330,6 +334,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE_Hanil\MyPlayerController.h"/>
+    <ClCompile Include="..\..\Source\UE_Hanil\MySoundManager.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MySoundManager.h"/>
     <ClCompile Include="..\..\Source\UE_Hanil\MyStatComponent.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
