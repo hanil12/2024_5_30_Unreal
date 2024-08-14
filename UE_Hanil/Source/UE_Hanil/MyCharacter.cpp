@@ -148,7 +148,7 @@ void AMyCharacter::AttackHit()
 		_hitPoint = hitResult.ImpactPoint;
 
 		//_attackHitEvent.Broadcast();
-		EffectManager->Play("meleeAttack", _hitPoint);
+		EffectManager->Play("Explosion", _hitPoint);
 	}
 	// DEBUG_Hanil : DrawCapsule
 	// DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor,false,2.0f);

@@ -2,9 +2,10 @@
 
 
 #include "MyEffect.h"
-
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
+#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AMyEffect::AMyEffect()
@@ -18,15 +19,22 @@ AMyEffect::AMyEffect()
 
 	_particleCom = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 	RootComponent = _particleCom;
+
+	_niagaraCom = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	_niagaraCom->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AMyEffect::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 	_particleCom->OnSystemFinished.AddDynamic(this, &AMyEffect::End);
 	End(_particleCom);
+
+	_niagaraCom->OnSystemFinished.AddDynamic(this, &AMyEffect::EndNiagara);
+	EndNiagara(_niagaraCom);
 }
 
 // Called every frame
@@ -38,21 +46,34 @@ void AMyEffect::Tick(float DeltaTime)
 
 void AMyEffect::Play(FVector location, FRotator rotator)
 {
-	if(_particleCom->IsActive())
+	if(_particleCom->IsActive() || _niagaraCom->IsActive())
 		return;
 
 	SetActorLocationAndRotation(location, rotator);
 	_particleCom->ActivateSystem();
+	_niagaraCom->ActivateSystem();
 }
 
 bool AMyEffect::IsPlaying()
 {
+	if(_particleCom->IsActive())
+		return true;
+
+	if(_niagaraCom->IsActive())
+		return true;
+
 	return false;
 }
 
 void AMyEffect::End(UParticleSystemComponent* particle)
 {
-	particle->DeactivateSystem();
+	if(particle)
+		particle->DeactivateSystem();
+}
 
+void AMyEffect::EndNiagara(UNiagaraComponent* particle)
+{
+	if(particle)
+		particle->Deactivate();
 }
 

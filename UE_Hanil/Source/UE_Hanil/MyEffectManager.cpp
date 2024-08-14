@@ -72,6 +72,19 @@ void AMyEffectManager::Tick(float DeltaTime)
 
 void AMyEffectManager::Play(FString name, FVector location, FRotator rotator)
 {
+	if(_effectTable.Contains(name) == false)
+		return;
+
+	auto findEffect = _effectTable[name].FindByPredicate(
+	[](AMyEffect* effect)-> bool 
+	{
+		if(effect->IsPlaying())
+			return false;
+		return true;
+	});
+
+	if(findEffect)
+		(*findEffect)->Play(location, rotator);
 }
 
 

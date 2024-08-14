@@ -29,8 +29,13 @@ public:
 
 	UFUNCTION()
 	void End(class UParticleSystemComponent* particle);
+	UFUNCTION()
+	void EndNiagara(class UNiagaraComponent* particle);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UParticleSystemComponent* _particleCom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UNiagaraComponent* _niagaraCom;
 };
