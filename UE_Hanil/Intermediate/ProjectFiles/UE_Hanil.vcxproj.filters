@@ -79,6 +79,12 @@
     <ClInclude Include="..\..\Source\UE_Hanil\MyCharacter.h">
       <Filter>Source\UE_Hanil</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE_Hanil\MyEffect.cpp">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE_Hanil\MyEffect.h">
+      <Filter>Source\UE_Hanil</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE_Hanil\MyEffectManager.cpp">
       <Filter>Source\UE_Hanil</Filter>
     </ClCompile>
