@@ -3,6 +3,7 @@
 
 #include "MyEffectManager.h"
 
+#include "Components/SceneComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
@@ -13,6 +14,9 @@ AMyEffectManager::AMyEffectManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	_rootComponent = CreateDefaultSubobject<USceneComponent>("RootCom");
+	RootComponent = _rootComponent;
 
 	CreateParticleClass(TEXT("Explosion"), TEXT("/Script/Engine.Blueprint'/Game/BluePrint/VFX/MyEffect_BP.MyEffect_BP_C'"));
 }
@@ -53,9 +57,12 @@ void AMyEffectManager::CreateEffect()
 		FString name = classPair.Key;
 
 		_effectTable.Add(name);
-		for (int i = 0; i < _poolCount; i++)
+		for (int32 i = 0; i < _poolCount; i++)
 		{
-			auto effect = GetWorld()->SpawnActor<AMyEffect>(classPair.Value,FVector::ZeroVector, FRotator::ZeroRotator);
+			FString tempName = name + FString::FromInt(i);
+			FActorSpawnParameters params;
+			params.Name = FName(*tempName);
+			auto effect = GetWorld()->SpawnActor<AMyEffect>(classPair.Value,FVector::ZeroVector, FRotator::ZeroRotator, params);
 			
 			effect->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 			_effectTable[name].Add(effect);

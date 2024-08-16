@@ -37,4 +37,7 @@ private:
 	TMap<FString, TSubclassOf<AMyEffect>> _classTable;
 
 	TMap<FString, TArray<AMyEffect*>> _effectTable;
+
+	UPROPERTY()
+	class USceneComponent* _rootComponent;
 };

@@ -27,6 +27,9 @@
 // Particle
 #include "MyEffectManager.h"
 
+// Projectile
+#include "MyProjectile.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -115,6 +118,18 @@ void AMyCharacter::OnAttackEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AMyCharacter::AttackHit()
 {
+	// Projectile Test
+	// TODO : Projectile Skill...
+	if (_projectileClass)
+	{
+		FVector forward = GetActorForwardVector();
+		FVector fireLocation = GetActorLocation() + forward * 150;
+
+		auto projectile = GetWorld()->SpawnActor<AMyProjectile>(_projectileClass, fireLocation, FRotator::ZeroRotator);
+		projectile->FireInDirection(forward);
+	}
+
+	// Attack Chanel
 	FHitResult hitResult;
 	FCollisionQueryParams params(NAME_None, false,this);
 
