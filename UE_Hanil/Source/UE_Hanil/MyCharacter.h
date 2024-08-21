@@ -41,7 +41,7 @@ public:
 	void OnAttackEnded(class UAnimMontage* Montage, bool bInterrupted);
 
 	UFUNCTION()
-	void AttackHit();
+	virtual void AttackHit();
 
 	// Stat 관련
 	int GetCurHp() { return _statCom->GetCurHp(); }

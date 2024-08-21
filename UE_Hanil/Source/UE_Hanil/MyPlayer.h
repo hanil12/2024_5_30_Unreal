@@ -22,6 +22,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void AttackHit() override;
+
 private:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);

@@ -3,7 +3,9 @@
 
 #include "MyPlayer.h"
 
+#include "MyGameInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 
 // TPS
 #include "GameFramework/SpringArmComponent.h"
@@ -16,6 +18,9 @@
 
 // Animation
 #include "MyAnimInstance.h"
+
+// Particle
+#include "MyEffectManager.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -68,6 +73,60 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void AMyPlayer::AttackHit()
+{
+	// Attack Chanel
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false, this);
+
+	float attackRange = 1000.0f;
+	float virtualAttackRange = 100000.0f;
+	float attackRadius = 20.0f;
+	FVector forward = _camera->GetForwardVector();
+	FQuat quat = FQuat::FindBetweenVectors(FVector(0, 0, 1), forward);
+
+	FVector start = _camera->GetComponentLocation();
+	FVector end = start + forward * (virtualAttackRange * 0.5f);
+	FVector center = (start + end) * 0.5f;
+
+	bool bResult = GetWorld()->SweepSingleByChannel
+	(
+		hitResult,
+		start,
+		end,
+		quat,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeCapsule(attackRadius, virtualAttackRange * 0.5f),
+		params
+	);
+
+	FColor drawColor = FColor::Green;
+
+	bool check = false;
+	auto victim = hitResult.GetActor();
+	if (victim)
+	{
+		FVector victimLocation = victim->GetActorLocation();
+		FVector myLocation = GetActorLocation();
+
+		check = FVector::Distance(myLocation, victimLocation) < attackRange;
+	}
+
+	if (bResult && hitResult.GetActor()->IsValidLowLevel() && check)
+	{
+		drawColor = FColor::Red;
+		FDamageEvent damageEvent;
+		hitResult.GetActor()->TakeDamage(_statCom->GetAttackDamage(), damageEvent, GetController(), this);
+		_hitPoint = hitResult.ImpactPoint;
+
+		//_attackHitEvent.Broadcast();
+		EffectManager->Play("Explosion", _hitPoint);
+	}
+
+	DrawDebugLine(GetWorld(), start, end, drawColor, false, 2.0f);
+	//DrawDebugCapsule(GetWorld(), center, virtualAttackRange * 0.5f, attackRadius, quat, drawColor,false,2.0f);
+}
+
 void AMyPlayer::Move(const FInputActionValue& value)
 {
 	FVector2D MovementVector = value.Get<FVector2D>();
@@ -89,6 +148,7 @@ void AMyPlayer::Look(const FInputActionValue& value)
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(-LookAxisVector.Y);
 	}
 }
 
