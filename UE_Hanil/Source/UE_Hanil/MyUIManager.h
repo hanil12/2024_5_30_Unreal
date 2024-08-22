@@ -6,7 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "MyUIManager.generated.h"
 
+class UUserWidget;
 class UMyInventoryUI;
+
+UENUM()
+enum class UIType : int32
+{
+	CrossHair,
+	Inventory,
+};
 
 UCLASS()
 class UE_HANIL_API AMyUIManager : public AActor
@@ -25,9 +33,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void OpenWidget(UIType type);
+	void CloseWidget(UIType type);
+	void CloseAll();
+
 	UMyInventoryUI* GetInvenUI() { return _invenWidget; }
+	UUserWidget* GetCrossHair() { return _crossHair; }
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY()
+	TArray<UUserWidget*> _widgets;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, meta = (AllowPrivateAccess = "true"))
 	UMyInventoryUI* _invenWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, meta = (AllowPrivateAccess = "true"))
+	UUserWidget* _crossHair;
 };
