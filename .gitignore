@@ -702,3 +702,5 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+DB/BaseballData.bak
+DB/SalesDB2014.bak
