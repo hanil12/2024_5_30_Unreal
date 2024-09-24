@@ -1,30 +1,45 @@
 ﻿#include "pch.h"
 
-// window
-// linux
+atomic<int32> sum = 0; // all or nothing
 
-void HelloThread()
+void AddSum()
 {
-    cout << "Hello Thread!!" << endl;
+	for (int i = 0; i < 100000; i++)
+	{
+		sum.fetch_add(1);
+	}
+}
+
+void SubSum()
+{
+	for (int i = 0; i < 100000; i++)
+	{
+		sum.fetch_sub(1);
+	}
 }
 
 int main()
 {
-    // 쓰레드 생성
-    // t는 새로운 쓰레드
-    std::thread t(HelloThread);
+	vector<std::thread> threads;
+	threads.resize(10);
 
-    cout << t.hardware_concurrency() << endl;
-    cout << t.get_id() << endl;
-    cout << "Hello Main" << endl;
+	// 5개의 쓰레드가 AddSum 일감을 각각 갖는다.
+	for (int i = 0; i < 5; i++)
+	{
+		threads[i] = std::thread(AddSum);
+	}
 
-    // thread 멤버함수
-    // - join
-    // - joinable : 
-    // - detach : 쓰레드 분리
-    // - hardware_concurrency : 현재 운용가능한 쓰레드 개수
-    // - get_id : 쓰레드 아이디
+	// 5개의 쓰레드가 SubSum 일감을 각각 갖는다.
+	for (int i = 5; i < 10; i++)
+	{
+		threads[i] = std::thread(SubSum);
+	}
 
-    // t가 끝날 때 까지 기다려서 합친다. => thread 종료
-    t.join();
+
+	for (int i = 0; i < 10; i++)
+	{
+		threads[i].join();
+	}
+
+	cout << sum << endl;
 }
