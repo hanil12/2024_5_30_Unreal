@@ -1,51 +1,37 @@
 ﻿#include "pch.h"
 
-vector<int> v;
-// mutual exclusion : 상호배제
-// -> lock
-std::mutex m; // 자물쇠 역할
+#include "AccountManager.h"
+#include "UserManager.h"
 
-// RAII
-template<typename T>
-class LockGuard
+void Func1()
 {
-public:
-	LockGuard(T* mutex) : _mutex(mutex) { _mutex->lock(); }
-	~LockGuard() { _mutex->unlock(); }
-
-private:
-	T* _mutex;
-};
-
-void Push(int count)
-{
-	LockGuard<std::mutex> lockguard(&m);
-
-	for (int i = 0; i < count; i++)
+	for (int32 i = 0; i < 10000; i++)
 	{
-		// 이중 락
-		v.push_back(1);
+		UserManager::GetInstance()->Save();
 	}
+}
 
-	return;
+void Func2()
+{
+	for (int32 i = 0; i < 10000; i++)
+	{
+		AccountManager::GetInstance()->Login();
+	}
 }
 
 int main()
 {
-	v.reserve(100000);
+	AccountManager::Create();
+	UserManager::Create();
 
-	vector<std::thread> threads;
-	threads.resize(10);
+	std::thread t1(Func1);
+	std::thread t2(Func2);
 
-	for (int i = 0; i < 10; i++)
-	{
-		threads[i] = std::thread(Push, 1000);
-	}
+	t1.join();
+	t2.join();
 
-	for (int i = 0; i < 10; i++)
-	{
-		threads[i].join();
-	}
+	cout << "Done" << endl;
 
-	cout << v.size() << endl;
+	AccountManager::Delete();
+	UserManager::Delete();
 }
