@@ -13,6 +13,7 @@
 #include <thread>
 #include <mutex>
 
+#include <Windows.h>
 #include <iostream>
 
 using namespace std;

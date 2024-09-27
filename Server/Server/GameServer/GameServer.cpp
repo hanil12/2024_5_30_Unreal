@@ -8,87 +8,55 @@
 // 2. Sleep 기반 Lock
 // 3. Event 기반 Lock
 
-// Spin Lock
+queue<int32> q;
+mutex m;
+HANDLE handle;
 
-class SpinLock
+void Producer()
 {
-public:
-	void lock()
+	while (true)
 	{
-		// 둘이 경합이 동시에 일어났다.
-
-		// check하고 setting하는 작업이 원자적으로 처리되어야한다.
-		// => Compare And Swap(CAS)
-
-		bool expected = false; // flag의 예상값은 false
-		bool desired = true; // flag가 true였으면 좋겠다.
-
-		// compare_exchange_strong 의사코드
-		//if (flag == expected) 
-		//{
-		//	expected = flag;
-		//	flag = desired;
-		//	return true;
-		//}
-		//else // flag가 desired와 같다.
-		//{
-		//	expected = flag;
-		//	return false;
-		//}
-
-		while (flag.compare_exchange_strong(expected, desired) == false)
 		{
-			expected = false;
-
-			// Sleep Lock
-			this_thread::sleep_for(std::chrono::seconds(5));
+			unique_lock<std::mutex> lock(m);
+			q.push(100);
 		}
-	}
 
-	void unlock()
-	{
-		flag =  false;
-	}
+		::SetEvent(handle);
 
-private:
-	atomic<bool> flag = false;
-};
-
-
-int32 sum = 0;
-SpinLock myLock;
-
-void Add()
-{
-	for (int32 i = 0; i < 100'0000; i++)
-	{
-		// lock...flag -> false
-		std::lock_guard<SpinLock> lg(myLock); 
-		// lock...flag -> true
-
-		sum++;
+		this_thread::sleep_for(10000ms);
 	}
 }
 
-void Sub()
+void Consumer()
 {
-	for (int32 i = 0; i < 100'0000; i++)
+	while (true)
 	{
-		// lock...flag -> true
-		std::lock_guard<SpinLock> lg(myLock);
-		sum--;
+		::WaitForSingleObject(handle, INFINITE);
+
+		unique_lock<std::mutex> lock(m);
+
+		if (q.empty() == false)
+		{
+			int32 data = q.front();
+			q.pop();
+			cout << data << endl;
+		}
 	}
 }
 
 int main()
 {
-	std::thread t1(Add);
-	std::thread t2(Sub);
+						// 보안속성, 매뉴얼 리셋 관련, 초기상태
+						//			Manual : 수동의
+	handle = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+
+	std::thread t1(Producer);
+	std::thread t2(Consumer);
 
 	t1.join();
 	t2.join();
 
-	cout << sum << endl;
+	::CloseHandle(handle);
 
 	return 0;
 }
