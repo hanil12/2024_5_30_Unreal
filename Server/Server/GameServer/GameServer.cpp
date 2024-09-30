@@ -3,82 +3,93 @@
 #include "AccountManager.h"
 #include "UserManager.h"
 
-// Lock 구현
-// 1. Spin Lock(Busy Waiting)
-// 2. Sleep 기반 Lock
-// 3. Event 기반 Lock ...=> CV(conditon variable)
-//
-// 3... Linux에서도,,?
-// => cv(condition_variable)
-// ... 조건을 걸고 조건이 참일 때만 락을 걸어잠그고 실행
-// => 멀티쓰레드 환경에서 Sleep을 시키지 않으면 올바르게 동작하지 않을 수도 있다.
-// ... 동시성이 생길 때 Produce를 더 할 수도 있다.
-
-// 디자인 패턴
-// Produce And Consumer 패턴... Queue
-
-queue<int32> q;
-mutex m;
-//HANDLE handle;
-condition_variable cv;
-
-void Producer()
+int64 Caculate()
 {
-	while (true)
+	int64 sum = 0;
+
+	for (int i = 0; i < 100'0000; i++)
 	{
-		// P_A_C P...
-		// 1. Lock을 잡고 (lock(m))
-		// 2. 공유 변수 값을 수정 (q.push(100))
-		// 3. Lock을 풀고
-		// 4. 조건변수를 통해 다른 쓰레드에게 통지
-
-		{
-			unique_lock<std::mutex> lock(m); // 1
-
-			q.push(100); // 2
-		} // 3
-
-		// wait 중인 Thread가 있으면 딱 1개를 깨운다.
-		cv.notify_one(); // 4
+		sum++;
 	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		int temp = 0; // 동기로 실행됬을 때는 temp가 먼저 잡히고
+					  // 비동기로 실행됬을 때는 예측할 수 없다.
+	}
+
+	return sum;
 }
 
-void Consumer()
+void PromiseWorker(std::promise<string>&& promise)
 {
-	while (true)
-	{
-		// P_A_C : Consumer
-		// 1. Lock을 잡고
-		// 2. 조건확인
-		// - 만족했다 => 이어서 코드진행
-		// - 불만족 => 'Lock을 풀어주고' 대기상태
+	promise.set_value("Set Message");
+}
 
-		unique_lock<std::mutex> lock(m); // 1
-
-		cv.wait(lock, []()->bool { return q.empty() == false; }); // 2
-
-		{
-			int32 data = q.front();
-			q.pop();
-			//cout << data << endl;
-			cout << q.size() << endl;
-		}
-	}
+void TaskWorker(std::packaged_task<int64(void)>&& task)
+{
+	task();
 }
 
 int main()
 {
-						// 보안속성, 매뉴얼 리셋 관련, 초기상태
-						//			Manual : 수동의
-	//handle = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+	// 동기방식(synchronous)
+	int64 sum = Caculate();
 
-	std::thread t1(Producer);
-	std::thread t2(Consumer);
+	// future : 미래
+	{
+		// 비동기방식(asynchronous)
+		// std::launch::deferred => 지연해서 실행시켜주세요.
+		// std::launch::async => 쓰레드를 하나 따로 만들어서 실행
+		std::future<int64> future = std::async(std::launch::async, Caculate);
 
-	t1.join();
-	t2.join();
+		// TODO .... => future가 끝나던지 끝나지 않던지 간에 이 내용들이 실행
+		int t = 1;
 
-	//::CloseHandle(handle);
+		int64 sum = future.get(); // get : 함수가 끝날 떄 까지 기달려서 리턴값
+
+		cout << sum << endl;
+	}
+
+	// promise 
+	// 미래(future)에 결과물을 반환할 것이라는 약속(promise)을 해줘 -> 계약서
+	{
+		std::promise<string> promise;
+		std::future<string> future = promise.get_future(); // future에 반환하겠다는 약속
+
+		thread t(PromiseWorker, std::move(promise)); // promise한테 일 시키기
+
+		// future.wait(); // future가 잘 세팅되어있는지 확인... 끝날 때까지 대기
+		std::future_status status = future.wait_for(10ms); // 0.01초동안 대기하면서 future가 끝났는지 확인.
+		if (status == std::future_status::ready)
+		{
+			// TODO : future가 세팅이 잘되어있다. => 즉시실행 가능
+		}
+
+		string value = future.get(); // 비동기 방식으로 future에 값이 잘 세팅이 되어있는지 확인하고 반환.
+
+		cout << value << endl;
+
+		t.join();
+	}
+
+	// packaged_task : 일감을 만들어서 넘겨주는 방법
+	{
+		std::packaged_task<int64()> task(Caculate);
+		std::future<int64> future = task.get_future();
+
+		thread t(TaskWorker, std::move(task));
+
+		int64 sum = future.get();
+
+		cout << sum << endl;
+
+		t.join();
+	}
+
+	// Cacluate하는데 Event방식, SpinLock 방식처럼 Lock,thread만들고 하는 작업들을 최소화
+	// ... 작은 작업들을 비동기 방식으로 할 때 자주 쓴다.
+	// => future
 
 	return 0;
 }

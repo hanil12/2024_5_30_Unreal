@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+#include <future>
 
 #include <Windows.h>
 #include <iostream>
