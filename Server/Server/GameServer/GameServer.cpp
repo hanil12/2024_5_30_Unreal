@@ -3,44 +3,43 @@
 #include "AccountManager.h"
 #include "UserManager.h"
 
-atomic<int32> flag;
-int32 value;
+// TLS 영역이란..
+// 각 쓰레드마다 갖고 있는 고유 메모리 저장공간
 
-void Producer()
+// 거실에 일감이 있다.
+// -> 거실에 있는 일감을 4명이서 분배해서 일을 하고 싶다.
+// -> 4명이서 거실에 다 같이 일을 하려고 한다
+// -> 일감을 조금씩 떼어서 각자 자기방에 들어가서 일을 해놓고
+//    다시 거실에 갖다놓는다면?
+
+// TLS (Thread Local Storage)
+
+thread_local int32 L_threadId; // TLS 영역
+
+void MySetThreadId(int32 id)
 {
-	value = 10;
+	L_threadId = id;
 
-	flag.store(1, memory_order_release); // seq_cst ... 이 위로 모든 값들이 보장
-}
-
-void Consumer()
-{
-	while (flag.load(memory_order_acquire) != 1)
+	while (true)
 	{
-
-	};
-
-	cout << value << endl;
+		cout << "Hi Im thread : " << L_threadId << endl;
+		this_thread::sleep_for(1000ms);
+	}
 }
 
 int main()
 {
-	flag.store(0);
-	value = 0;
+	vector<thread> threads;
 
-	thread t1(Producer);
-	thread t2(Consumer);
+	for (int i = 0; i < 10; i++)
+	{
+		threads.push_back(thread(MySetThreadId,(i + 1)));
+	}
 
-	t1.join();
-	t2.join();
-
-	//Memory 정책
-	// 1. seq_cst (sequential consistency) // 순서적 일관성 => 매우 엄격
-	// - 코드 재배치X, 가시성 O
-	// 
-	// 2. acquire - release => 중도
-	// 3. relaxed => 컴파일러 최적화 여지가 많다.
-
+	for (auto& t : threads)
+	{
+		t.join();
+	}
 
 	return 0;
 }
