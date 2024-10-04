@@ -3,72 +3,47 @@
 #include "AccountManager.h"
 #include "UserManager.h"
 
-// CPU PipeLine
-int32 x;
-int32 y;
-int32 result1;
-int32 result2;
+// 메모리 모델
+// 1. 여러 쓰레드가 동일한 메모리(공용 변수)에 동시에 접근, 쓰기(write)할 때 생기는 문제들 파악
+// 2. 이 때 경합조건(Race Condition)
+// 3. Race Condition을 어떻게 막을 것이냐
+// ... Undefined Behavior(정의되지 않은 행동)
+// => atomic
+// => Lock(mutex) ,,, Mutual Exclusion(상호 베타)
 
-volatile bool ready;
+// 우리의 메모리 정책
+// 1. atomic을 이용해서 코드 재배치를 막고, 가시성을 지킨다.
 
-// 1. 실제 메모리에 정말 x,y가 1이라고 되어있을까?
-// 코어 마다 cache가 있다.
-// 멀티쓰레드환경에서만 발생할 수 있는 문제
-// => 캐쉬를 통해서 메모리에 접근해서 값을 넣기 전에 동시에 실행됬다면?
+// atomic 연산에 한해, 모든 쓰레드가 동일 객체에 대해서 '동일한 수정 순서'를 관찰.
+// => 가시성
 
-// ---> 가시성 문제
-
-// 2. CPU 파이프라인
-// - Fetch			: 읽기
-// - Decode			: 해석
-// - Excute			: 실행
-// - Memory Access	: 메모리 접근
-// 일감을 병렬로 처리하기 위해서 큰 작업부터 실행한다.
-
-// ---> 코드 재배치
-
-void Thread_1()
-{
-	while(ready)
-	;
-
-	y = 1;
-	result1 = x; // x의 값을 가져와서 대입하는게 좀 더 시간이 걸리는 작업
-}
-
-void Thread_2()
-{
-	while(ready)
-	;
-
-	x = 1;
-	result2 = y;
-}
+// atomic... 메모리 정책
+// => 코드재배치
 
 int main()
 {
-	int32 count = 0;
+	atomic<bool> flag = false;
+	
+	// atomic 변수 flag에 값을 저장 => 쓰기
+	flag.store(true, memory_order::memory_order_seq_cst);
 
-	while (true)
+	// atomic 변수를 읽어오는 것 => 읽기
+	bool val = flag.load(memory_order::memory_order_seq_cst);
+
+	// prev에다 flag의 바꾸기 전 값을 넣고 , flag를 수정
 	{
-		ready = true;
-		count++;
-
-		x = y = result1 = result2 = 0;
-
-		thread t1(Thread_1);
-		thread t2(Thread_2);
-
-		ready = false;
-
-		t1.join();
-		t2.join();
-
-		if(result1 == 0 && result2 == 0)
-			break;
+		bool prev = flag.exchange(true);
 	}
 
-	cout << count << "번만에 탈출 성공!!!" << endl;
+	// 조건부 수정 : condition variable
+	// => cv라는 객체가 내 예상이 맞으면 바꿔주고, 아니면 말고
+	{
+		bool expected = false; // 내 예상은 이게 false일 것이다.
+		bool desired = true; // 내 예상이 맞으면 desired로 바꿔줘.
+
+		flag.compare_exchange_strong(expected, desired);
+		// flag.compare_exchange_weak(expected, desired); => while(true)
+	}
 
 	return 0;
 }
