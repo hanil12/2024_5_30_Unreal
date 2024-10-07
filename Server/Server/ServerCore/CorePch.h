@@ -15,7 +15,7 @@
 
 using namespace std;
 
-#include "LockBasedStack.h"
-#include "LockBasedQueue.h"
-
-void HelloWorld();
+// CORE
+#include "CoreMacro.h"
+#include "CoreTLS.h"
+#include "CoreGlobal.h"

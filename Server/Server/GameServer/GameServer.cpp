@@ -5,6 +5,10 @@
 
 // Lock based Stack
 // Lock based Queue
+#include "LockBasedQueue.h"
+#include "LockBasedStack.h"
+
+#include "ThreadManager.h"
 
 LockBasedStack<int32> s;
 LockBasedQueue<int32> q;
@@ -37,13 +41,13 @@ void Pop()
 
 int main()
 {
-	thread t1(Push);
-	thread t2(Pop);
-	thread t3(Pop);
+	CoreGlobal::Create();
 
-	t1.join();
-	t2.join();
-	t3.join();
+	CoreGlobal::Instance()->TM()->Launch(&Push);
+	CoreGlobal::Instance()->TM()->Launch(&Pop);
+	CoreGlobal::Instance()->TM()->Launch(&Pop);
+
+	CoreGlobal::Delete();
 
 	return 0;
 }
