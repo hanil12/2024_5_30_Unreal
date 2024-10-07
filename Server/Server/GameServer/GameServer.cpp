@@ -43,6 +43,8 @@ int main()
 {
 	CoreGlobal::Create();
 
+	// Read And Write Lock
+
 	CoreGlobal::Instance()->TM()->Launch(&Push);
 	CoreGlobal::Instance()->TM()->Launch(&Pop);
 	CoreGlobal::Instance()->TM()->Launch(&Pop);

@@ -155,6 +155,7 @@
     <ClInclude Include="CoreMacro.h" />
     <ClInclude Include="CorePch.h" />
     <ClInclude Include="CoreTLS.h" />
+    <ClInclude Include="Lock.h" />
     <ClInclude Include="LockBasedQueue.h" />
     <ClInclude Include="LockBasedStack.h" />
     <ClInclude Include="pch.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="CoreGlobal.cpp" />
     <ClCompile Include="CoreTLS.cpp" />
+    <ClCompile Include="Lock.cpp" />
     <ClCompile Include="LockBasedQueue.cpp" />
     <ClCompile Include="LockBasedStack.cpp" />
     <ClCompile Include="pch.cpp">
