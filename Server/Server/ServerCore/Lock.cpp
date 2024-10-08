@@ -53,7 +53,6 @@ void Lock::WriteLock()
 
 		this_thread::yield();
 	}
-
 }
 
 void Lock::WriteUnlock()
@@ -75,7 +74,7 @@ void Lock::ReadLock()
 	// 같은 Thread가 WriteLock을 재귀로 잡았을 때 통과
 	if (LThreadID == lockThreadID)
 	{
-		_writeCount++;
+		_lockFlag.fetch_add(1);
 		return;
 	}
 
