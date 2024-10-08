@@ -9,33 +9,57 @@
 #include "LockBasedStack.h"
 
 #include "ThreadManager.h"
+#include "Lock.h"
 
-LockBasedStack<int32> s;
-LockBasedQueue<int32> q;
+class TestJob
+{
+	USE_LOCK;
 
-void Push()
+public:
+	int TestRead()
+	{
+		READ_LOCK;
+
+		if(q.empty() == false)
+			return q.front();
+	}
+
+	void TestPush()
+	{
+		WRITE_LOCK;
+
+		q.push(rand() % 100);
+	}
+
+	void TestPop()
+	{
+		WRITE_LOCK;
+
+		if(q.empty() == false)
+			q.pop();
+	}
+
+private:
+	queue<int> q;
+};
+
+TestJob GJob;
+void ThreadRead()
 {
 	while (true)
 	{
-		int32 value = rand() % 100;
-		q.Push(value);
-
-		this_thread::sleep_for(100ms);
+		int num = GJob.TestRead();
+		cout << num << endl;
 	}
 }
 
-void Pop()
+void ThreadWrite()
 {
 	while (true)
 	{
-		int32 data = 0;
-		
-		//s.WaitPop(data);
-
-		if (q.TryPop(data))
-		{
-			cout << data << endl;
-		}
+		GJob.TestPush();
+		this_thread::sleep_for(100ms);
+		GJob.TestPop();
 	}
 }
 
@@ -43,11 +67,11 @@ int main()
 {
 	CoreGlobal::Create();
 
-	// Read And Write Lock
+	for(int i=0; i < 2; i++)
+		CoreGlobal::Instance()->TM()->Launch(ThreadWrite);
 
-	CoreGlobal::Instance()->TM()->Launch(&Push);
-	CoreGlobal::Instance()->TM()->Launch(&Pop);
-	CoreGlobal::Instance()->TM()->Launch(&Pop);
+	for (int i = 0; i < 5; i++)
+		CoreGlobal::Instance()->TM()->Launch(ThreadRead);
 
 	CoreGlobal::Delete();
 
