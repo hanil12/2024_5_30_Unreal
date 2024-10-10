@@ -6,6 +6,7 @@ struct User
 
 class UserManager
 {
+	USE_LOCK;
 private:
 	UserManager() {}
 	~UserManager() {}
@@ -17,7 +18,7 @@ public:
 
 	User* GetUser(int32 id)
 	{
-		std::lock_guard<std::mutex> lg(_mutex);
+		WRITE_LOCK;
 
 		// userInfo 정보 추출
 
@@ -27,7 +28,6 @@ public:
 	void Save();
 
 private:
-	std::mutex _mutex;
 	static UserManager* _instance;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 class ThreadManager;
+class DeadLockProfiler;
 
 class CoreGlobal
 {
@@ -32,10 +33,12 @@ public:
 	}
 
 	ThreadManager* TM() { return _threadManager; }
+	DeadLockProfiler* DLP() { return _deadLockProfiler; }
 
 private:
 	static CoreGlobal* _instance;
 
 	ThreadManager* _threadManager;
+	DeadLockProfiler* _deadLockProfiler;
 };
 

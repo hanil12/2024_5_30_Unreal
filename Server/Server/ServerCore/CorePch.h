@@ -16,6 +16,9 @@
 using namespace std;
 
 // CORE
-#include "CoreMacro.h"
 #include "CoreTLS.h"
 #include "CoreGlobal.h"
+#include "CoreMacro.h"
+
+// Multy Thread
+#include "Lock.h"
