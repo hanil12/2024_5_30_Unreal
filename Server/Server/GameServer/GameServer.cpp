@@ -5,36 +5,61 @@
 
 #include "ThreadManager.h"
 #include "Lock.h"
+#include "RefCounting.h"
 
-void Login()
-{
-	while(true)
-		AccountManager::GetInstance()->Login();
-}
 
-void Save()
+class Player : public RefCountable
 {
-	while(true)
-		UserManager::GetInstance()->Save();
-}
+public:
+	void Attack()
+	{
+		if (_target != nullptr)
+		{
+			_target->_hp -= _atk;
+		}
+	}
+
+	bool IsDead()
+	{
+		return _hp <= 0;
+	}
+
+public:
+	Player* _target;
+
+	int _hp;
+	int _atk;
+};
 
 int main()
 {
 	CoreGlobal::Create();
 
-	AccountManager::Create();
-	UserManager::Create();
+	Player* p1 = new Player();
+	p1->_hp = 10000;
+	p1->_atk = 15;
 
+	Player* p2 = new Player();
+	p2->_hp = 20000;
+	p2->_atk = 15;
+	p2->_target = p1;
+	p1->AddRef();
 
-	// DeadLock
-	TM_M->Launch(Login);
-	TM_M->Launch(Save);
+	TSharedPtr<Player> p3 = TSharedPtr<Player>(new Player());
 
-	TM_M->Join();
+	while (true)
+	{
+		if (p1 != nullptr)
+		{
+			p2->Attack();
 
-
-	AccountManager::Delete();
-	UserManager::Delete();
+			if (p1->IsDead())
+			{
+				p1->ReleaseRef(); // t1 t2
+				break;
+			}
+		}
+	}
 
 	CoreGlobal::Delete();
 
