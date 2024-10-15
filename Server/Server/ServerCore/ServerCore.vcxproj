@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Allocator.h" />
     <ClInclude Include="CoreGlobal.h" />
     <ClInclude Include="CoreMacro.h" />
     <ClInclude Include="CorePch.h" />
@@ -159,18 +160,21 @@
     <ClInclude Include="Lock.h" />
     <ClInclude Include="LockBasedQueue.h" />
     <ClInclude Include="LockBasedStack.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RefCounting.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Allocator.cpp" />
     <ClCompile Include="CoreGlobal.cpp" />
     <ClCompile Include="CoreTLS.cpp" />
     <ClCompile Include="DeadLockProfiler.cpp" />
     <ClCompile Include="Lock.cpp" />
     <ClCompile Include="LockBasedQueue.cpp" />
     <ClCompile Include="LockBasedStack.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
