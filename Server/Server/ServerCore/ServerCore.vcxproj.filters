@@ -60,6 +60,9 @@
     <ClInclude Include="MyContainer.h">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryPool.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LockBasedStack.cpp">
@@ -93,6 +96,9 @@
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="Memory.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryPool.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
   </ItemGroup>

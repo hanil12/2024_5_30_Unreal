@@ -161,6 +161,7 @@
     <ClInclude Include="LockBasedQueue.h" />
     <ClInclude Include="LockBasedStack.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="MemoryPool.h" />
     <ClInclude Include="MyContainer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RefCounting.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="LockBasedQueue.cpp" />
     <ClCompile Include="LockBasedStack.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="MemoryPool.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -53,9 +53,18 @@ int main()
 
 	Vector<Knight*> t;
 
+	MemoryPool temp(100);
+
+	MemoryHeader* header = temp.Pop();
+	Knight* k = reinterpret_cast<Knight*>(MemoryHeader::AttachHeader(header, sizeof(Knight)));
+
+	k->_hp = 0;
+	k->_atk= 1;
+	k->_stamina = 2;
+
 	for (int i = 0; i < 10; i++)
 	{
-		t.push_back(xnew<Knight>(Knight()));
+		t.push_back(xnew<Knight>());
 	}
 
 	for (auto k : t)
