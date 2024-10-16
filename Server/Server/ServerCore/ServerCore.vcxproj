@@ -161,6 +161,7 @@
     <ClInclude Include="LockBasedQueue.h" />
     <ClInclude Include="LockBasedStack.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="MyContainer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RefCounting.h" />
     <ClInclude Include="ThreadManager.h" />
