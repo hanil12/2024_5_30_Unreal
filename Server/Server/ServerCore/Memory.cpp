@@ -22,6 +22,8 @@ Memory::Memory()
 	// 8개의 128바이트짜리 메모리풀 만들기
 	for (size = 1024; size <= 2048; size += 128)
 	{
+		if(size == 1024) continue;
+
 		MemoryPool* pool = new MemoryPool(size);
 		_pools.push_back(pool);
 
@@ -35,6 +37,8 @@ Memory::Memory()
 	// 8개의 256바이트짜리 메모리풀 만들기
 	for (size = 2048; size <= 4096; size += 256)
 	{
+		if (size == 2048) continue;
+
 		MemoryPool* pool = new MemoryPool(size);
 		_pools.push_back(pool);
 
@@ -88,5 +92,9 @@ void Memory::Release(void* ptr)
 	{
 		// 메모리풀에 반납
 		_poolTable[allocSize]->Push(head);
+		// 32바이트짜리 메모리 풀을 찾고 싶다.
+		// _poolTable[32]
+		// 1000바이트짜리 메모리 풀 찾기
+		// _poolTable[1000]
 	}
 }

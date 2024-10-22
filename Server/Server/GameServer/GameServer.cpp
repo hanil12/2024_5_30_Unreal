@@ -24,7 +24,7 @@ public:
 		cout << "타입변환 생성자 호출" << endl;
 	}
 
-	~Player()
+	virtual ~Player()
 	{
 		cout << "소멸자 호출" << endl;
 	}
@@ -51,7 +51,23 @@ int main()
 {
 	CoreGlobal::Create();
 
+	for (int32 i = 0; i < 5; i++)
+	{
+		TM_M->Launch([]()-> void 
+		{
+			while (true)
+			{
+				Vector<Knight> v(10);
 
+				Map<int32, Knight> m;
+				m[1] = Knight();
+
+				this_thread::sleep_for(500ms);
+			}
+		});
+	}
+
+	TM_M->Join();
 
 	CoreGlobal::Delete();
 
