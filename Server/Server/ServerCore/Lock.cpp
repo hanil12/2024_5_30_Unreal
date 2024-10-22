@@ -5,7 +5,7 @@
 void Lock::WriteLock(const char* name)
 {
 #if _DEBUG
-	CoreGlobal::Instance()->DLP()->PushLock(name);
+	CoreGlobal::Instance()->GetDeadLockProfiler()->PushLock(name);
 #endif
 	
 
@@ -42,7 +42,7 @@ void Lock::WriteLock(const char* name)
 void Lock::WriteUnlock(const char* name)
 {
 #if _DEBUG
-	CoreGlobal::Instance()->DLP()->PopLock(name);
+	CoreGlobal::Instance()->GetDeadLockProfiler()->PopLock(name);
 #endif
 
 	if((_lockFlag.load() & READ_COUNT_MASK) != 0)
@@ -56,7 +56,7 @@ void Lock::WriteUnlock(const char* name)
 void Lock::ReadLock(const char* name)
 {
 #if _DEBUG
-	CoreGlobal::Instance()->DLP()->PushLock(name);
+	CoreGlobal::Instance()->GetDeadLockProfiler()->PushLock(name);
 #endif
 	const uint32 lockThreadID = (_lockFlag & WRITE_THREAD_MASK) >> 16;
 
@@ -86,7 +86,7 @@ void Lock::ReadLock(const char* name)
 void Lock::ReadUnlock(const char* name)
 {
 #if _DEBUG
-	CoreGlobal::Instance()->DLP()->PopLock(name);
+	CoreGlobal::Instance()->GetDeadLockProfiler()->PopLock(name);
 #endif
 
 	if((_lockFlag.fetch_sub(1) & READ_COUNT_MASK) == 0)

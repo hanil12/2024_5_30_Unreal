@@ -2,6 +2,7 @@
 
 class ThreadManager;
 class DeadLockProfiler;
+class Memory;
 
 class CoreGlobal
 {
@@ -32,13 +33,15 @@ public:
 		return nullptr;
 	}
 
-	ThreadManager* TM() { return _threadManager; }
-	DeadLockProfiler* DLP() { return _deadLockProfiler; }
+	ThreadManager* GetThreadManager() { return _threadManager; }
+	DeadLockProfiler* GetDeadLockProfiler() { return _deadLockProfiler; }
+	Memory* GetMemory() { return _memory; }
 
 private:
 	static CoreGlobal* _instance;
 
-	ThreadManager* _threadManager;
-	DeadLockProfiler* _deadLockProfiler;
+	ThreadManager*			_threadManager;
+	DeadLockProfiler*		_deadLockProfiler;
+	Memory*					_memory;
 };
 
