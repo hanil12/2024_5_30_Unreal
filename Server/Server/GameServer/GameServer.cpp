@@ -12,13 +12,20 @@ int main()
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
-	SOCKET serverSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-	if (serverSocket == INVALID_SOCKET)
-	{
-		int32 errCode = ::WSAGetLastError();
-		cout << "Socket ErroCode: " << errCode << endl;
+	// 블로킹 소켓
+	// 블로킹 함수들
+	// accept -> 접속한 클라가 있을 때
+	// connect -> 서버에 접속이 성공했을 때
+	// send -> sendBuff에 요청한 데이터를 복사했을 때
+	// recv -> recvBuff에 도착한 데이터가 있고, 이를 성공적으로 복사했을 때
+
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if(listenSocket == INVALID_SOCKET)
 		return 0;
-	}
+
+	u_long on = 1;
+	if(::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET) // 논블로킹 소켓 만드는 함수
+		return 0;
 
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
@@ -26,66 +33,76 @@ int main()
 	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	serverAddr.sin_port = ::htons(7777);
 
-	// Socket level
-	// 옵션을 해석, 처리하는 주체
-	// 소켓 코드-> SOL_SOCKET
-	// IPv4 -> IPPROTO_IP
-	// TCP -> IPPROTO_TCP
+	// listenSocket Setting
+	if(::bind(listenSocket, (sockaddr*)(&serverAddr), sizeof(serverAddr)) == SOCKET_ERROR)
+		return 0;
 
-	// Socket 옵션
-	// SO_KEEPALIVE => 주기적으로 연결이 끊겼는지 확인하는 옵션
-	bool enable = true;
-	::setsockopt(serverSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)(&enable), sizeof(enable));
+	if(::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
+		return 0;
 
-	// 소켓 만들기
-	// => 운영체제 ... Socket 번호
-	// => 운영체제 ... SendBuff, RecvBuff
+	cout << "Accept" << endl;
 
-	// 우리가 하던 거
-	// sendBuff를 stack이나 heap에 사용자정의로 만든다.
-	char arr[100] = "temp";
-	// send(serverSocket, arr, 100, nullptr); => 사용자가 만든 sendBuffer를 운영체제가 만들어놓은 sendBuffer에 복사
+	SOCKADDR_IN clientAddr;
+	int32 addrLen = sizeof(clientAddr);
 
-	// 소켓을 닫을려고함
-	// -> Send("~~")
-	// -> SendBuff에 복사
-	// -> Socket이 닫힘
-	LINGER linger;
-	linger.l_onoff = 1;
-	linger.l_linger = 5;
-	::setsockopt(serverSocket, SOL_SOCKET, SO_LINGER, (char*)(&linger), sizeof(linger));
-
-	// SendBuff의 크기 가져오기
-	int32 sendBuffSize;
-	int32 optionLen = sizeof(sendBuffSize);
-
-	::getsockopt(serverSocket, SOL_SOCKET, SO_SNDBUF, (char*)(&sendBuffSize), &optionLen);
-	cout <<"SendBuffer Size : " << sendBuffSize << endl;
-
-	// recvBuff의 크기 가져오기
-	int32 recvBuffSize;
-	optionLen = sizeof(recvBuffSize);
-
-	::getsockopt(serverSocket, SOL_SOCKET, SO_RCVBUF, (char*)(&recvBuffSize), &optionLen);
-	cout << "SendBuffer Size : " << recvBuffSize << endl;
-
-	// SO_REUSEADDR
-	// IP 주소 및 포트번호 재사용
+	while (true)
 	{
-		bool enable = true;
-		::setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (char*)(&enable), sizeof(enable));
+		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+		if (clientSocket == INVALID_SOCKET)
+		{
+			// 넌블로킹 함수의 예외처리
+			if(::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+
+			// Error를 잡는 코드
+			// => 클라이언트가 뭔가 이상하다? ... 예외처리
+			break;
+		}
+
+		cout << "Client Conntected" << endl;
+
+		// Recv
+		while (true)
+		{
+			char recvBuffer[100]; // 복사할 곳
+			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+
+			if (recvLen == SOCKET_ERROR)
+			{
+				if(::WSAGetLastError() == WSAEWOULDBLOCK)
+					continue;
+
+				// Error
+				break;
+			}
+			else if (recvLen == 0)
+			{
+				// 연결 끊김
+				break;
+			}
+
+			// 송신 성공
+			cout << "Recv Data Len = " << recvLen << endl;
+
+			// Send
+			while (true)
+			{
+				char sendBuff[100] = "Im Server!!";
+				if (::send(clientSocket, sendBuff, sizeof(sendBuff), 0) == SOCKET_ERROR)
+				{
+					if(::WSAGetLastError() == WSAEWOULDBLOCK)
+						continue;
+
+					break;
+				}
+
+				cout << "Send Data Succeed Len = " << sizeof(sendBuff) << endl;
+				break;
+			}
+		}
 	}
 
-	// 네이글 알고리즘
-	// 작은 패킷들을 한번에 모아서 보내는 알고리즘
-	// 장점 : 작은 패킷이 불필요하게 많이 생성되는 일을 방지
-	// 단점 : 반응 시간 손해
-	// => 네이글 알고리즘이 처리하기 전에 프로그래머(우리)가 알아서 패킷 설계를 하고 보낼 거기 때문에
-	{
-		bool enable = false;
-		::setsockopt(serverSocket, IPPROTO_TCP, TCP_NODELAY, (char*)(&enable), sizeof(enable));
-	}
-
+	
 	::WSACleanup();
 
 	return 0;
