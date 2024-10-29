@@ -6,6 +6,17 @@
 
 #pragma comment(lib,"ws2_32.lib")
 
+const int32 BuffSize = 1000;
+
+struct Session
+{
+	SOCKET socket = INVALID_SOCKET;
+	char recvBuffer[BuffSize] = {};
+	char sendBuffer[100] = "Hello Im Server!!!";
+	int32 recvBytes = 0;
+	int32 sendBytes = 0;
+};
+
 int main()
 {
 	WSAData wsaData;
@@ -54,62 +65,96 @@ int main()
 
 	cout << "Accept" << endl;
 
-	SOCKADDR_IN clientAddr;
-	int32 addrLen = sizeof(clientAddr);
+	// Select 기반 Socket
+
+	vector<Session> sessions;
+	sessions.reserve(100);
+	
+	// 소켓 Set
+	fd_set reads;
+	fd_set writes;
 
 	while (true)
 	{
-		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-		if (clientSocket == INVALID_SOCKET)
-		{
-			// 넌블로킹 함수의 예외처리
-			if(::WSAGetLastError() == WSAEWOULDBLOCK)
-				continue;
+		// 소켓 셋 초기화
+		FD_ZERO(&reads);
+		FD_ZERO(&writes);
 
-			// Error를 잡는 코드
-			// => 클라이언트가 뭔가 이상하다? ... 예외처리
-			break;
+		// ListenSocket 등록
+		FD_SET(listenSocket, &reads);
+
+		// clients 소켓 등록
+		for (auto& session : sessions)
+		{
+			if(session.recvBytes <= session.sendBytes)
+				FD_SET(session.socket, &reads);
+			else
+				FD_SET(session.socket, &writes);
 		}
 
-		cout << "Client Conntected" << endl;
 
-		// Recv
-		while (true)
+		int32 retVal = ::select(0, &reads, &writes, nullptr, nullptr);
+		if(retVal == SOCKET_ERROR)
+			break;
+
+		// Listener 소켓 체크
+		if (FD_ISSET(listenSocket, &reads))
 		{
-			char recvBuffer[100]; // 복사할 곳
-			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-
-			if (recvLen == SOCKET_ERROR)
+			SOCKADDR_IN clientAddr;
+			int32 addrLen = sizeof(clientAddr);
+			SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+			if (clientSocket != INVALID_SOCKET)
 			{
-				if(::WSAGetLastError() == WSAEWOULDBLOCK)
-					continue;
-
-				// Error
-				break;
+				// 클라이언트 접속
+				cout << "Client Connected" << endl;
+				sessions.push_back(Session{clientSocket});
 			}
-			else if (recvLen == 0)
-			{
-				// 연결 끊김
-				break;
-			}
+		}
 
-			// 송신 성공
-			cout << "Recv Data Len = " << recvLen << endl;
-
-			// Send
-			while (true)
+		// 나머지 소켓 체크
+		for (Session& session : sessions)
+		{
+			// Read
+			if (FD_ISSET(session.socket, &reads))
 			{
-				char sendBuff[100] = "Im Server!!";
-				if (::send(clientSocket, sendBuff, sizeof(sendBuff), 0) == SOCKET_ERROR)
+				int32 recvLen = ::recv(session.socket, session.recvBuffer, BuffSize, 0);
+				if (recvLen <= 0)
 				{
-					if(::WSAGetLastError() == WSAEWOULDBLOCK)
-						continue;
-
-					break;
+					// TODO : session Disconnect
+					continue;
 				}
 
-				cout << "Send Data Succeed Len = " << sizeof(sendBuff) << endl;
-				break;
+				session.recvBytes = recvLen;
+				cout << "RecvSize : " << session.recvBytes << endl;
+			}
+
+			// 현재 상황 
+			// - client가 10개짜리 문자열을 보냈고, 10개를 받은 상황
+			// - 처음 recv 받고, 첫 send하기 시작
+			// recvBytes = 100
+			// sendBytes = 0
+
+			// write
+			if (FD_ISSET(session.socket, &writes))
+			{
+				// 블로킹 모드 -> 모든 데이터를 다 보낼 때까지 대기
+				// 논블로킹 모드-> 일부만 보낼 수 있음. (상대방의 recvBuff에 따라서)
+				int32 sendLen = ::send(session.socket, session.recvBuffer, session.recvBytes - session.sendBytes, 0); // 
+				// sendLen : 보냈을 때 그 길이... 30
+				if (sendLen == SOCKET_ERROR)
+				{
+					// TODO : DisConnect
+					continue;
+				}
+
+				session.sendBytes += sendLen;
+				cout << "SendSize : " << session.sendBytes << endl;
+
+				if (session.recvBytes == session.sendBytes)
+				{
+					session.sendBytes = 0;
+					session.recvBytes = 0;
+				}
 			}
 		}
 	}
