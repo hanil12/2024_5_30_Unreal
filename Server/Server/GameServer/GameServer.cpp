@@ -12,6 +12,18 @@ int main()
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
+	// SELECT 기반 소켓프로그래밍 
+	// 소켓 함수 호출이 성공할 시점을 미리 알 수 있다.
+	// ...문제
+	// recvBuff에 데이터가 없는데 recv해서 읽을려고한다. (X)
+	// sendBuff(커널)에 꽉 찼는데 send함수(유저레벨 sendBuffer -> 커널레벨 sendBuffer에 복사) 호출 (X)
+
+	// socket set
+	// 1) 읽기, 쓰기, 예외... 관찰 대상 등록
+	// 2) select(readSet, writeSet, exceptSet); => 관찰
+	// 3) 적어도 하나의 소켓이 준비되면 리턴
+	// 4) 남은 소켓 체크해서 진행
+
 	// 블로킹 소켓
 	// 블로킹 함수들
 	// accept -> 접속한 클라가 있을 때
