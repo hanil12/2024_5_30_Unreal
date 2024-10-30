@@ -59,7 +59,7 @@ int main()
 
 	cout << "Connected to Server" << endl;
 	
-	char sendBuffer[100] = "Hello World!";
+	char sendBuffer[100] = "Hello Server!";
 
 	// Send
 	while (true)
