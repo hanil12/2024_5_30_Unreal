@@ -15,6 +15,8 @@ struct Session
 	char sendBuffer[100] = "Hello Im Server!!!";
 	int32 recvBytes = 0;
 	int32 sendBytes = 0;
+
+	WSAOVERLAPPED overlapped = {}; // WSASend, WSARecv 했을 때 성공, 실패 사유 확인
 };
 
 int main()
@@ -65,132 +67,85 @@ int main()
 
 	cout << "Accept" << endl;
 
-	// 1. Select 기반 Socket IO(소켓 입출력)
-	// 2. WSAEventSelect 기반 Socket IO
+	// Overlapped Socket IO(비동기 + 논블로킹 소켓 입출력 방식)
+	// WSASend, WSARecv
+	// (AcceptEx, ConntectEx)
+	// 1. Overlapped 함수를 건다.
+	// 2. Overlapped 함수가 성공했는지 확인 
+	// 3. -> 성공했으면 결과 얻어서 처리
+	//    -> 실패했으면 사유 확인하고(Pending 상태면 그대로 다음 꺼 진행)
 
-	// WSAEventSelect 기반 => WSAEventSelect가 핵심
-	// (소켓 - 이벤트객체) 네트워크 이벤트를 (이벤트 객체로) 감지
-	
-	// 이벤트 객체 관련 함수
-	// 생성 : WSACreateEvent
-	// 삭제 : WSACloseEvent
-	// (여러 이벤트들의)신호상태감지 : WSAWaitforMultipleEvents
-	// 구체적인 네트워크 이벤트 확인 : WSAEnumNetworkEvents
-
-	// (소켓 - 이벤트객체) 연동
-	// WSAEventSelect(socket, event, netWorkEvents);
-	// - 주로쓰는 네트워크 이벤트
-	// -- FD_ACCPET => accept
-	// -- FD_READ => recv
-	// -- FD_WRITE => send
-	// -- FD_CLOSE : 상대가 접속 종료
-	// -- FD_CONNECT : 상대 접속 확인
-
-	vector<WSAEVENT> wsaEvents;
-	vector<Session> sessions;
-	sessions.reserve(100);
-	
-	WSAEVENT listenEvent = WSACreateEvent(); // Listen 이벤트객체 생성
-	wsaEvents.push_back(listenEvent);
-	sessions.push_back(Session{listenSocket}); // 0 인덱스로 연동
-	if(::WSAEventSelect(listenSocket, listenEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR) // 소켓, 이벤트객체 연동
-		return 0;
 
 	while (true)
 	{
-		// 여러 Event 객체들의 신호상태 감지
-		int32 index = ::WSAWaitForMultipleEvents(wsaEvents.size(), wsaEvents.data(), FALSE, WSA_INFINITE, FALSE);
-		if(index == WSA_WAIT_FAILED)
-			continue;
+		SOCKADDR_IN clientAddr;
+		int32 addrLen = sizeof(clientAddr);
 
-		index -= WSA_WAIT_EVENT_0; // 소켓과 이벤트 객체를 1:1 대응시킨 인덱스 찾기
-								   // sessions, wsaEvents
-
-		// 구체적인 네트워크 이벤트 알아내기
-		WSANETWORKEVENTS networkEvents;
-		if(::WSAEnumNetworkEvents(sessions[index].socket, wsaEvents[index], &networkEvents) == SOCKET_ERROR)
-			continue;
-
-		// Listener 소켓 체크
-		if (networkEvents.lNetworkEvents & FD_ACCEPT)
+		SOCKET clientSocket;
+		
+		// accept 준비
+		while (true)
 		{
-			SOCKADDR_IN clientAddr;
-			int32 addrLen = sizeof(clientAddr);
-			SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-			if (clientSocket != INVALID_SOCKET)
-			{
-				// 클라이언트 접속
-				cout << "Client Connected" << endl;
+			clientSocket = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+			if(clientSocket != INVALID_SOCKET)
+				break;
 
-				WSAEVENT clientEvent = ::WSACreateEvent();
-				sessions.push_back(Session{ clientSocket });
-				wsaEvents.push_back(clientEvent);
+			if(::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
 
-				if (::WSAEventSelect(clientSocket, clientEvent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR) // socket, eventObj 연동
-				{
-					return 0;
-				}
-			}
+			// 문제 있는 상황...
+
+			return 0;
 		}
 
-		// Client Socket 체크
-		if (networkEvents.lNetworkEvents & FD_READ || networkEvents.lNetworkEvents & FD_WRITE)
+		Session session = Session{clientSocket};
+		WSAEVENT wsaEvent = ::WSACreateEvent(); // WSASend or WSARecv 했을 때 완료된 상태를 체크
+		session.overlapped.hEvent = wsaEvent;
+
+		cout << "Client Connected!" << endl;
+
+		while (true)
 		{
-			// Error Check
-			if ((networkEvents.lNetworkEvents & FD_READ) && (networkEvents.iErrorCode[FD_READ_BIT] != 0))
-				continue;
+			WSABUF wsaBuf;
+			wsaBuf.buf = session.recvBuffer;
+			wsaBuf.len = BuffSize;
 
-			if ((networkEvents.lNetworkEvents & FD_WRITE) && (networkEvents.iErrorCode[FD_WRITE_BIT] != 0))
-				continue;
+			DWORD recvLen = 0;
+			DWORD flags = 0;
 
-			Session& session = sessions[index];
-
-			// Recv
-			if (session.recvBytes == 0)
+			// 비동기 WSARecv
+			if (::WSARecv(clientSocket, &wsaBuf, 1, &recvLen, &flags, &session.overlapped, nullptr) == SOCKET_ERROR)
 			{
-				int32 recvLen = ::recv(session.socket, session.recvBuffer, BuffSize,0);
-				if (recvLen == SOCKET_ERROR && ::WSAGetLastError() != WSAEWOULDBLOCK )
+				// WSARecv가 실패
+				if (::WSAGetLastError() == WSA_IO_PENDING)
 				{
-					// TODO : Disconnect 
-					continue;
+					// Pending : 보류하고 나중에 확인
+					::WSAWaitForMultipleEvents(1, &wsaEvent, TRUE, WSA_INFINITE, FALSE);
+					::WSAGetOverlappedResult(session.socket, &session.overlapped, &recvLen, FALSE, &flags);
 				}
-
-				if(recvLen < 0)
-					continue;
-
-				session.recvBytes = recvLen;
-				cout << "Recv Data Size = " << recvLen << endl;
+				else
+				{
+					// TODO : 문제가 있는 상황
+					break;
+				}
 			}
+
+			cout << "Data Recv Len = " << recvLen << endl;
 			
-			// Send
-			if (session.recvBytes > session.sendBytes)
+			for (int i = 0; i < recvLen; i++)
 			{
-				int32 sendLen = ::send(session.socket, &session.recvBuffer[session.sendBytes], session.recvBytes - session.sendBytes, 0);
-				if (sendLen == SOCKET_ERROR && WSAGetLastError() != WSAEWOULDBLOCK)
-				{
-					// TODO : Disconnect
-					continue;
-				}
+				if(session.recvBuffer[i] == 0) break;
 
-				session.sendBytes += sendLen;
-				if (session.recvBytes == session.sendBytes)
-				{
-					session.recvBytes = 0;
-					session.sendBytes = 0;
-				}
-
-				cout << "Send Data = " << sendLen << endl;
+				cout << session.recvBuffer[i];
 			}
+
+			cout << endl;
 		}
 
-		if (networkEvents.lNetworkEvents & FD_CLOSE)
-		{
-			// TODO : Remove Socket
-			// Disconnect
-		}
+		::closesocket(session.socket);
+		::WSACloseEvent(wsaEvent);
 	}
 
-	
 	::WSACleanup();
 
 	return 0;

@@ -75,23 +75,23 @@ int main()
 
 		cout << "Send Data! Len = " << sizeof(sendBuffer) << endl;
 
-		while (true)
-		{
-			char recvBuffer[1000];
+		//while (true)
+		//{
+		//	char recvBuffer[1000];
 
-			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-			if (recvLen == SOCKET_ERROR)
-			{
-				if(::WSAGetLastError() == WSAEWOULDBLOCK)
-					continue;
+		//	int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+		//	if (recvLen == SOCKET_ERROR)
+		//	{
+		//		if(::WSAGetLastError() == WSAEWOULDBLOCK)
+		//			continue;
 
-				// Error
-				break;
-			}
+		//		// Error
+		//		break;
+		//	}
 
-			cout <<"Recv Data Len = " << recvLen << endl;
-			break;
-		}
+		//	cout <<"Recv Data Len = " << recvLen << endl;
+		//	break;
+		//}
 
 		this_thread::sleep_for(1s);
 	}
