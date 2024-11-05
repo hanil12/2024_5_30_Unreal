@@ -15,6 +15,8 @@ using namespace std;
 #include <ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 
+#include "SocketUtility.h"
+
 // CORE
 #include "CoreTLS.h"
 #include "CoreGlobal.h"
