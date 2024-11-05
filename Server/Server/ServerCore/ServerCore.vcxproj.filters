@@ -13,6 +13,9 @@
     <Filter Include="Memory">
       <UniqueIdentifier>{312ff8f6-56fb-4a7c-9bce-c51ec2cdbdc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{21048e0e-14fd-46f3-9137-476c01de77ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LockBasedStack.h">
@@ -63,6 +66,12 @@
     <ClInclude Include="MemoryPool.h">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="SocketUtility.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetAddress.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LockBasedStack.cpp">
@@ -100,6 +109,12 @@
     </ClCompile>
     <ClCompile Include="MemoryPool.cpp">
       <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketUtility.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="NetAddress.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

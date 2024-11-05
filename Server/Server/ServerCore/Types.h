@@ -20,3 +20,9 @@ using Mutex = std::mutex;
 using ConditionV = std::condition_variable;
 using UniqueLock = std::unique_lock<Mutex>;
 using LockGuard = std::lock_guard<Mutex>;
+
+#define sizeof16(val)		static_cast<int16>(sizeof(val))
+#define sizeof32(val)		static_cast<int32>(sizeof(val))
+#define sizeof64(val)		static_cast<int64>(sizeof(val))
+#define len16(arr)			static_cast<int16>(sizeof(arr)/sizeof(arr[0]))
+#define len32(arr)			static_cast<int32>(sizeof(arr)/sizeof(arr[0]))
