@@ -73,6 +73,10 @@ void WorkerThreadMain(HANDLE iocpHandle)
 
 int main()
 {
+	// IOCP
+	// 1. CP(Completion Port)에 Socket을 등록 => Completion Port에서 Socket을 관찰
+	// 2. Dispatch : CallBack를 호출해서 해당 작업을 진행
+
 	CoreGlobal::Create();
 
 	SocketUtility::Init();

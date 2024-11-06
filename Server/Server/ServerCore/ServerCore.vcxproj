@@ -157,6 +157,8 @@
     <ClInclude Include="CorePch.h" />
     <ClInclude Include="CoreTLS.h" />
     <ClInclude Include="DeadLockProfiler.h" />
+    <ClInclude Include="IocpCore.h" />
+    <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="LockBasedQueue.h" />
     <ClInclude Include="LockBasedStack.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="NetAddress.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RefCounting.h" />
+    <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtility.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="Types.h" />
@@ -175,6 +178,8 @@
     <ClCompile Include="CoreGlobal.cpp" />
     <ClCompile Include="CoreTLS.cpp" />
     <ClCompile Include="DeadLockProfiler.cpp" />
+    <ClCompile Include="IocpCore.cpp" />
+    <ClCompile Include="IocpEvent.cpp" />
     <ClCompile Include="Lock.cpp" />
     <ClCompile Include="LockBasedQueue.cpp" />
     <ClCompile Include="LockBasedStack.cpp" />
@@ -188,6 +193,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RefCounting.cpp" />
+    <ClCompile Include="Session.cpp" />
     <ClCompile Include="SocketUtility.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
   </ItemGroup>
