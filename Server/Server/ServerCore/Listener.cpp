@@ -13,31 +13,35 @@ Listener::~Listener()
 
 		xdelete(acceptEvent);
 	}
+
+	_service = nullptr;
 }
 
-bool Listener::StartAccept(NetAddress netAddress)
+bool Listener::StartAccept(shared_ptr<ServerService> service)
 {
 	_socket = SocketUtility::CreateSocket();
-	if(_socket == INVALID_SOCKET) return false;
+	if (_socket == INVALID_SOCKET) return false;
 
 	// Listener를 Completion Port에 등록
 	shared_ptr<IocpObject> temp = shared_from_this();
-	if(CoreGlobal::Instance()->GetIocpCore()->Register(shared_from_this()) == false)
+	if (service->GetIocpCore()->Register(shared_from_this()) == false)
 		return false;
 
-	if(SocketUtility::SetReuseAddress(_socket, true) == false)
+	if (SocketUtility::SetReuseAddress(_socket, true) == false)
 		return false;
 
-	if(SocketUtility::SetLinger(_socket,0,0) == false)
+	if (SocketUtility::SetLinger(_socket, 0, 0) == false)
 		return false;
 
-	if(SocketUtility::Bind(_socket, netAddress) == false)
+	if (SocketUtility::Bind(_socket, service->GetNetAddress()) == false)
 		return false;
 
-	if(SocketUtility::Listen(_socket) == false)
+	if (SocketUtility::Listen(_socket) == false)
 		return false;
 
-	const int32 acceptCount = 1;
+	_service = service;
+
+	const int32 acceptCount = service->GetMaxSessionCount();
 	for (int32 i = 0; i < acceptCount; i++)
 	{
 		AcceptEvent* acceptEvent = xnew<AcceptEvent>();

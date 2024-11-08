@@ -16,7 +16,6 @@ CoreGlobal::CoreGlobal()
 	_memory = new Memory();
 
 	SocketUtility::Init();
-	_iocpCore = new IocpCore();
 }
 
 CoreGlobal::~CoreGlobal()
@@ -25,6 +24,5 @@ CoreGlobal::~CoreGlobal()
 	delete _threadManager;
 	delete _memory;
 
-	delete _iocpCore;
 	SocketUtility::Clear();
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 // IocpObject를 상속받아서 Socket
-class IocpObject : public enable_shared_from_this<IocpObject>
+class IocpObject : public enable_shared_from_this<IocpObject> 
 {
 public:
 	virtual HANDLE GetHandle() abstract;

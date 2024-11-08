@@ -1,6 +1,8 @@
 #pragma once
 #include "IocpCore.h"
 #include "NetAddress.h"
+#include "Service.h"
+#include "IocpEvent.h"
 
 class AcceptEvent;
 // ¿ªÇÒ :
@@ -12,7 +14,7 @@ public:
 	Listener() = default;
 	~Listener();
 
-	bool StartAccept(NetAddress netAddress);
+	bool StartAccept(shared_ptr<class ServerService> service);
 	void CloseSocket();
 
 	virtual HANDLE GetHandle() override;
@@ -24,5 +26,6 @@ public:
 protected:
 	SOCKET _socket = INVALID_SOCKET;
 	Vector<AcceptEvent*> _acceptEvents;
+	shared_ptr<class ServerService> _service;
 };
 

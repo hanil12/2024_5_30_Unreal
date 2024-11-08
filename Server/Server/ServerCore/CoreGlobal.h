@@ -37,7 +37,6 @@ public:
 	ThreadManager* GetThreadManager() { return _threadManager; }
 	DeadLockProfiler* GetDeadLockProfiler() { return _deadLockProfiler; }
 	Memory* GetMemory() { return _memory; }
-	IocpCore* GetIocpCore() { return _iocpCore; }
 
 private:
 	static CoreGlobal* _instance;
@@ -45,6 +44,5 @@ private:
 	ThreadManager*			_threadManager;
 	DeadLockProfiler*		_deadLockProfiler;
 	Memory*					_memory;
-	IocpCore*				_iocpCore;
 };
 
