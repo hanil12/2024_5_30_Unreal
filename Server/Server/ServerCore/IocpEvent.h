@@ -35,16 +35,16 @@ public:
 // ------------------------
 //		 Accept
 // ------------------------
-class AccepctEvent : public IocpEvent
+class AcceptEvent : public IocpEvent
 {
 public:
-	AccepctEvent() : IocpEvent(EventType::ACCEPT) {}
+	AcceptEvent() : IocpEvent(EventType::ACCEPT) {}
 
 	void SetSession(Session* session) { _session = session; }
 	Session* GetSession() { return _session; }
 
 private:
-	Session* _session;
+	Session* _session = nullptr;
 };
 
 // ------------------------

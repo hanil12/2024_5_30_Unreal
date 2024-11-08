@@ -81,6 +81,9 @@
     <ClInclude Include="Session.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LockBasedStack.cpp">
@@ -132,6 +135,9 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="Session.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
       <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>

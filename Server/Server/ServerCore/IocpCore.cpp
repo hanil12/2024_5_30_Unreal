@@ -22,7 +22,7 @@ bool IocpCore::Register(IocpObject* iocpObj)
 {
 	// * 현재상황 : iocpObj가 Session임.
 
-	return ::CreateIoCompletionPort(iocpObj->GetHandle(), _iocpHandle, reinterpret_cast<ULONG_PTR>(&iocpObj), 0);
+	return ::CreateIoCompletionPort(iocpObj->GetHandle(), _iocpHandle, reinterpret_cast<ULONG_PTR>(iocpObj), 0);
 }
 
 bool IocpCore::Dispatch(uint32 timeOutMs)

@@ -6,6 +6,8 @@
 
 #pragma comment(lib,"ws2_32.lib")
 
+#include "Listener.h"
+
 const int32 BuffSize = 1000;
 
 struct Session
@@ -79,27 +81,24 @@ int main()
 
 	CoreGlobal::Create();
 
-	SocketUtility::Init();
+	Listener listener;
+	NetAddress netAddress(L"127.0.0.1", 7777);
+	listener.StartAccept(netAddress);
 
-	SOCKET listensocket = SocketUtility::CreateSocket();
-	ASSERT_CRASH(listensocket != INVALID_SOCKET);
-
-	SocketUtility::BindAnyAddress(listensocket, 7777);
-
-	SocketUtility::Listen(listensocket);
-
-	SOCKET clientSocket = ::accept(listensocket,nullptr,nullptr);
-
-	cout << "Client Connect" << endl;
-
-	while (true)
+	for (int i = 0; i < 5; i++)
 	{
-
+		TM_M->Launch([=]()
+			{
+				while (true)
+				{
+					CoreGlobal::Instance()->GetIocpCore()->Dispatch();
+				}
+			});
 	}
+
 
 	TM_M->Join();
 
-	SocketUtility::Clear();
 	CoreGlobal::Delete();
 
 	return 0;
