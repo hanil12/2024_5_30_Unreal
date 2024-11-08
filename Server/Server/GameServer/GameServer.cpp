@@ -81,9 +81,9 @@ int main()
 
 	CoreGlobal::Create();
 
-	Listener listener;
+	shared_ptr<Listener> listener = MakeShared<Listener>();
 	NetAddress netAddress(L"127.0.0.1", 7777);
-	listener.StartAccept(netAddress);
+	listener->StartAccept(netAddress);
 
 	for (int i = 0; i < 5; i++)
 	{

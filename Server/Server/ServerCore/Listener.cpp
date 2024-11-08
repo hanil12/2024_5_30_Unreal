@@ -21,7 +21,8 @@ bool Listener::StartAccept(NetAddress netAddress)
 	if(_socket == INVALID_SOCKET) return false;
 
 	// Listener를 Completion Port에 등록
-	if(CoreGlobal::Instance()->GetIocpCore()->Register(this) == false)
+	shared_ptr<IocpObject> temp = shared_from_this();
+	if(CoreGlobal::Instance()->GetIocpCore()->Register(shared_from_this()) == false)
 		return false;
 
 	if(SocketUtility::SetReuseAddress(_socket, true) == false)
@@ -40,6 +41,7 @@ bool Listener::StartAccept(NetAddress netAddress)
 	for (int32 i = 0; i < acceptCount; i++)
 	{
 		AcceptEvent* acceptEvent = xnew<AcceptEvent>();
+		acceptEvent->SetOwner(shared_from_this());
 		_acceptEvents.push_back(acceptEvent);
 		RegisterAccept(acceptEvent);
 	}
@@ -66,7 +68,7 @@ void Listener::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-	Session* session = xnew<Session>();
+	shared_ptr<Session> session = MakeShared<Session>();
 
 	acceptEvent->Init();
 	acceptEvent->SetSession(session);
@@ -87,7 +89,7 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 
 void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 {
-	Session* session = acceptEvent->GetSession();
+	shared_ptr<Session> session = acceptEvent->GetSession();
 
 	if(false == SocketUtility::SetUpdateAcceptSocket(session->GetSocket(), _socket))
 	{

@@ -18,11 +18,16 @@ IocpCore::~IocpCore()
 // Completion Port 쓰던 이유:
 // - 멀티쓰레드에 적합하니까
 //  => 쓰레드마다 갖고있던 APC큐로 일을 처리하는게 아니라, Completion Port에 담아서 처리하기 때문.
-bool IocpCore::Register(IocpObject* iocpObj)
+bool IocpCore::Register(shared_ptr<IocpObject> iocpObj)
 {
 	// * 현재상황 : iocpObj가 Session임.
+	//                    or Listener
 
-	return ::CreateIoCompletionPort(iocpObj->GetHandle(), _iocpHandle, reinterpret_cast<ULONG_PTR>(iocpObj), 0);
+	// session을 Event에서 물고있도록...
+	// => iocpEvent에서 현재 내 세션을 멤버변수로 갖고있겠다.
+	// ==> 세션 refCount + 1
+	//    	 														  key
+	return ::CreateIoCompletionPort(iocpObj->GetHandle(), _iocpHandle, 0, 0);
 }
 
 bool IocpCore::Dispatch(uint32 timeOutMs)
@@ -30,17 +35,19 @@ bool IocpCore::Dispatch(uint32 timeOutMs)
 	// CompletionPort에 있는 함수들 실행
 
 	DWORD numOfBytes = 0;
-	IocpObject* iocpObject = nullptr;
+	ULONG_PTR key = 0;
+	shared_ptr<IocpObject> iocpObject = nullptr;
 	IocpEvent* iocpEvent = nullptr;
 
 	if(::GetQueuedCompletionStatus(
 			_iocpHandle,
 			&numOfBytes,
-			reinterpret_cast<PULONG_PTR>(&iocpObject),
+			&key, // key... 0
 			reinterpret_cast<LPOVERLAPPED*>(&iocpEvent),
 			timeOutMs
 		))
 	{
+		iocpObject = iocpEvent->GetOwner();
 		iocpObject->DisPatch(iocpEvent, numOfBytes);
 	}
 	else
@@ -53,6 +60,7 @@ bool IocpCore::Dispatch(uint32 timeOutMs)
 
 		default:
 			// TODO : 왜 안됬는지 코드분석
+			iocpObject = iocpEvent->GetOwner();
 			iocpObject->DisPatch(iocpEvent, numOfBytes);
 			break;
 		}
