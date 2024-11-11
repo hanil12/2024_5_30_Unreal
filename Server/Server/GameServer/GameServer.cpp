@@ -8,6 +8,20 @@
 
 #include "Service.h"
 
+class GameSession : public Session
+{
+public:
+	virtual int32 OnRecv(BYTE* buffer, int32 len)
+	{
+		char* str = reinterpret_cast<char*>(buffer);
+
+		cout << "Recv : " << str << endl;
+		//cout << ... << endl;
+		
+		return len;
+	}
+};
+
 int main()
 {
 	CoreGlobal::Create();
@@ -16,9 +30,11 @@ int main()
 	(
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
-		MakeShared<Session>,
+		MakeShared<GameSession>,
 		100
 	);
+
+	service->Start();
 
 	for (int i = 0; i < 5; i++)
 	{

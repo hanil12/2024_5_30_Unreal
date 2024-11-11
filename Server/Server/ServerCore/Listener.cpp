@@ -72,7 +72,7 @@ void Listener::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-	shared_ptr<Session> session = MakeShared<Session>();
+	shared_ptr<Session> session = _service->CreateSession();
 
 	acceptEvent->Init();
 	acceptEvent->SetSession(session);
@@ -117,15 +117,8 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 
 void Listener::OnAccept(shared_ptr<Session> session, IocpEvent* iocpEvent)
 {
-	// session
-	// - 손님
-	// -- 손님의 netAddress까지 굳.
 	session->SetNetAddress(NetAddress(session->GetAddress()));
+	session->ProcessConnect();
 
-	cout << "Client Connected" << endl;
-
-	// TODO : 손님 입장 했을 때, 제대로 다시 확인 혹은 환영인사
-
-	// 재등록
 	RegisterAccept(reinterpret_cast<AcceptEvent*>(iocpEvent));
 }

@@ -22,9 +22,21 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 	EventType eventType = iocpEvent->GetType();
 	switch (eventType)
 	{
-	case EventType::ACCEPT:
+	case EventType::CONNECT:
 	{
-		// TODO
+		ProcessConnect();
+		break;
+	}
+
+	case EventType::RECV:
+	{
+		ProcessRecv(numOfBytes);
+		break;
+	}
+
+	case EventType::SEND:
+	{
+		ProcessSend(numOfBytes);
 		break;
 	}
 
@@ -35,6 +47,16 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Session::DisConnect(const WCHAR* cause)
 {
+	if (_connected.exchange(false) == false) // _connected가 애초에 false
+	{
+		return;
+	}
+
+	wcout << "DisConnected : " << cause << endl;
+
+	// TODO : OnDisConnected 오버라이딩
+	SocketUtility::Close(_socket);
+	GetService()->ReleaseSession(GetSession()); // refCount --
 }
 
 void Session::RegisterConnect()
@@ -95,8 +117,7 @@ void Session::ProcessRecv(int32 numOfBytes)
 		return;
 	}
 
-	// TODO...
-	cout << "Recv Data Len : " << numOfBytes << endl;
+	OnRecv(reinterpret_cast<BYTE*>(_recvBuffer), numOfBytes);
 
 	// 재 수신 등록
 	RegisterRecv();

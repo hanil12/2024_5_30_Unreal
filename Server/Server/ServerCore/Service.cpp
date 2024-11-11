@@ -27,6 +27,7 @@ void Service::CloseService()
 shared_ptr<Session> Service::CreateSession()
 {
     shared_ptr<Session> session = _sessionFactory();
+    session->SetService(shared_from_this());
 
     if(_iocpCore->Register(session) == false)
         return nullptr;
