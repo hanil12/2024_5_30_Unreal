@@ -23,6 +23,8 @@ public:
 	void RegisterAccept(AcceptEvent* acceptEvent);
 	void ProcessAccept(AcceptEvent* acceptEvent);
 
+	void OnAccept(shared_ptr<Session> session, IocpEvent* iocpEvent);
+
 protected:
 	SOCKET _socket = INVALID_SOCKET;
 	Vector<AcceptEvent*> _acceptEvents;
