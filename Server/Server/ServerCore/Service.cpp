@@ -61,10 +61,18 @@ ClientService::~ClientService()
 
 bool ClientService::Start()
 {
-    if(CanStart() == false)
+    if (CanStart() == false)
         return false;
-    
-    // TODO 
+
+    const int32 sessionCount = GetMaxSessionCount();
+
+    for (int32 i = 0; i < sessionCount; i++)
+    {
+        shared_ptr<Session> session = CreateSession();
+        // TODO : Connect!!
+        session->Connect();
+    }
+
 
     return true;
 }
@@ -92,7 +100,7 @@ bool ServerService::Start()
     if(_listener->StartAccept(service) == false)
         return false;
 
-    return false;
+    return true;
 }
 
 void ServerService::CloseService()

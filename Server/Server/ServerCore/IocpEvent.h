@@ -49,6 +49,9 @@ public:
 	shared_ptr<Session> GetSession() { return _session; }
 
 private:
+	// Owner : Listner
+	
+	// Client
 	shared_ptr<Session> _session = nullptr;
 };
 
@@ -59,6 +62,8 @@ class RecvEvent : public IocpEvent
 {
 public:
 	RecvEvent() : IocpEvent(EventType::RECV) {}
+
+	// Owner : Client
 };
 
 // ------------------------
@@ -68,4 +73,6 @@ class SendEvent : public IocpEvent
 {
 public:
 	SendEvent() : IocpEvent(EventType::SEND) {}
+
+	// Owner : Client
 };

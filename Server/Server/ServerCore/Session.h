@@ -22,18 +22,21 @@ public:
 	virtual HANDLE GetHandle() override;
 	virtual void DisPatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 	bool IsConnected() { return _connected; }
-	shared_ptr<Session> GetSession() { return static_pointer_cast<Session>(shared_from_this()); }
+	shared_ptr<Session> GetSessionShared() { return static_pointer_cast<Session>(shared_from_this()); }
 
 	// 전송 관련
+	// - 외부(Client, Server)에서 쓸 함수
+	bool Connect();
+	void Send(BYTE* buffer, int32 len);
 	void DisConnect(const WCHAR* cause);
 
-	void RegisterConnect(); // 손님이 식탁에 앉기.
-	void RegisterRecv(); // 손님이 주는 메시지
-	void RegisterSend(); // 내가 손님한테 줄 메시지
+	bool RegisterConnect(); // 손님이 식탁에 앉기.
+	void RegisterRecv(); // 손님이 주는 메시지-> 커널의 RecvBuffer -> 유저영역에 Session::recvBuffer에 복사
+	void RegisterSend(SendEvent* event); // 내가 손님한테 줄 메시지
 
 	void ProcessConnect();
 	void ProcessRecv(int32 numOfBytes);
-	void ProcessSend(int32 numOfBytes);
+	void ProcessSend(SendEvent* event, int32 numOfBytes);
 
 	void HandleError(int32 errorCode);
 

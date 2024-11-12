@@ -11,6 +11,18 @@
 class GameSession : public Session
 {
 public:
+	GameSession()
+	{
+		string temp = "Hello Client, Im Server";
+		::memcpy(_sendBuffer, temp.data(), temp.size());
+	}
+	
+	virtual void OnConnected() override
+	{
+		cout << "클라이언트가 서버에 접속 성공!!!" << endl;
+		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
+	}
+	
 	virtual int32 OnRecv(BYTE* buffer, int32 len)
 	{
 		char* str = reinterpret_cast<char*>(buffer);
@@ -19,6 +31,16 @@ public:
 		//cout << ... << endl;
 		
 		return len;
+	}
+
+	virtual void OnSend(int32 len) override
+	{
+		cout << "Send 성공 : " << len << endl;
+	}
+
+	virtual void DisConnected() override
+	{
+		cout << "DisConnected" << endl;
 	}
 };
 

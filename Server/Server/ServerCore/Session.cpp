@@ -36,13 +36,31 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 	case EventType::SEND:
 	{
-		ProcessSend(numOfBytes);
+		ProcessSend(static_cast<SendEvent*>(iocpEvent),numOfBytes);
 		break;
 	}
 
 	default:
 		break;
 	}
+}
+
+bool Session::Connect()
+{
+	RegisterConnect();
+}
+
+void Session::Send(BYTE* buffer, int32 len)
+{
+	// TODO : Scatter Gathering
+
+	SendEvent* sendEvent = xnew<SendEvent>();
+	sendEvent->SetOwner(GetSessionShared());
+
+	::memcpy(_sendBuffer, buffer, len);
+
+	WRITE_LOCK;
+	RegisterSend(sendEvent);
 }
 
 void Session::DisConnect(const WCHAR* cause)
@@ -56,12 +74,12 @@ void Session::DisConnect(const WCHAR* cause)
 
 	// TODO : OnDisConnected 오버라이딩
 	SocketUtility::Close(_socket);
-	GetService()->ReleaseSession(GetSession()); // refCount --
+	GetService()->ReleaseSession(GetSessionShared()); // refCount --
 }
 
-void Session::RegisterConnect()
+bool Session::RegisterConnect()
 {
-	// TODO : 
+	// TODO : IOCP 기반 Connect 비동기, 멀티쓰레드 방식으로 Connect
 }
 
 void Session::RegisterRecv()
@@ -90,16 +108,33 @@ void Session::RegisterRecv()
 	}
 }
 
-void Session::RegisterSend()
+void Session::RegisterSend(SendEvent* event)
 {
-	// TODO
+	if(IsConnected() == false)
+		return;
+
+	WSABUF wsaBuf;
+	wsaBuf.buf = _sendBuffer;
+	wsaBuf.len = 1000; // TODO
+
+	DWORD numOfBytes = 0;
+	if (SOCKET_ERROR == ::WSASend(_socket, &wsaBuf, 1, OUT & numOfBytes, 0, event, nullptr))
+	{
+		int32 errorCode = ::WSAGetLastError();
+		if (errorCode != WSA_IO_PENDING)
+		{
+			HandleError(errorCode);
+			event->SetOwner(nullptr); // session RefCount--
+			xdelete(event);
+		}
+	}
 }
 
 void Session::ProcessConnect()
 {
 	_connected.store(true);
 
-	GetService()->AddSession(GetSession());
+	GetService()->AddSession(GetSessionShared());
 
 	OnConnected();
 
@@ -107,6 +142,7 @@ void Session::ProcessConnect()
 	RegisterRecv();
 }
 
+// 쓰레드 단 하나만
 void Session::ProcessRecv(int32 numOfBytes)
 {
 	_recvEvent.SetOwner(nullptr); // Session의 refCount - 1
@@ -123,9 +159,18 @@ void Session::ProcessRecv(int32 numOfBytes)
 	RegisterRecv();
 }
 
-void Session::ProcessSend(int32 numOfBytes)
+void Session::ProcessSend(SendEvent* event, int32 numOfBytes)
 {
-	// TODO
+	event->SetOwner(nullptr); // session Refcount --
+	xdelete(event);
+
+	if (numOfBytes == 0)
+	{
+		DisConnect(L"Send 0");
+		return;
+	}
+
+	OnSend(numOfBytes);
 }
 
 void Session::HandleError(int32 errorCode)
