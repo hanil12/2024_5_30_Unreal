@@ -40,6 +40,7 @@ public:
 	{
 		cout << "Send 성공 : " << len << endl;
 	}
+
 	virtual void DisConnected() override 
 	{
 		cout << "DisConnected" << endl;
@@ -48,6 +49,8 @@ public:
 
 int main()
 {
+	this_thread::sleep_for(1s);
+
 	CoreGlobal::Create();
 
 	shared_ptr<ClientService> service = MakeShared<ClientService>

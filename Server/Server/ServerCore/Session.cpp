@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Session.h"
 #include "Service.h"
+#include "SocketUtility.h"
 
 Session::Session()
 {
@@ -10,6 +11,19 @@ Session::Session()
 Session::~Session()
 {
 	SocketUtility::Close(_socket);
+}
+
+void Session::SetService(shared_ptr<Service> service)
+{
+	_service = service;
+
+	u_long on = 1;
+	if(::ioctlsocket(_socket, FIONBIO, &on) == INVALID_SOCKET)
+		return;
+
+	_netAddress = service->GetNetAddress();
+
+	//SocketUtility::Bind(_socket, _service.lock()->GetNetAddress());
 }
 
 HANDLE Session::GetHandle()
@@ -47,7 +61,24 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 bool Session::Connect()
 {
-	RegisterConnect();
+	while (true)
+	{
+		if (::connect(GetSocket(), (SOCKADDR*)&_netAddress, sizeof(_netAddress)) == SOCKET_ERROR)
+		{
+			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+			// 이미 연결된 상태라면 break
+			if (::WSAGetLastError() == WSAEISCONN)
+				return false;
+			// Error
+			return false;
+		}
+	}
+
+	return true;
+
+	return RegisterConnect();
 }
 
 void Session::Send(BYTE* buffer, int32 len)
@@ -80,6 +111,7 @@ void Session::DisConnect(const WCHAR* cause)
 bool Session::RegisterConnect()
 {
 	// TODO : IOCP 기반 Connect 비동기, 멀티쓰레드 방식으로 Connect
+	return false;
 }
 
 void Session::RegisterRecv()

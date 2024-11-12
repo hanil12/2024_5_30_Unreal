@@ -70,9 +70,9 @@ bool ClientService::Start()
     {
         shared_ptr<Session> session = CreateSession();
         // TODO : Connect!!
+        session->SetService(shared_from_this());
         session->Connect();
     }
-
 
     return true;
 }

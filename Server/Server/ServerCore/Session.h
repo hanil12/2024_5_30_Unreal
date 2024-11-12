@@ -15,7 +15,8 @@ public:
 
 	// 정보 관련
 	shared_ptr<Service> GetService() { return _service.lock(); }
-	void SetService(shared_ptr<Service> service) { _service = service; }
+	void SetService(shared_ptr<Service> service);
+
 	void SetNetAddress(NetAddress address) { _netAddress = address; }
 	NetAddress GetAddress() { return _netAddress; }
 	SOCKET	GetSocket() { return _socket; }
