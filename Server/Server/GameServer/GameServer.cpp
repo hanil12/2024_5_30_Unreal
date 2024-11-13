@@ -16,6 +16,11 @@ public:
 		string temp = "Hello Client, Im Server";
 		::memcpy(_sendBuffer, temp.data(), temp.size());
 	}
+
+	~GameSession()
+	{
+		cout << "Session DisConnected" << endl;
+	}
 	
 	virtual void OnConnected() override
 	{
@@ -29,6 +34,8 @@ public:
 
 		cout << "Recv : " << str << endl;
 		//cout << ... << endl;
+		this_thread::sleep_for(1s);
+		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
 		
 		return len;
 	}

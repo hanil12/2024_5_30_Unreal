@@ -70,13 +70,13 @@ bool Session::Connect()
 				continue;
 			// 이미 연결된 상태라면 break
 			if (::WSAGetLastError() == WSAEISCONN)
-				return false;
+				break;
 			// Error
 			return false;
 		}
 	}
 
-	return true;
+	ProcessConnect();
 
 	return RegisterConnect();
 }

@@ -22,15 +22,22 @@ public:
 		::memcpy(_sendBuffer, temp.data(), temp.size());
 	}
 
+	~ServerSession()
+	{
+		cout << "Session DisConnected" << endl;
+	}
+
 	virtual void OnConnected() override 
 	{
 		cout <<"Server에 접속 성공!!!" << endl;
+		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
 	} 
 
 	virtual int32 OnRecv(BYTE* buffer, int32 len) override 
 	{ 
 		cout << buffer << endl;
 
+		this_thread::sleep_for(100ms);
 		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
 
 		return len; 
