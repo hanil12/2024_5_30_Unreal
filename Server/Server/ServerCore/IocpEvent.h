@@ -8,7 +8,8 @@ enum class EventType : uint8
 	CONNECT,
 	ACCEPT,
 	RECV,
-	SEND
+	SEND,
+	DISCONNECT
 };
 
 // OVERLAPPED 정보는 운영체제가 만들어준다.
@@ -21,7 +22,10 @@ public:
 	EventType	 GetType() { return _eventType; }
 
 	shared_ptr<IocpObject> GetOwner() { return _owner; }
-	void				   SetOwner(shared_ptr<IocpObject> owner) { _owner = owner; }
+	void				   SetOwner(shared_ptr<IocpObject> owner) 
+	{
+		_owner = owner; 
+	}
 
 protected:
 	EventType				_eventType; // RECV, SEND, ACCEPT
@@ -35,6 +39,15 @@ class ConnectEvent : public IocpEvent
 {
 public:
 	ConnectEvent() : IocpEvent(EventType::CONNECT) {}
+};
+
+// ------------------------
+//		 DisConnect
+// ------------------------
+class DisConnectEvent : public IocpEvent
+{
+public:
+	DisConnectEvent() : IocpEvent(EventType::DISCONNECT) {}
 };
 
 // ------------------------

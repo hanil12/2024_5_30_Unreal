@@ -42,6 +42,12 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 		break;
 	}
 
+	case EventType::DISCONNECT:
+	{
+		ProcessDisConnect();
+		break;
+	}
+
 	case EventType::RECV:
 	{
 		ProcessRecv(numOfBytes);
@@ -61,23 +67,6 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 bool Session::Connect()
 {
-	while (true)
-	{
-		if (::connect(GetSocket(), (SOCKADDR*)&_netAddress, sizeof(_netAddress)) == SOCKET_ERROR)
-		{
-			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
-			if (::WSAGetLastError() == WSAEWOULDBLOCK)
-				continue;
-			// 이미 연결된 상태라면 break
-			if (::WSAGetLastError() == WSAEISCONN)
-				break;
-			// Error
-			return false;
-		}
-	}
-
-	ProcessConnect();
-
 	return RegisterConnect();
 }
 
@@ -103,15 +92,63 @@ void Session::DisConnect(const WCHAR* cause)
 
 	wcout << "DisConnected : " << cause << endl;
 
-	// TODO : OnDisConnected 오버라이딩
-	SocketUtility::Close(_socket);
+	OnDisConnected();
+	
 	GetService()->ReleaseSession(GetSessionShared()); // refCount --
+
+	RegisterDisConnect();
 }
 
 bool Session::RegisterConnect()
 {
-	// TODO : IOCP 기반 Connect 비동기, 멀티쓰레드 방식으로 Connect
-	return false;
+	if(IsConnected())
+		return false;
+
+	if(GetService()->GetServiceType() != ServiceType::CLIENT)
+		return false;
+
+	if(SocketUtility::SetReuseAddress(_socket, true) == false)
+		return false;
+
+	if(SocketUtility::BindAnyAddress(_socket,0) == false)
+		return false;
+
+	_connectEvent.Init();
+	_connectEvent.SetOwner(shared_from_this());
+
+	DWORD numOfBytes = 0;
+	SOCKADDR_IN sockAddr = GetService()->GetNetAddress().GetSockAddr();
+
+	if (false == SocketUtility::ConnectEx(_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, &numOfBytes, &_connectEvent))
+	{
+		int32 errorCode = ::WSAGetLastError();
+		if (errorCode != WSA_IO_PENDING)
+		{
+			_connectEvent.SetOwner(nullptr);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Session::RegisterDisConnect()
+{
+	_disConnectEvent.Init();
+	_disConnectEvent.SetOwner(shared_from_this());
+
+	if (false == SocketUtility::DisConnectEx(_socket, &_disConnectEvent, TF_REUSE_SOCKET, 0))
+	{
+		int32 errorCode = ::WSAGetLastError();
+
+		if (errorCode != WSA_IO_PENDING)
+		{
+			_disConnectEvent.SetOwner(nullptr);
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void Session::RegisterRecv()
@@ -164,6 +201,7 @@ void Session::RegisterSend(SendEvent* event)
 
 void Session::ProcessConnect()
 {
+	_connectEvent.SetOwner(nullptr); // SessionRef --
 	_connected.store(true);
 
 	GetService()->AddSession(GetSessionShared());
@@ -172,6 +210,11 @@ void Session::ProcessConnect()
 
 	// 연결 됬으니까 수신하겠다.
 	RegisterRecv();
+}
+
+void Session::ProcessDisConnect()
+{
+	_disConnectEvent.SetOwner(nullptr); // Session Ref--
 }
 
 // 쓰레드 단 하나만

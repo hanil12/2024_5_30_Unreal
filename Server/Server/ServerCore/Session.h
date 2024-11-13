@@ -7,6 +7,8 @@ class Service;
 
 class Session : public IocpObject
 {
+	friend class Listener;
+
 public:
 	Session();
 	virtual ~Session();
@@ -31,26 +33,31 @@ public:
 	void Send(BYTE* buffer, int32 len);
 	void DisConnect(const WCHAR* cause);
 
+	// 내부에서만 쓸 함수들
+private:
 	bool RegisterConnect(); // 손님이 식탁에 앉기.
+	bool RegisterDisConnect();
 	void RegisterRecv(); // 손님이 주는 메시지-> 커널의 RecvBuffer -> 유저영역에 Session::recvBuffer에 복사
 	void RegisterSend(SendEvent* event); // 내가 손님한테 줄 메시지
 
 	void ProcessConnect();
+	void ProcessDisConnect();
 	void ProcessRecv(int32 numOfBytes);
 	void ProcessSend(SendEvent* event, int32 numOfBytes);
 
 	void HandleError(int32 errorCode);
 
-	char _recvBuffer[1000] = {};
-	char _sendBuffer[1000] = {};
-
 protected:
-	// ServerSession , ClientSession에서 필요할 경우 오버로딩
+	// ServerSession , ClientSession에서 필요할 경우 오버라이딩
 	virtual void OnConnected() {}
+	virtual void OnDisConnected() {}
 	virtual int32 OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void OnSend(int32 len) {}
 	virtual void DisConnected() {}
 
+
+	char _recvBuffer[1000] = {};
+	char _sendBuffer[1000] = {};
 private:
 	weak_ptr<Service> _service;
 	SOCKET _socket = INVALID_SOCKET;
@@ -65,5 +72,7 @@ private:
 	// 송신 관련
 
 	RecvEvent _recvEvent;
+	ConnectEvent _connectEvent;
+	DisConnectEvent _disConnectEvent;
 };
 
