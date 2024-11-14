@@ -79,7 +79,7 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 
 	DWORD bytesRecived = 0;
 
-	if (false == SocketUtility::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, &bytesRecived, static_cast<LPOVERLAPPED>(acceptEvent)))
+	if (false == SocketUtility::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, &bytesRecived, static_cast<LPOVERLAPPED>(acceptEvent)))
 	{
 		const int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)

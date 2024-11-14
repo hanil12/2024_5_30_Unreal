@@ -2,12 +2,18 @@
 
 #include "IocpCore.h"
 #include "IocpEvent.h"
+#include "RecvBuffer.h"
 
 class Service;
 
 class Session : public IocpObject
 {
 	friend class Listener;
+
+	enum
+	{
+		BUFF_SIZE = 0x10000, // 64KB => 6만5천바이트
+	};
 
 public:
 	Session();
@@ -35,11 +41,13 @@ public:
 
 	// 내부에서만 쓸 함수들
 private:
+	// CP(Completion Port)에 등록
 	bool RegisterConnect(); // 손님이 식탁에 앉기.
 	bool RegisterDisConnect();
 	void RegisterRecv(); // 손님이 주는 메시지-> 커널의 RecvBuffer -> 유저영역에 Session::recvBuffer에 복사
 	void RegisterSend(SendEvent* event); // 내가 손님한테 줄 메시지
 
+	// CP에 등록되어있던 Event들 DisPatch(보낸다)
 	void ProcessConnect();
 	void ProcessDisConnect();
 	void ProcessRecv(int32 numOfBytes);
@@ -55,9 +63,9 @@ protected:
 	virtual void OnSend(int32 len) {}
 	virtual void DisConnected() {}
 
-
-	char _recvBuffer[1000] = {};
+	// TODO
 	char _sendBuffer[1000] = {};
+
 private:
 	weak_ptr<Service> _service;
 	SOCKET _socket = INVALID_SOCKET;
@@ -68,8 +76,10 @@ private:
 private:
 	USE_LOCK;
 	// 수신 관련
+	RecvBuffer _recvBuffer;
 
 	// 송신 관련
+
 
 	RecvEvent _recvEvent;
 	ConnectEvent _connectEvent;

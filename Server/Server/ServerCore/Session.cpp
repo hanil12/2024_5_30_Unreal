@@ -2,8 +2,10 @@
 #include "Session.h"
 #include "Service.h"
 #include "SocketUtility.h"
+#include "RecvBuffer.h"
 
 Session::Session()
+: _recvBuffer(BUFF_SIZE)
 {
 	_socket = SocketUtility::CreateSocket();
 }
@@ -160,8 +162,10 @@ void Session::RegisterRecv()
 	_recvEvent.SetOwner(shared_from_this()); // event의 주인이 IocpObject... Session의 refCount + 1
 
 	WSABUF wsaBuf;
-	wsaBuf.buf = reinterpret_cast<char*>(_recvBuffer);
-	wsaBuf.len = len32(_recvBuffer);
+	// 복사를 시작할 위치
+	wsaBuf.buf = reinterpret_cast<char*>(_recvBuffer.WritePos());
+	// 복사를 얼만큼 할지 기입
+	wsaBuf.len = _recvBuffer.FreeSize();
 
 	DWORD numOfBytes = 0;
 	DWORD flags = 0;
@@ -228,7 +232,27 @@ void Session::ProcessRecv(int32 numOfBytes)
 		return;
 	}
 
-	OnRecv(reinterpret_cast<BYTE*>(_recvBuffer), numOfBytes);
+	// write할 수용량이 부족함
+	if (_recvBuffer.OnWrite(numOfBytes) == false)
+	{
+		DisConnect(L"OnWrite Overflow");
+		return;
+	}
+
+	// ------- writePos... 복사된 만큼 이동해있는 상태
+	// ------- readPos ... 그대로
+	int32 dataSize = _recvBuffer.DataSize();
+	// OnRecv : GameSession에서 재정의
+	int32 processLen = OnRecv(_recvBuffer.ReadPos(), dataSize);  // processLen : 처리된 부분
+
+	if (processLen < 0 || dataSize < processLen || _recvBuffer.OnRead(processLen) == false)
+	{
+		DisConnect(L"OnRead OverFlow");
+		return;
+	}
+
+	// 커서 정리
+	_recvBuffer.Clean();
 
 	// 재 수신 등록
 	RegisterRecv();
