@@ -30,3 +30,6 @@ using namespace std;
 // Memomry
 #include "Memory.h"
 #include "MemoryPool.h"
+
+// MyNetWork
+#include "SendBuffer.h"

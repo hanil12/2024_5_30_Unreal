@@ -13,8 +13,6 @@ class GameSession : public Session
 public:
 	GameSession()
 	{
-		string temp = "Hello Client, Im Server";
-		::memcpy(_sendBuffer, temp.data(), temp.size());
 	}
 
 	~GameSession()
@@ -25,7 +23,12 @@ public:
 	virtual void OnConnected() override
 	{
 		cout << "클라이언트가 서버에 접속 성공!!!" << endl;
-		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
+
+		string temp = "Hello Client!!! Conntected!!!";
+
+		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
+		sendBuf->CopyData((void*)temp.data(), temp.size());
+		Send(sendBuf);
 	}
 	
 	virtual int32 OnRecv(BYTE* buffer, int32 len)
@@ -35,7 +38,12 @@ public:
 		cout << "Recv : " << str << endl;
 		//cout << ... << endl;
 		this_thread::sleep_for(1s);
-		Send(reinterpret_cast<BYTE*>(_sendBuffer), 1000);
+
+		string temp = "Hello Client!!!";
+
+		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
+		sendBuf->CopyData((void*)temp.data(), temp.size());
+		Send(sendBuf);
 		
 		return len;
 	}

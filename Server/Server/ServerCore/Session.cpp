@@ -3,6 +3,7 @@
 #include "Service.h"
 #include "SocketUtility.h"
 #include "RecvBuffer.h"
+#include "SendBuffer.h"
 
 Session::Session()
 : _recvBuffer(BUFF_SIZE)
@@ -58,7 +59,7 @@ void Session::DisPatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 	case EventType::SEND:
 	{
-		ProcessSend(static_cast<SendEvent*>(iocpEvent),numOfBytes);
+		ProcessSend(numOfBytes);
 		break;
 	}
 
@@ -72,17 +73,17 @@ bool Session::Connect()
 	return RegisterConnect();
 }
 
-void Session::Send(BYTE* buffer, int32 len)
+void Session::Send(shared_ptr<SendBuffer> buffer)
 {
-	// TODO : Scatter Gathering
-
-	SendEvent* sendEvent = xnew<SendEvent>();
-	sendEvent->SetOwner(GetSessionShared());
-
-	::memcpy(_sendBuffer, buffer, len);
-
 	WRITE_LOCK;
-	RegisterSend(sendEvent);
+
+	_sendQueue.push(buffer);
+
+	if (_sendRegistered.exchange(true) == false)
+	{
+		// sendRegistered가 false였고 성공적으로 true로 바뀌었으면 실행되는 실행문
+		RegisterSend();
+	}
 }
 
 void Session::DisConnect(const WCHAR* cause)
@@ -181,24 +182,56 @@ void Session::RegisterRecv()
 	}
 }
 
-void Session::RegisterSend(SendEvent* event)
+void Session::RegisterSend()
 {
 	if(IsConnected() == false)
 		return;
 
-	WSABUF wsaBuf;
-	wsaBuf.buf = _sendBuffer;
-	wsaBuf.len = 1000; // TODO
+	_sendEvent.Init();
+	_sendEvent.SetOwner(shared_from_this()); // RefCount ++
+
+	// 보낼 데이터들을 _sendEvent에 등록
+	{
+		WRITE_LOCK;
+
+		int32 writeSize = 0;
+		while (_sendQueue.empty() == false)
+		{
+			shared_ptr<SendBuffer> buffer = _sendQueue.front();
+			
+			writeSize += buffer->WriteSize();
+			// 길이 너무 길다.. 등등의 예외처리
+			
+			_sendQueue.pop();
+			_sendEvent.sendBuffers.push_back(buffer);
+		}
+	}
+
+
+	//WSABUF wsaBuf;
+	//wsaBuf.buf = _sendBuffer;
+	//wsaBuf.len = 1000; // TODO
+	Vector<WSABUF> wsaBufs;
+	wsaBufs.reserve(_sendEvent.sendBuffers.size());
+	for (auto sendBuffer : _sendEvent.sendBuffers)
+	{
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(sendBuffer->Buffer());
+		wsaBuf.len = static_cast<LONG>(sendBuffer->WriteSize());
+		wsaBufs.push_back(wsaBuf);
+	}
 
 	DWORD numOfBytes = 0;
-	if (SOCKET_ERROR == ::WSASend(_socket, &wsaBuf, 1, OUT & numOfBytes, 0, event, nullptr))
+	// WSASend... Scatter Gather기법을 지원
+	if (SOCKET_ERROR == ::WSASend(_socket, wsaBufs.data(), static_cast<DWORD>(wsaBufs.size()), OUT & numOfBytes, 0, &_sendEvent, nullptr))
 	{
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
 			HandleError(errorCode);
-			event->SetOwner(nullptr); // session RefCount--
-			xdelete(event);
+			_sendEvent.SetOwner(nullptr); // session RefCount--
+			_sendEvent.sendBuffers.clear();
+			_sendRegistered.store(false);
 		}
 	}
 }
@@ -258,10 +291,10 @@ void Session::ProcessRecv(int32 numOfBytes)
 	RegisterRecv();
 }
 
-void Session::ProcessSend(SendEvent* event, int32 numOfBytes)
+void Session::ProcessSend(int32 numOfBytes)
 {
-	event->SetOwner(nullptr); // session Refcount --
-	xdelete(event);
+	_sendEvent.SetOwner(nullptr); // session Refcount --
+	_sendEvent.sendBuffers.clear();
 
 	if (numOfBytes == 0)
 	{
@@ -270,6 +303,12 @@ void Session::ProcessSend(SendEvent* event, int32 numOfBytes)
 	}
 
 	OnSend(numOfBytes);
+
+	WRITE_LOCK;
+	if(_sendQueue.empty())
+		_sendRegistered.store(false);
+	else
+		RegisterSend();
 }
 
 void Session::HandleError(int32 errorCode)

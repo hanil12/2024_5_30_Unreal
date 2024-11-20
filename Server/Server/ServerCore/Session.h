@@ -36,7 +36,7 @@ public:
 	// 전송 관련
 	// - 외부(Client, Server)에서 쓸 함수
 	bool Connect();
-	void Send(BYTE* buffer, int32 len);
+	void Send(shared_ptr<SendBuffer> buffer);
 	void DisConnect(const WCHAR* cause);
 
 	// 내부에서만 쓸 함수들
@@ -45,13 +45,13 @@ private:
 	bool RegisterConnect(); // 손님이 식탁에 앉기.
 	bool RegisterDisConnect();
 	void RegisterRecv(); // 손님이 주는 메시지-> 커널의 RecvBuffer -> 유저영역에 Session::recvBuffer에 복사
-	void RegisterSend(SendEvent* event); // 내가 손님한테 줄 메시지
+	void RegisterSend(); // 내가 손님한테 줄 메시지
 
 	// CP에 등록되어있던 Event들 DisPatch(보낸다)
 	void ProcessConnect();
 	void ProcessDisConnect();
 	void ProcessRecv(int32 numOfBytes);
-	void ProcessSend(SendEvent* event, int32 numOfBytes);
+	void ProcessSend(int32 numOfBytes);
 
 	void HandleError(int32 errorCode);
 
@@ -62,9 +62,6 @@ protected:
 	virtual int32 OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void OnSend(int32 len) {}
 	virtual void DisConnected() {}
-
-	// TODO
-	char _sendBuffer[1000] = {};
 
 private:
 	weak_ptr<Service> _service;
@@ -79,10 +76,12 @@ private:
 	RecvBuffer _recvBuffer;
 
 	// 송신 관련
+	Queue<shared_ptr<SendBuffer>> _sendQueue;
+	Atomic<bool> _sendRegistered = false;
 
-
-	RecvEvent _recvEvent;
-	ConnectEvent _connectEvent;
-	DisConnectEvent _disConnectEvent;
+	SendEvent				 _sendEvent;
+	RecvEvent				 _recvEvent;
+	ConnectEvent			 _connectEvent;
+	DisConnectEvent			 _disConnectEvent;
 };
 

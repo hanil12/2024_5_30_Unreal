@@ -87,5 +87,5 @@ class SendEvent : public IocpEvent
 public:
 	SendEvent() : IocpEvent(EventType::SEND) {}
 
-	// Owner : Client
+	Vector<shared_ptr<class SendBuffer>> sendBuffers;
 };
