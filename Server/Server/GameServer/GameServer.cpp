@@ -24,7 +24,7 @@ public:
 	{
 		cout << "클라이언트가 서버에 접속 성공!!!" << endl;
 
-		string temp = "Hello Client!!! Conntected!!!";
+		string temp = "Hello Client Connected";
 
 		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
 		sendBuf->CopyData((void*)temp.data(), temp.size());
@@ -33,10 +33,13 @@ public:
 	
 	virtual int32 OnRecv(BYTE* buffer, int32 len)
 	{
-		char* str = reinterpret_cast<char*>(buffer);
+		for (int i = 0; i < len; i++)
+		{
+			cout << buffer[i];
+		}
+		cout << endl;
 
-		cout << "Recv : " << str << endl;
-		//cout << ... << endl;
+
 		this_thread::sleep_for(1s);
 
 		string temp = "Hello Client!!!";
