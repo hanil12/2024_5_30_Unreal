@@ -7,64 +7,17 @@
 #pragma comment(lib,"ws2_32.lib")
 
 #include "Service.h"
+#include "GameSession.h"
+#include "GameSessionManager.h"
 
-class GameSession : public Session
-{
-public:
-	GameSession()
-	{
-	}
-
-	~GameSession()
-	{
-		cout << "Session DisConnected" << endl;
-	}
-	
-	virtual void OnConnected() override
-	{
-		cout << "클라이언트가 서버에 접속 성공!!!" << endl;
-
-		string temp = "Hello Client Connected";
-
-		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
-		sendBuf->CopyData((void*)temp.data(), temp.size());
-		Send(sendBuf);
-	}
-	
-	virtual int32 OnRecv(BYTE* buffer, int32 len)
-	{
-		for (int i = 0; i < len; i++)
-		{
-			cout << buffer[i];
-		}
-		cout << endl;
-
-
-		this_thread::sleep_for(1s);
-
-		string temp = "Hello Client!!!";
-
-		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
-		sendBuf->CopyData((void*)temp.data(), temp.size());
-		Send(sendBuf);
-		
-		return len;
-	}
-
-	virtual void OnSend(int32 len) override
-	{
-		cout << "Send 성공 : " << len << endl;
-	}
-
-	virtual void DisConnected() override
-	{
-		cout << "DisConnected" << endl;
-	}
-};
+// GameSession : 서버에서 클라이언트가 접속하면 안내할 식탁
+// GameSessionManager : 모든 클라이언트가 앉아있는 식탁들을 관리하는 수단
 
 int main()
 {
 	CoreGlobal::Create();
+	G_GameSessionManager = new GameSessionManager();
+
 
 	shared_ptr<ServerService> service = MakeShared<ServerService>
 	(
@@ -90,6 +43,7 @@ int main()
 
 	TM_M->Join();
 
+	//delete G_GameSessionManager;
 	CoreGlobal::Delete();
 
 	return 0;

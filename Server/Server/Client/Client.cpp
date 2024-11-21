@@ -30,11 +30,8 @@ public:
 		cout <<"Server에 접속 성공!!!" << endl;
 
 		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
-
 		string temp = "Hello Server!! I'm Client";
-
 		sendBuf->CopyData((void*)temp.data(), temp.size());
-
 		Send(sendBuf);
 	} 
 
@@ -49,15 +46,12 @@ public:
 		}
 		cout << endl;
 
-		this_thread::sleep_for(100ms);
 
-		shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
-
-		string temp = "Hello Server!! I'm Client~~~~~~~";
-
-		sendBuf->CopyData((void*)temp.data(), temp.size());
-
-		Send(sendBuf);
+		//this_thread::sleep_for(100ms);
+		//shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
+		//string temp = "Hello Server!! I'm Client~~~~~~~";
+		//sendBuf->CopyData((void*)temp.data(), temp.size());
+		//Send(sendBuf);
 
 		return len; 
 	}
