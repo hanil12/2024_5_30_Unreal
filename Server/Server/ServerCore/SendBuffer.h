@@ -10,6 +10,7 @@ public:
 	int32 Capacity() { return static_cast<int32>(_buffer.size()); }
 
 	void CopyData(void* data, int32 len);
+	void CopyData_Packet(void* data, int32 len);
 
 private:
 	Vector<BYTE> _buffer; // [H][e][l][l][l][][][][][]

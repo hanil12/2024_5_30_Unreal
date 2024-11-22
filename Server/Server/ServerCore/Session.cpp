@@ -327,3 +327,41 @@ void Session::HandleError(int32 errorCode)
 		break;
 	}
 }
+
+PacketSession::PacketSession()
+{
+}
+
+PacketSession::~PacketSession()
+{
+}
+
+// 내가 packet형태의 데이터를 받았다.
+// [PacketHead][ 데이터 ... ]
+// [4바이트][....]
+int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
+{
+	int32 processLen = 0;
+
+	while (true)
+	{
+		int32 dataSize = len - processLen;
+
+		// PacketHeader로 파싱조차 안되는 데이터는 그냥 보지도 않겠다.
+		if(dataSize < sizeof(PacketHeader))
+			break;
+
+		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
+
+		// 헤더에 기록된 데이터가, 실제 데이터보다 크다?
+		if(dataSize < header.size)
+			break;
+
+		// 패킷조립 성공
+		OnRecvPacket(&buffer[processLen], header.size);
+
+		processLen += header.size;
+	}
+
+	return processLen;
+}

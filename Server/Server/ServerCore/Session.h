@@ -85,3 +85,29 @@ private:
 	DisConnectEvent			 _disConnectEvent;
 };
 
+
+// PacketSession
+// Packet이 왜 필요한가...
+// SendBuffer로 데이터를 전달할 때 TCP 환경에서는 데이터 한 묶음이 다 전달된다는 보장이 없다.
+
+// Packet으로 확인해야할 것.
+// 1. 어떤 용도의 데이터인지
+// 2. 이 데이터의 총 크기는 어떻게 되는지
+struct PacketHeader
+{
+	uint16 size;
+	uint16 id; // 프로토콜 ID : (ex 1 : 로그인, 2 : 이동)
+};
+
+class PacketSession : public Session
+{
+public:
+	PacketSession();
+	virtual ~PacketSession();
+
+	shared_ptr<PacketSession> GetPacketSession() { return static_pointer_cast<PacketSession>(shared_from_this()); }
+
+protected:
+	virtual int32 OnRecv(BYTE* buffer, int32 len) sealed;
+	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) abstract;
+};
