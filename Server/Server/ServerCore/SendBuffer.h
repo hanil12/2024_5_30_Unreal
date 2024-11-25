@@ -11,6 +11,7 @@ public:
 
 	void CopyData(void* data, int32 len);
 	void CopyData_Packet(void* data, int32 len);
+	void Ready(int32 writeSize) { _writeSize = writeSize; }
 
 private:
 	Vector<BYTE> _buffer; // [H][e][l][l][l][][][][][]

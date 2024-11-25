@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-#include "BufferWriter.h"
+#include "ServerPacketHandler.h"
 
 GameSession::GameSession()
 {
@@ -27,20 +27,8 @@ void GameSession::OnConnected()
 	// // ::memcpy(&buffer[4], temp.data(), sizeof(temp));
 	// buf->CopyData_Packet((BYTE*)temp.data(), sizeof(temp));
 
-	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(100);
-	Player p;
-	p.id = 1;
-	p.hp = 100;
-	p.atk = 10;
-
-	BufferWriter bw(buf->Buffer(), 100);
-
-	PacketHeader* header = bw.Reserve<PacketHeader>();
-	header->id = 1;
-	header->size = (sizeof(p) + sizeof(PacketHeader));
-	bw << p;
-
-	G_GameSessionManager->BroadCast(buf);
+	shared_ptr<SendBuffer> sendBuffer = ServerPacketHandler::Make_S_TEST(1234,10,5);
+	G_GameSessionManager->BroadCast(sendBuffer);
 
 	G_GameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
 }

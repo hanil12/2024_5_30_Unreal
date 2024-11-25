@@ -33,3 +33,4 @@ using namespace std;
 
 // MyNetWork
 #include "SendBuffer.h"
+#include "Session.h"

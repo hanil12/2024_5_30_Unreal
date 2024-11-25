@@ -1,13 +1,6 @@
 #pragma once
 #include "Session.h"
 
-struct Player
-{
-	int64 id;
-	int32 hp;
-	int16 atk;
-};
-
 class GameSession : public PacketSession
 {
 public:
