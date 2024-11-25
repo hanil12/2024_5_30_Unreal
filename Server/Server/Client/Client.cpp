@@ -12,6 +12,18 @@
 #pragma comment(lib,"ws2_32.lib")
 
 #include "Service.h"
+#include "BufferReader.h"
+#include "BufferWriter.h"
+
+struct Player
+{
+	int32 mesh;
+	int32 material;
+
+	int64 id;
+	int32 hp;
+	int16 atk;
+};
 
 class ServerSession : public PacketSession
 {
@@ -37,14 +49,26 @@ public:
 
 	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override
 	{
-		PacketHeader header = *((PacketHeader*)buffer);
+		Player p;
 
-		cout << "Paket ID : " << header.id << "  Size : " << header.size << endl;
-		
-		char recvData[100];
-		::memcpy(recvData, buffer + 4, header.size);
+		BufferReader br(buffer, len);
 
-		cout << recvData << endl;
+		PacketHeader header;
+		br >> header;
+
+		int64 id;
+		int32 hp;
+		int16 atk;
+		br >> id >> hp >> atk;
+
+		cout << "ID : " << id << " HP : " << hp << " ATK : " << atk << endl;
+
+		p.id = id;
+		p.hp = hp;
+		p.atk = atk;
+
+		//BYTE recvBuffer[1000];
+		//br.Read(recvBuffer, header.size);
 		
 		return len;
 	}
