@@ -14,13 +14,19 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	switch (header.id)
 	{
 	case 0: // id가 이였다..?
+		break;
+
+	case S_TEST:
+		break;
 
 	default:
 		break;
 	}
 }
 
-shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk)
+// Player Id : 1, hp : 100, atk : 5, buff[사랑니, 1.0], buff[마취, 2.0]
+// header[4] [ ID(1), hp(100), atk(5), 2 ,사랑니, 1.0, 마취, 2.0]
+shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
 {
 	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(1000);
 	PlayerInfo_Protocol p;
@@ -29,12 +35,23 @@ shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int1
 	p.atk = atk;
 
 	BufferWriter bw(buf->Buffer(), buf->Capacity());
-
+	// Header Reserve, packet 아이디 설정
 	PacketHeader* header = bw.Reserve<PacketHeader>();
 	header->id = S_TEST;
-	header->size = (sizeof(p) + sizeof(PacketHeader));
-	bw << p;
 
+	bw << p.id << p.hp << p.atk;
+
+	// 가변데이터 넣기
+	bw << (uint16)buffs.size();
+	for (auto& buff : buffs)
+	{
+		bw << buff.buffId << buff.remainTime;
+	}
+
+	// 패킷 준비완료, kg 재서 출하준비
+	header->size = bw.WriteSize();
+
+	// 출하준비
 	buf->Ready(bw.WriteSize());
 
 	return buf;

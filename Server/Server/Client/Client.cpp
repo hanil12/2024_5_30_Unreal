@@ -14,6 +14,7 @@
 #include "Service.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
+#include "ClientPacketHandler.h"
 
 struct Player
 {
@@ -40,35 +41,11 @@ public:
 	virtual void OnConnected() override 
 	{
 		cout <<"Server에 접속 성공!!!" << endl;
-
-		//shared_ptr<SendBuffer> sendBuf = make_shared<SendBuffer>(100);
-		//string temp = "Hello Server!! I'm Client";
-		//sendBuf->CopyData((void*)temp.data(), temp.size());
-		//Send(sendBuf);
 	} 
 
 	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override
 	{
-		Player p;
-
-		BufferReader br(buffer, len);
-
-		PacketHeader header;
-		br >> header;
-
-		int64 id;
-		int32 hp;
-		int16 atk;
-		br >> id >> hp >> atk;
-
-		cout << "ID : " << id << " HP : " << hp << " ATK : " << atk << endl;
-
-		p.id = id;
-		p.hp = hp;
-		p.atk = atk;
-
-		//BYTE recvBuffer[1000];
-		//br.Read(recvBuffer, header.size);
+		ClientPacketHandler::HandlePacket(buffer, len);
 		
 		return len;
 	}
