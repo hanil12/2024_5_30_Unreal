@@ -17,7 +17,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 		break;
 
 	case S_TEST:
-		Handle_S_TEST(buffer, len);
+		Handle_C_TEST(buffer, len);
 		break;
 
 	default:
@@ -29,7 +29,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 // 
 // 
 // Player Id : 1, hp : 100, atk : 5, buff[»ç¶û´Ï, 1.0], buff[¸¶Ãë, 2.0]
-void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_C_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
@@ -53,15 +53,27 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 		br >> buffs[i].buffId >> buffs[i].remainTime;
 	}
 
+	wstring name;
+	uint16 nameSize;
+	br >> nameSize;
+	name.resize(nameSize);
+
+	br.Read((void*)name.data(), nameSize * sizeof(WCHAR));
+
 	cout << "ID : " << id << " HP : " << hp << " ATK : " << atk << endl;
 	for (auto& buff : buffs)
 	{
 		cout << "Buff ID : " << buff.buffId << endl;
 		cout << "Buff Remain Time : " << buff.remainTime << endl;
 	}
+
+	//wstring temp = L"gggg";
+	//wcout << temp << endl;
+	wcout.imbue(std::locale("kor"));
+	wcout << name << endl;
 }
 
-shared_ptr<SendBuffer> ClientPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
+shared_ptr<SendBuffer> ClientPacketHandler::Make_C_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
 {
 	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(1000);
 	PlayerInfo_Protocol p;

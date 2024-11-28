@@ -26,7 +26,7 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 
 // Player Id : 1, hp : 100, atk : 5, buff[사랑니, 1.0], buff[마취, 2.0]
 // header[4] [ ID(1), hp(100), atk(5), 2 ,사랑니, 1.0, 마취, 2.0]
-shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
+shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs, wstring name)
 {
 	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(1000);
 	PlayerInfo_Protocol p;
@@ -47,6 +47,11 @@ shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int1
 	{
 		bw << buff.buffId << buff.remainTime;
 	}
+
+	// FString... wchar;
+	// WString 전송
+	bw << (uint16)name.size();
+	bw.Write((void*)name.data(), name.size() * sizeof(WCHAR));
 
 	// 패킷 준비완료, kg 재서 출하준비
 	header->size = bw.WriteSize();

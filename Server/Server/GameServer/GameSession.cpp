@@ -20,7 +20,7 @@ void GameSession::OnConnected()
 	buffs.push_back({1, 48.0f});
 	buffs.push_back({2, 2.0f});
 
-	shared_ptr<SendBuffer> sendBuffer = ServerPacketHandler::Make_S_TEST(1234,10,5, buffs);
+	shared_ptr<SendBuffer> sendBuffer = ServerPacketHandler::Make_S_TEST(1234,10,5, buffs, L"Hanil");
 	G_GameSessionManager->BroadCast(sendBuffer);
 
 	G_GameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
