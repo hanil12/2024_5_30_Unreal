@@ -7,7 +7,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 {
 	// TODO : Recv했을 때 패킷 파싱하고 분석
 	BufferReader br(buffer, len);
-
+	int32 t = sizeof(PlayerInfo_Protocol);
 	PacketHeader header;
 	br.Peek(&header);
 
@@ -33,62 +33,52 @@ void ClientPacketHandler::Handle_C_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
-	PacketHeader header;
-	br >> header;
-
-	// 헤더 읽음...
-	int64 id;
-	int32 hp;
-	int16 atk;
-	br >> id >> hp >> atk;
-	// id, hp, atk 읽음
+	PlayerInfo_Protocol pkt;
+	br >> pkt;
 	
-	vector<BuffData> buffs;
-	int16 buffCount = 0;
-	br >> buffCount;
-	buffs.resize(buffCount);
+	if(pkt.IsValid() == false)
+		return;
 
-	for (int32 i = 0; i < buffCount; i++)
+	vector<BuffData> buffDataes;
+	buffDataes.resize(pkt.buffCount);
+	for (int i = 0; i < pkt.buffCount; i++)
 	{
-		br >> buffs[i].buffId >> buffs[i].remainTime;
+		br >> buffDataes[i];
 	}
 
 	wstring name;
-	uint16 nameSize;
-	br >> nameSize;
-	name.resize(nameSize);
-
-	br.Read((void*)name.data(), nameSize * sizeof(WCHAR));
-
-	cout << "ID : " << id << " HP : " << hp << " ATK : " << atk << endl;
-	for (auto& buff : buffs)
+	name.resize(pkt.nameCount);
+	for (int i = 0; i < pkt.nameCount; i++)
 	{
-		cout << "Buff ID : " << buff.buffId << endl;
-		cout << "Buff Remain Time : " << buff.remainTime << endl;
+		br >> name[i];
 	}
 
-	//wstring temp = L"gggg";
-	//wcout << temp << endl;
 	wcout.imbue(std::locale("kor"));
 	wcout << name << endl;
+
+	cout << "BuffCount : " << buffDataes.size() << endl;
+	for (auto buff : buffDataes)
+	{
+		cout << "BuffId : " << buff.buffId << "  /   BuffRemain : " << buff.remainTime << endl;
+	}
 }
 
 shared_ptr<SendBuffer> ClientPacketHandler::Make_C_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
 {
 	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(1000);
-	PlayerInfo_Protocol p;
-	p.id = id;
-	p.hp = hp;
-	p.atk = atk;
+	//PlayerInfo_Protocol p;
+	//p.id = id;
+	//p.hp = hp;
+	//p.atk = atk;
 
-	BufferWriter bw(buf->Buffer(), buf->Capacity());
+	//BufferWriter bw(buf->Buffer(), buf->Capacity());
 
-	PacketHeader* header = bw.Reserve<PacketHeader>();
-	header->id = S_TEST;
-	header->size = (sizeof(p) + sizeof(PacketHeader));
-	bw << p;
+	//PacketHeader* header = bw.Reserve<PacketHeader>();
+	//header->id = S_TEST;
+	//header->size = (sizeof(p) + sizeof(PacketHeader));
+	//bw << p;
 
-	buf->Ready(bw.WriteSize());
+	//buf->Ready(bw.WriteSize());
 
 	return buf;
 }
