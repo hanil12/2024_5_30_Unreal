@@ -17,11 +17,19 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 		break;
 
 	case S_TEST:
+		Handle_S_TEST(buffer, len);
 		break;
 
 	default:
 		break;
 	}
+}
+
+void ServerPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
+{
+	// TODO
+
+	return ;
 }
 
 shared_ptr<SendBuffer> ServerPacketHandler::Make_S_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs, wstring name)

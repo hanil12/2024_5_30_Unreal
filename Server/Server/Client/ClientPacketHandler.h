@@ -1,5 +1,46 @@
 #pragma once
 
+/////////////////
+// Packet List //
+/////////////////
+template<typename T, typename C>
+class PacketList_Iterator
+{
+public:
+	PacketList_Iterator(C& container, uint16 index) : _container(container), _index(index) {}
+
+	bool			operator!=(const PacketList_Iterator& other) { return false; } 
+	//const T&		operator*() const {  }
+	//T&				operator*() {}
+	T*				operator->() { return nullptr; }
+	// PacketList_Iterator& operator++() { }
+	// PacketList_Iterator operator++(int32) { }
+
+private:
+	C&		_container;
+	uint16	_index;
+};
+
+template<typename T>
+class PacketList
+{
+public:
+	PacketList() : _data(nullptr), _count(0) {}
+	PacketList(T* data, uint16 count) : _data(data), _count(count) {}
+
+	T& operator[](uint16 index)
+	{
+		ASSERT_CRASH(index < _count);
+		return _data[index];
+	}
+
+	uint16 Size() { return _count; }
+
+private:
+	T* _data;
+	uint16		 _count;
+};
+
 // 규약
 enum PacketID
 {
@@ -21,7 +62,7 @@ struct BuffData
 };
 
 #pragma pack(1)
-struct PlayerInfo_Protocol
+struct PlayerInfo_Packet
 {
 	// 공용헤더
 	PacketHeader header; // 4
@@ -42,9 +83,13 @@ struct PlayerInfo_Protocol
 	bool IsValid()
 	{
 		uint32 size = 0;
-		size += sizeof(PlayerInfo_Protocol);
+		size += sizeof(PlayerInfo_Packet);
+		if(header.size < size) // 그냥 이상함
+			return false;
+
 		size += buffCount * sizeof(BuffData);
 		size += nameCount * sizeof(WCHAR);
+
 
 		// 너가 기입한 크기가 실제 패킷크기랑 동일.
 		if(size != header.size)
@@ -55,6 +100,18 @@ struct PlayerInfo_Protocol
 			return false;
 
 		return true;
+	}
+
+	using BuffList = PacketList<BuffData>;
+	using Name = PacketList<WCHAR>;
+
+	BuffList GetBuffList()
+	{
+		// 현재 메모리 주소에서 + buffOffset =>
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += buffOffset;
+
+		return BuffList(reinterpret_cast<BuffData*>(data), buffCount);
 	}
 };
 #pragma pack()

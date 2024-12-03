@@ -7,7 +7,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 {
 	// TODO : Recv했을 때 패킷 파싱하고 분석
 	BufferReader br(buffer, len);
-	int32 t = sizeof(PlayerInfo_Protocol);
+	int32 t = sizeof(PlayerInfo_Packet);
 	PacketHeader header;
 	br.Peek(&header);
 
@@ -33,30 +33,24 @@ void ClientPacketHandler::Handle_C_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
-	PlayerInfo_Protocol pkt;
-	br >> pkt;
+	PlayerInfo_Packet* pkt = reinterpret_cast<PlayerInfo_Packet*>(buffer);
 	
-	if(pkt.IsValid() == false)
+	if(pkt->IsValid() == false)
 		return;
 
-	vector<BuffData> buffDataes;
-	buffDataes.resize(pkt.buffCount);
-	for (int i = 0; i < pkt.buffCount; i++)
+	// buffer + pkt.buffOffset
+	PacketList<BuffData> buffDataes = pkt->GetBuffList();
+	//for (int i = 0; i < pkt->buffCount; i++)
+	//{
+	//	br >> buffDataes[i];
+	//}
+
+	cout << "BuffCount : " << buffDataes.Size() << endl;
+	for (int i = 0; i < buffDataes.Size(); i++)
 	{
-		br >> buffDataes[i];
+		cout << "BuffId : " << buffDataes[i].buffId << "  /   BuffRemain : " << buffDataes[i].remainTime << endl;
 	}
 
-	wstring name;
-	name.resize(pkt.nameCount);
-	for (int i = 0; i < pkt.nameCount; i++)
-	{
-		br >> name[i];
-	}
-
-	wcout.imbue(std::locale("kor"));
-	wcout << name << endl;
-
-	cout << "BuffCount : " << buffDataes.size() << endl;
 	for (auto buff : buffDataes)
 	{
 		cout << "BuffId : " << buff.buffId << "  /   BuffRemain : " << buff.remainTime << endl;
