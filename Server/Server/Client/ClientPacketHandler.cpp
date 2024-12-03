@@ -38,18 +38,9 @@ void ClientPacketHandler::Handle_C_TEST(BYTE* buffer, int32 len)
 	if(pkt->IsValid() == false)
 		return;
 
-	// buffer + pkt.buffOffset
 	PacketList<BuffData> buffDataes = pkt->GetBuffList();
-	//for (int i = 0; i < pkt->buffCount; i++)
-	//{
-	//	br >> buffDataes[i];
-	//}
 
-	cout << "BuffCount : " << buffDataes.Size() << endl;
-	for (int i = 0; i < buffDataes.Size(); i++)
-	{
-		cout << "BuffId : " << buffDataes[i].buffId << "  /   BuffRemain : " << buffDataes[i].remainTime << endl;
-	}
+	cout << "BuffCount : " << buffDataes.size() << endl;
 
 	for (auto buff : buffDataes)
 	{

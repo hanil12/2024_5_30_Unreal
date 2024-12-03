@@ -9,12 +9,12 @@ class PacketList_Iterator
 public:
 	PacketList_Iterator(C& container, uint16 index) : _container(container), _index(index) {}
 
-	bool			operator!=(const PacketList_Iterator& other) { return false; } 
-	//const T&		operator*() const {  }
-	//T&				operator*() {}
-	T*				operator->() { return nullptr; }
-	// PacketList_Iterator& operator++() { }
-	// PacketList_Iterator operator++(int32) { }
+	bool			operator!=(const PacketList_Iterator& other) { return _index != other._index; }
+	const T&		operator*() const { return _container[_index]; }
+	T&				operator*() { return _container[_index]; }
+	T*				operator->() { return &_container[_index]; }
+	PacketList_Iterator& operator++() { _index++; return *this; }
+	PacketList_Iterator operator++(int32) { PacketList_Iterator temp = *this; _index++; return temp; }
 
 private:
 	C&		_container;
@@ -34,7 +34,9 @@ public:
 		return _data[index];
 	}
 
-	uint16 Size() { return _count; }
+	uint16 size() { return _count; }
+	PacketList_Iterator<T, PacketList<T>> begin() { return PacketList_Iterator<T,PacketList<T>>(*this, 0); }
+	PacketList_Iterator<T, PacketList<T>> end() { return PacketList_Iterator<T, PacketList<T>>(*this, _count); }
 
 private:
 	T* _data;
