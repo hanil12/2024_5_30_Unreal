@@ -29,6 +29,8 @@ public:
 
 	template<typename T>
 	T* Reserve();
+	template<typename T>
+	T* Reserve(uint16 count);
 
 	// 우측값 참조를 Template이랑 같이 쓰면 보편참조(왼쪽값, 우측값)
 	template<typename T>
@@ -48,6 +50,18 @@ inline T* BufferWriter::Reserve()
 
 	T* ret = reinterpret_cast<T*>(&_buffer[_pos]);
 	_pos += sizeof(T);
+
+	return ret;
+}
+
+template<typename T>
+inline T* BufferWriter::Reserve(uint16 count)
+{
+	if (FreeSize() < sizeof(T) * count)
+		return nullptr;
+
+	T* ret = reinterpret_cast<T*>(&_buffer[_pos]);
+	_pos += sizeof(T) * count;
 
 	return ret;
 }
