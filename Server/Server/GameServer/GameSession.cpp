@@ -2,6 +2,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
+#include "Protocol.pb.h"
 
 GameSession::GameSession()
 {
@@ -19,6 +20,7 @@ void GameSession::OnConnected()
 	//////////////////
 	/// Packet Á¦ÀÛ //
 	//////////////////
+	/* Cumtom Packet Seriallize
 	PKT_S_TEST_WRITE pkt_writer(1234,10,5);
 	auto buffList = pkt_writer.ReserveBuffList(2);
 	auto wCharList = pkt_writer.Reserve_WCHARList(6);
@@ -51,8 +53,36 @@ void GameSession::OnConnected()
 		wCharList[4] = L'l'; 
 		wCharList[5] = L'\0'; 
 	}
+	*/
 
-	G_GameSessionManager->BroadCast(pkt_writer.Ready());
+	Protocol::PlayerInfo pkt;
+
+	pkt.set_id(1234);
+	pkt.set_hp(10);
+	pkt.set_atk(5);
+
+	{
+		auto buff = pkt.add_buffs();
+		// { 241203, 6 }
+		buff->set_buffid(241203);
+		buff->set_remaintime(6);
+
+		buff->add_victims(100);
+		buff->add_victims(101);
+	}
+	{
+		auto buff = pkt.add_buffs();
+		// 240528, 23
+		buff->set_buffid(240528);
+		buff->set_remaintime(23);
+
+		buff->add_victims(614);
+		buff->add_victims(622);
+		buff->add_victims(1109);
+		buff->add_victims(1211);
+	}
+
+	//G_GameSessionManager->BroadCast(pkt_writer.Ready());
 
 	G_GameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
 }

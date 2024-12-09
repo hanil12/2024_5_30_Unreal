@@ -16,7 +16,7 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	case 0: // id가 이였다..?
 		break;
 
-	case S_TEST:
+	case C_PLAYER_INFO:
 		Handle_S_TEST(buffer, len);
 		break;
 
@@ -30,4 +30,9 @@ void ServerPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	// TODO
 
 	return ;
+}
+
+shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::PlayerInfo& pkt)
+{
+	return _MakeSendBuffer<Protocol::PlayerInfo>(pkt, S_PLAYER_INFO);
 }
