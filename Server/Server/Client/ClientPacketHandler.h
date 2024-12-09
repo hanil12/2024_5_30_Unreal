@@ -47,7 +47,8 @@ private:
 enum PacketID
 {
 	NONE,
-	S_TEST = 1,
+	S_PLAYER_INFO = 1,
+	C_PLAYER_INFO = 2,
 };
 
 enum BuffID
@@ -164,7 +165,7 @@ public:
 	// Packet형태로 들어왔을 때 => Recv했을 떄 처리 방법
 	static void HandlePacket(BYTE* buffer, int32 len);
 
-	static void Handle_C_TEST(BYTE* buffer, int32 len);
+	static void Handle_S_PlayerInfo(BYTE* buffer, int32 len);
 
 	// Packet형태로 SendBuffer 만들기
 	static shared_ptr<SendBuffer> Make_C_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs);

@@ -32,7 +32,7 @@ void ServerPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	return ;
 }
 
-shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::PlayerInfo& pkt)
+shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_PlayerInfo& pkt)
 {
-	return _MakeSendBuffer<Protocol::PlayerInfo>(pkt, S_PLAYER_INFO);
+	return _MakeSendBuffer<Protocol::S_PlayerInfo>(pkt, S_PLAYER_INFO);
 }

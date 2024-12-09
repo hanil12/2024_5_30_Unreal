@@ -117,7 +117,7 @@ public:
 
 	static void Handle_S_TEST(BYTE* buffer, int32 len);
 
-	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::PlayerInfo& pkt);
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_PlayerInfo& pkt);
 };
 
 template<typename T>

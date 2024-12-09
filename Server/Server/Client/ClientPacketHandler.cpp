@@ -2,12 +2,11 @@
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
+#include "Protocol.pb.h"
 
 void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 {
-	// TODO : Recv했을 때 패킷 파싱하고 분석
 	BufferReader br(buffer, len);
-	int32 t = sizeof(PlayerInfo_Packet);
 	PacketHeader header;
 	br.Peek(&header);
 
@@ -16,8 +15,8 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	case 0: // id가 이였다..?
 		break;
 
-	case S_TEST:
-		Handle_C_TEST(buffer, len);
+	case S_PLAYER_INFO:
+		Handle_S_PlayerInfo(buffer, len);
 		break;
 
 	default:
@@ -25,55 +24,34 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	}
 }
 
-// header[4] [ ID(1), hp(100), atk(5), 2 ,사랑니, 1.0, 마취, 2.0]
-// 
-// 
-// Player Id : 1, hp : 100, atk : 5, buff[사랑니, 1.0], buff[마취, 2.0]
-void ClientPacketHandler::Handle_C_TEST(BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_S_PlayerInfo(BYTE* buffer, int32 len)
 {
-	BufferReader br(buffer, len);
+	Protocol::S_PlayerInfo pkt;
 
-	PlayerInfo_Packet* pkt = reinterpret_cast<PlayerInfo_Packet*>(buffer);
-	
-	if(pkt->IsValid() == false)
-		return;
+	pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader));
 
-	PlayerInfo_Packet::BuffList buffDataes = pkt->GetBuffList();
+	cout << "ID: " << pkt.id() << "  HP : " << pkt.hp() << "  ATK : " << pkt.atk() << endl;
+	cout << "BUFFS SIZE : " << pkt.buffs_size() << endl;
 
-	cout << "BuffCount : " << buffDataes.size() << endl;
-
-	for (auto& buff : buffDataes)
+	for (auto& buff : pkt.buffs())
 	{
-		cout << "BuffId : " << buff.buffId << "  /   BuffRemain : " << buff.remainTime << endl;
+		cout << "BUFF ID : " << buff.buffid() << endl;
+		cout << "REMAIN TIME : " << buff.remaintime() << endl;
+		cout << "VICTIMS SIZE : " << buff.victims_size() << endl;
 
-		PlayerInfo_Packet::VictimList victims = pkt->GetVictimList(&buff);
-		cout << "victim count : " << buff.victimCount << endl;
-		for (auto& victim : victims)
+		for (auto& victim : buff.victims())
 		{
-			cout << "Victim : " << victim << endl;
+			cout << "VICTIM ID : " << victim << endl;
 		}
+
+		cout << endl;
 	}
 
-	PlayerInfo_Packet::Name wCharList = pkt->GetWcharList();
-	wcout << (WCHAR*)&wCharList[0] << endl;
+	// 다시 서버한테 C_PLAYER_INFO
+	// id, hp, atk
 }
 
 shared_ptr<SendBuffer> ClientPacketHandler::Make_C_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
 {
-	shared_ptr<SendBuffer> buf = make_shared<SendBuffer>(1000);
-	//PlayerInfo_Protocol p;
-	//p.id = id;
-	//p.hp = hp;
-	//p.atk = atk;
-
-	//BufferWriter bw(buf->Buffer(), buf->Capacity());
-
-	//PacketHeader* header = bw.Reserve<PacketHeader>();
-	//header->id = S_TEST;
-	//header->size = (sizeof(p) + sizeof(PacketHeader));
-	//bw << p;
-
-	//buf->Ready(bw.WriteSize());
-
-	return buf;
+	return nullptr;
 }

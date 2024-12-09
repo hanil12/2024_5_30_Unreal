@@ -55,7 +55,7 @@ void GameSession::OnConnected()
 	}
 	*/
 
-	Protocol::PlayerInfo pkt;
+	Protocol::S_PlayerInfo pkt;
 
 	pkt.set_id(1234);
 	pkt.set_hp(10);
@@ -82,7 +82,8 @@ void GameSession::OnConnected()
 		buff->add_victims(1211);
 	}
 
-	//G_GameSessionManager->BroadCast(pkt_writer.Ready());
+	shared_ptr<SendBuffer> sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	G_GameSessionManager->BroadCast(sendBuffer);
 
 	G_GameSessionManager->Add(static_pointer_cast<GameSession>(shared_from_this()));
 }
