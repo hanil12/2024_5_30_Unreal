@@ -7,6 +7,9 @@
     <Filter Include="Main">
       <UniqueIdentifier>{5e2b6c7a-15f7-4d7f-8ec7-1fa694e5d9fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{63561795-3014-4aa1-9425-25a45b66eac5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -31,6 +34,12 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.pb.cc" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -52,5 +61,11 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

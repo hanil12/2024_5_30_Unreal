@@ -7,6 +7,9 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{690afc92-08da-429e-b3ff-21539aee490a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{955cef6d-412d-4089-9ba6-31efdf3a7c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -19,6 +22,12 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.pb.cc" />
+    <ClCompile Include="ServerSession.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -28,5 +37,11 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="ServerSession.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

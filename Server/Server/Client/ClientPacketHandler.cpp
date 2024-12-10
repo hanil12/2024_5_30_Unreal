@@ -4,7 +4,7 @@
 #include "BufferWriter.h"
 #include "Protocol.pb.h"
 
-void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
+void ClientPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 	PacketHeader header;
@@ -16,7 +16,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 		break;
 
 	case S_PLAYER_INFO:
-		Handle_S_PlayerInfo(buffer, len);
+		Handle_S_PlayerInfo(session, buffer, len);
 		break;
 
 	default:
@@ -24,7 +24,7 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	}
 }
 
-void ClientPacketHandler::Handle_S_PlayerInfo(BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_S_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
 	Protocol::S_PlayerInfo pkt;
 
@@ -51,7 +51,7 @@ void ClientPacketHandler::Handle_S_PlayerInfo(BYTE* buffer, int32 len)
 	// id, hp, atk
 }
 
-shared_ptr<SendBuffer> ClientPacketHandler::Make_C_TEST(int64 id, int32 hp, int16 atk, vector<BuffData> buffs)
+shared_ptr<SendBuffer> ClientPacketHandler::MakeSendBuffer(Protocol::C_PlayerInfo& pkt)
 {
-	return nullptr;
+	return _MakeSendBuffer(pkt, PacketID::C_PLAYER_INFO);
 }

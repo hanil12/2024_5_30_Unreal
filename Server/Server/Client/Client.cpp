@@ -15,51 +15,9 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 #include "ClientPacketHandler.h"
+#include "ServerSession.h"
 
-struct Player
-{
-	int32 mesh;
-	int32 material;
-
-	int64 id;
-	int32 hp;
-	int16 atk;
-};
-
-class ServerSession : public PacketSession
-{
-public:
-	ServerSession()
-	{
-	}
-
-	~ServerSession()
-	{
-		cout << "Session DisConnected" << endl;
-	}
-
-	virtual void OnConnected() override 
-	{
-		cout <<"Server에 접속 성공!!!" << endl;
-	} 
-
-	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override
-	{
-		ClientPacketHandler::HandlePacket(buffer, len);
-		
-		return len;
-	}
-
-	virtual void OnSend(int32 len) override 
-	{
-		cout << "Send 성공 : " << len << endl;
-	}
-
-	virtual void DisConnected() override 
-	{
-		cout << "DisConnected" << endl;
-	}
-};
+Player G_Player;
 
 int main()
 {
