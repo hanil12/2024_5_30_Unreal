@@ -3,6 +3,7 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 #include "GameSession.h"
+#include "Room.h"
 #include "Player.h"
 
 void ServerPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
@@ -47,9 +48,9 @@ void ServerPacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session,
 	// TODO  newPlayer->name
 	newPlayer->_ownerSession = gameSession;
 
-	gameSession->_players.push_back(newPlayer);
-	// TODO : GameSession에 _player , 1:1 대응
+	gameSession->_curPlayer = newPlayer;
 	// TODO : Room에 Player들 저장
+	G_Room->Enter(newPlayer);
 
 	return ;
 }

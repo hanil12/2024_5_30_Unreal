@@ -9,9 +9,12 @@
 #include "Service.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "Room.h";
 
 // GameSession : 서버에서 클라이언트가 접속하면 안내할 식탁
 // GameSessionManager : 모든 클라이언트가 앉아있는 식탁들을 관리하는 수단
+
+Room* G_Room = nullptr;
 
 int main()
 {
@@ -28,6 +31,8 @@ int main()
 	);
 
 	service->Start();
+
+	G_Room = new Room();
 
 	for (int i = 0; i < 5; i++)
 	{

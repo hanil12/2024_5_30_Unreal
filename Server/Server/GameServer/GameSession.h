@@ -1,5 +1,8 @@
 #pragma once
 #include "Session.h"
+#include "Room.h"
+
+extern Room* G_Room;
 
 class GameSession : public PacketSession
 {
@@ -12,6 +15,6 @@ public:
 	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override;
 	virtual void DisConnected() override;
 
-	vector<shared_ptr<class Player>> _players;
+	weak_ptr<class Player> _curPlayer;
 };
 
