@@ -54,6 +54,11 @@ void ServerPacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session,
 	gameSession->_curPlayer = newPlayer;
 	G_Room->Enter(newPlayer);
 
+	Protocol::S_EnterRoom sendPkt;
+	sendPkt.set_success(true);
+
+	session->Send(MakeSendBuffer(sendPkt));
+
 	return ;
 }
 
@@ -68,7 +73,7 @@ void ServerPacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BY
 	string msg = pkt.msg();
 
 	Protocol::S_ChatMsg sendPkt;
-	sendPkt.set_msg(msg);
+	sendPkt.set_msg(msg.c_str());
 
 	string name = G_Room->GetPlayerName(id);
 

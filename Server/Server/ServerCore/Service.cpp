@@ -49,6 +49,15 @@ void Service::ReleaseSession(shared_ptr<Session> session)
     _sessionCount--;
 }
 
+void Service::BroadCast(shared_ptr<SendBuffer> buffer)
+{
+    WRITE_LOCK;
+    for (auto& session : _sessions)
+    {
+        session->Send(buffer);
+    }
+}
+
 ClientService::ClientService(NetAddress target, shared_ptr<IocpCore> core, SessionFactory factory, int32 maxSessionCount)
 : Service(ServiceType::CLIENT, target, core, factory, maxSessionCount)
 {

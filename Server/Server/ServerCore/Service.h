@@ -2,6 +2,7 @@
 
 #include "NetAddress.h"
 #include "IocpCore.h"
+#include "SendBuffer.h"
 #include "Listener.h"
 #include "Session.h"
 #include <functional>
@@ -38,6 +39,9 @@ public:
 	ServiceType				GetServiceType() { return _type; }
 	NetAddress				GetNetAddress() { return _netAddress; }
 	shared_ptr<IocpCore>&	GetIocpCore() { return _iocpCore; }
+
+	// Send
+	void BroadCast(shared_ptr<class SendBuffer> buffer);
 
 protected:
 	USE_LOCK;

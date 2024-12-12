@@ -10,6 +10,9 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "Room.h";
+// temp
+#include "Protocol.pb.h"
+#include "ServerPacketHandler.h"
 
 // GameSession : 서버에서 클라이언트가 접속하면 안내할 식탁
 // GameSessionManager : 모든 클라이언트가 앉아있는 식탁들을 관리하는 수단
@@ -44,7 +47,6 @@ int main()
 				}
 			});
 	}
-
 
 	TM_M->Join();
 

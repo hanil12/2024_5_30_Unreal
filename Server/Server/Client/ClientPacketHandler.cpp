@@ -74,6 +74,18 @@ void ClientPacketHandler::Handle_S_EnterRoom(shared_ptr<PacketSession> session, 
 		CRASH("CAN NOT ENTER");
 	}
 
+	string sendMsg;
+
+	cout << "메시지를 입력하세요 : " << endl;
+	cin >> sendMsg;
+
+	Protocol::C_ChatMsg sendPkt;
+	sendPkt.set_id(0);
+	sendPkt.set_msg(u8"Hello !!!");
+
+	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
+	session->Send(sendBuffer);
+
 	return;
 }
 
@@ -87,6 +99,18 @@ void ClientPacketHandler::Handle_S_ChatMsg(shared_ptr<PacketSession> session, BY
 	string msg = pkt.msg();
 
 	cout << name << ": " << msg << endl;
+
+	string sendMsg;
+
+	cout << "메시지를 입력하세요 : " << endl;
+	cin >> sendMsg;
+
+	Protocol::C_ChatMsg sendPkt;
+	sendPkt.set_id(0);
+	sendPkt.set_msg(u8"Hello !!!");
+
+	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
+	session->Send(sendBuffer);
 }
 
 shared_ptr<SendBuffer> ClientPacketHandler::MakeSendBuffer(Protocol::C_PlayerInfo& pkt)
