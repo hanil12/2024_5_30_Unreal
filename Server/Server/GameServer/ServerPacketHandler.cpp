@@ -23,6 +23,10 @@ void ServerPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* 
 		Handle_C_PlayerInfo(session,buffer, len);
 		break;
 
+	case C_CHATMSG:
+		Handle_C_ChatMsg(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -45,17 +49,46 @@ void ServerPacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session,
 	newPlayer->playerId = pkt.id();
 	newPlayer->hp = pkt.hp();
 	newPlayer->atk = pkt.atk();
-	// TODO  newPlayer->name
 	newPlayer->_ownerSession = gameSession;
 
 	gameSession->_curPlayer = newPlayer;
-	// TODO : Room에 Player들 저장
 	G_Room->Enter(newPlayer);
 
 	return ;
+}
+
+void ServerPacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
+{
+	shared_ptr<GameSession> gameSession = static_pointer_cast<GameSession>(session);
+
+	Protocol::C_ChatMsg pkt;
+	pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader));
+
+	uint64 id = pkt.id();
+	string msg = pkt.msg();
+
+	Protocol::S_ChatMsg sendPkt;
+	sendPkt.set_msg(msg);
+
+	string name = G_Room->GetPlayerName(id);
+
+	sendPkt.set_name(name);
+
+	G_Room->BroadCast(MakeSendBuffer(sendPkt));
 }
 
 shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_PlayerInfo& pkt)
 {
 	return _MakeSendBuffer<Protocol::S_PlayerInfo>(pkt, S_PLAYER_INFO);
 }
+
+shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_EnterRoom& pkt)
+{
+	return _MakeSendBuffer<Protocol::S_EnterRoom>(pkt, S_ENTEROOM);
+}
+
+shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_ChatMsg& pkt)
+{
+	return _MakeSendBuffer<Protocol::S_ChatMsg>(pkt, S_CHATMSG);
+}
+

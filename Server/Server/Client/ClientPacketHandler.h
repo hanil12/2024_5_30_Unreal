@@ -45,12 +45,15 @@ private:
 	uint16		 _count;
 };
 
-// 규약
 enum PacketID
 {
 	NONE,
 	S_PLAYER_INFO = 1,
-	C_PLAYER_INFO = 2,
+	S_ENTEROOM = 2,
+	S_CHATMSG = 3,
+
+	C_PLAYER_INFO = 101,
+	C_CHATMSG = 102
 };
 
 enum BuffID
@@ -168,9 +171,12 @@ public:
 	static void HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
 
 	static void Handle_S_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
+	static void Handle_S_EnterRoom(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
+	static void Handle_S_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
 
 	// Packet형태로 SendBuffer 만들기
 	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::C_PlayerInfo& pkt);
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::C_ChatMsg& pkt);
 };
 
 template<typename T>

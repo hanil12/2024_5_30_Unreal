@@ -8,7 +8,11 @@ enum PacketID
 {
 	NONE,
 	S_PLAYER_INFO = 1,
-	C_PLAYER_INFO = 2,
+	S_ENTEROOM = 2,
+	S_CHATMSG = 3,
+
+	C_PLAYER_INFO = 101,
+	C_CHATMSG = 102
 };
 
 class ServerPacketHandler
@@ -17,8 +21,11 @@ public:
 	static void HandlePacket(shared_ptr<PacketSession> session,BYTE* buffer, int32 len);
 
 	static void Handle_C_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
+	static void Handle_C_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
 
 	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_PlayerInfo& pkt);
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_EnterRoom& pkt);
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_ChatMsg& pkt);
 };
 
 template<typename T>

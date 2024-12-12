@@ -24,3 +24,10 @@ void Room::BroadCast(shared_ptr<SendBuffer> sendBuff)
 		p.second.lock()->_ownerSession.lock()->Send(sendBuff);
 	}
 }
+
+string Room::GetPlayerName(uint64 id)
+{
+	if(_playersTable.count(id) == 0) { return string("알 수 없는 아이디"); }
+
+	return _playersTable[id].lock()->name;
+}
