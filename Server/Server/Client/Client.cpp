@@ -29,7 +29,7 @@ int main()
 
 	shared_ptr<ClientService> service = MakeShared<ClientService>
 		(
-			NetAddress(L"14.33.107.86", 7777),
+			NetAddress(L"192.168.0.9", 7777),
 			MakeShared<IocpCore>(),
 			MakeShared<ServerSession>,
 			1

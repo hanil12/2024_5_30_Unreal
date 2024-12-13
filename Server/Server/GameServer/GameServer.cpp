@@ -27,7 +27,7 @@ int main()
 
 	shared_ptr<ServerService> service = MakeShared<ServerService>
 	(
-		NetAddress(L"127.0.0.1", 7777),
+		NetAddress(L"192.168.0.9", 7777),
 		MakeShared<IocpCore>(),
 		MakeShared<GameSession>,
 		100
