@@ -27,7 +27,9 @@ void Room::BroadCast(shared_ptr<SendBuffer> sendBuff)
 
 string Room::GetPlayerName(uint64 id)
 {
-	if(_playersTable.count(id) == 0) { return string("알 수 없는 아이디"); }
+	if(_playersTable.size() == 0) return "";
+
+	if(_playersTable.count(id) == 0) { CRASH("CANNOT FIND ID") }
 
 	return _playersTable[id]->name;
 }

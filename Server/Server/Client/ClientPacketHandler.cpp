@@ -3,6 +3,7 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 #include "Protocol.pb.h"
+#include "ServerSession.h"
 
 void ClientPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
@@ -76,11 +77,8 @@ void ClientPacketHandler::Handle_S_EnterRoom(shared_ptr<PacketSession> session, 
 
 	string sendMsg;
 
-	cout << "메시지를 입력하세요 : " << endl;
-	cin >> sendMsg;
-
 	Protocol::C_ChatMsg sendPkt;
-	sendPkt.set_id(0);
+	sendPkt.set_id(G_Player.id);
 	sendPkt.set_msg(u8"Hello !!!");
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
@@ -102,15 +100,17 @@ void ClientPacketHandler::Handle_S_ChatMsg(shared_ptr<PacketSession> session, BY
 
 	string sendMsg;
 
+	this_thread::sleep_for(10s);
 	cout << "메시지를 입력하세요 : " << endl;
 	cin >> sendMsg;
 
 	Protocol::C_ChatMsg sendPkt;
-	sendPkt.set_id(0);
-	sendPkt.set_msg(u8"Hello !!!");
+	sendPkt.set_id(G_Player.id);
+	sendPkt.set_msg(sendMsg);
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
 	session->Send(sendBuffer);
+
 }
 
 shared_ptr<SendBuffer> ClientPacketHandler::MakeSendBuffer(Protocol::C_PlayerInfo& pkt)
