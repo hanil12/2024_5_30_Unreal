@@ -56,7 +56,6 @@ public:
 
 	virtual void OnSend(int32 len) override
 	{
-		cout << "Send ¼º°ø : " << len << endl;
 	}
 
 	virtual void DisConnected() override

@@ -29,7 +29,7 @@ int main()
 
 	shared_ptr<ClientService> service = MakeShared<ClientService>
 		(
-			NetAddress(L"127.0.0.1", 7777),
+			NetAddress(L"14.33.107.86", 7777),
 			MakeShared<IocpCore>(),
 			MakeShared<ServerSession>,
 			1
@@ -37,7 +37,7 @@ int main()
 
 	service->Start();
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		TM_M->Launch([=]()
 			{
@@ -46,6 +46,27 @@ int main()
 					service->GetIocpCore()->Dispatch();
 				}
 			});
+	}
+
+	// 5초 대기 : Server에 EnterRoom하기 전에 메시지 패킷 보내면 X
+	// => 5초 안에 PlayerInfo pkt을 날려줘야한다.
+	this_thread::sleep_for(10s);
+	cout << "메시지를 입력하세요 : " << endl;
+
+	// main
+	while (true)
+	{
+		string sendMsg;
+
+		//cin >> sendMsg; // block - 동기
+		std::getline(std::cin, sendMsg); // non block - 비동기
+
+		Protocol::C_ChatMsg sendPkt;
+		sendPkt.set_id(G_Player.id);
+		sendPkt.set_msg(sendMsg);
+
+		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
+		service->BroadCast(sendBuffer); // client에서 BroadCast 해도 서버 밖에 없음.
 	}
 
 	TM_M->Join();

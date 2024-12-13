@@ -97,20 +97,6 @@ void ClientPacketHandler::Handle_S_ChatMsg(shared_ptr<PacketSession> session, BY
 	string msg = pkt.msg();
 
 	cout << name << ": " << msg << endl;
-
-	string sendMsg;
-
-	this_thread::sleep_for(10s);
-	cout << "메시지를 입력하세요 : " << endl;
-	cin >> sendMsg;
-
-	Protocol::C_ChatMsg sendPkt;
-	sendPkt.set_id(G_Player.id);
-	sendPkt.set_msg(sendMsg);
-
-	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(sendPkt);
-	session->Send(sendBuffer);
-
 }
 
 shared_ptr<SendBuffer> ClientPacketHandler::MakeSendBuffer(Protocol::C_PlayerInfo& pkt)
