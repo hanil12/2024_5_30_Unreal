@@ -42,6 +42,7 @@ public:
 		pkt.set_id(id);
 		pkt.set_hp(hp);
 		pkt.set_atk(atk);
+		pkt.set_name(name);
 
 		Send(ClientPacketHandler::MakeSendBuffer(pkt));
 	}

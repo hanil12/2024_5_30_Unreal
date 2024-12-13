@@ -564,7 +564,7 @@ class C_PlayerInfo final :
     kHpFieldNumber = 3,
     kAtkFieldNumber = 4,
   };
-  // string name = 1;
+  // bytes name = 1;
   void clear_name();
   const std::string& name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -886,7 +886,7 @@ class C_ChatMsg final :
     kMsgFieldNumber = 2,
     kIdFieldNumber = 1,
   };
-  // string msg = 2;
+  // bytes msg = 2;
   void clear_msg();
   const std::string& msg() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1045,7 +1045,7 @@ class S_ChatMsg final :
     kNameFieldNumber = 1,
     kMsgFieldNumber = 2,
   };
-  // string name = 1;
+  // bytes name = 1;
   void clear_name();
   const std::string& name() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1059,7 +1059,7 @@ class S_ChatMsg final :
   std::string* _internal_mutable_name();
   public:
 
-  // string msg = 2;
+  // bytes msg = 2;
   void clear_msg();
   const std::string& msg() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1291,7 +1291,7 @@ S_PlayerInfo::buffs() const {
 
 // C_PlayerInfo
 
-// string name = 1;
+// bytes name = 1;
 inline void C_PlayerInfo::clear_name() {
   name_.ClearToEmpty();
 }
@@ -1303,7 +1303,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void C_PlayerInfo::set_name(ArgT0&& arg0, ArgT... args) {
  
- name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ name_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Protocol.C_PlayerInfo.name)
 }
 inline std::string* C_PlayerInfo::mutable_name() {
@@ -1449,7 +1449,7 @@ inline void C_ChatMsg::set_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.C_ChatMsg.id)
 }
 
-// string msg = 2;
+// bytes msg = 2;
 inline void C_ChatMsg::clear_msg() {
   msg_.ClearToEmpty();
 }
@@ -1461,7 +1461,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void C_ChatMsg::set_msg(ArgT0&& arg0, ArgT... args) {
  
- msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ msg_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Protocol.C_ChatMsg.msg)
 }
 inline std::string* C_ChatMsg::mutable_msg() {
@@ -1503,7 +1503,7 @@ inline void C_ChatMsg::set_allocated_msg(std::string* msg) {
 
 // S_ChatMsg
 
-// string name = 1;
+// bytes name = 1;
 inline void S_ChatMsg::clear_name() {
   name_.ClearToEmpty();
 }
@@ -1515,7 +1515,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void S_ChatMsg::set_name(ArgT0&& arg0, ArgT... args) {
  
- name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ name_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Protocol.S_ChatMsg.name)
 }
 inline std::string* S_ChatMsg::mutable_name() {
@@ -1553,7 +1553,7 @@ inline void S_ChatMsg::set_allocated_name(std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ChatMsg.name)
 }
 
-// string msg = 2;
+// bytes msg = 2;
 inline void S_ChatMsg::clear_msg() {
   msg_.ClearToEmpty();
 }
@@ -1565,7 +1565,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void S_ChatMsg::set_msg(ArgT0&& arg0, ArgT... args) {
  
- msg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ msg_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Protocol.S_ChatMsg.msg)
 }
 inline std::string* S_ChatMsg::mutable_msg() {

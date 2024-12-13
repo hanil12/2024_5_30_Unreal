@@ -187,10 +187,10 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ctims\030\003 \003(\r\"V\n\014S_PlayerInfo\022\n\n\002id\030\001 \001(\004\022"
   "\n\n\002hp\030\002 \001(\r\022\013\n\003atk\030\003 \001(\r\022!\n\005buffs\030\004 \003(\0132"
   "\022.Protocol.BuffData\"A\n\014C_PlayerInfo\022\014\n\004n"
-  "ame\030\001 \001(\t\022\n\n\002id\030\002 \001(\004\022\n\n\002hp\030\003 \001(\r\022\013\n\003atk"
+  "ame\030\001 \001(\014\022\n\n\002id\030\002 \001(\004\022\n\n\002hp\030\003 \001(\r\022\013\n\003atk"
   "\030\004 \001(\r\"\036\n\013S_EnterRoom\022\017\n\007success\030\001 \001(\010\"$"
-  "\n\tC_ChatMsg\022\n\n\002id\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"&\n\t"
-  "S_ChatMsg\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\tb\006pr"
+  "\n\tC_ChatMsg\022\n\n\002id\030\001 \001(\004\022\013\n\003msg\030\002 \001(\014\"&\n\t"
+  "S_ChatMsg\022\014\n\004name\030\001 \001(\014\022\013\n\003msg\030\002 \001(\014b\006pr"
   "oto3"
   ;
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
@@ -803,13 +803,12 @@ const char* C_PlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string name = 1;
+      // bytes name = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           auto str = _internal_mutable_name();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.C_PlayerInfo.name"));
         } else
           goto handle_unusual;
         continue;
@@ -866,13 +865,9 @@ uint8_t* C_PlayerInfo::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string name = 1;
+  // bytes name = 1;
   if (!this->_internal_name().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.C_PlayerInfo.name");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         1, this->_internal_name(), target);
   }
 
@@ -910,10 +905,10 @@ size_t C_PlayerInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string name = 1;
+  // bytes name = 1;
   if (!this->_internal_name().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_name());
   }
 
@@ -1252,13 +1247,12 @@ const char* C_ChatMsg::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // string msg = 2;
+      // bytes msg = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_msg();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.C_ChatMsg.msg"));
         } else
           goto handle_unusual;
         continue;
@@ -1297,13 +1291,9 @@ uint8_t* C_ChatMsg::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_id(), target);
   }
 
-  // string msg = 2;
+  // bytes msg = 2;
   if (!this->_internal_msg().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_msg().data(), static_cast<int>(this->_internal_msg().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.C_ChatMsg.msg");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         2, this->_internal_msg(), target);
   }
 
@@ -1323,10 +1313,10 @@ size_t C_ChatMsg::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string msg = 2;
+  // bytes msg = 2;
   if (!this->_internal_msg().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_msg());
   }
 
@@ -1476,23 +1466,21 @@ const char* S_ChatMsg::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string name = 1;
+      // bytes name = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           auto str = _internal_mutable_name();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_ChatMsg.name"));
         } else
           goto handle_unusual;
         continue;
-      // string msg = 2;
+      // bytes msg = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_msg();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_ChatMsg.msg"));
         } else
           goto handle_unusual;
         continue;
@@ -1525,23 +1513,15 @@ uint8_t* S_ChatMsg::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string name = 1;
+  // bytes name = 1;
   if (!this->_internal_name().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_ChatMsg.name");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         1, this->_internal_name(), target);
   }
 
-  // string msg = 2;
+  // bytes msg = 2;
   if (!this->_internal_msg().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_msg().data(), static_cast<int>(this->_internal_msg().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_ChatMsg.msg");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         2, this->_internal_msg(), target);
   }
 
@@ -1561,17 +1541,17 @@ size_t S_ChatMsg::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string name = 1;
+  // bytes name = 1;
   if (!this->_internal_name().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_name());
   }
 
-  // string msg = 2;
+  // bytes msg = 2;
   if (!this->_internal_msg().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_msg());
   }
 

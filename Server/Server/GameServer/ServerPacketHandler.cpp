@@ -73,7 +73,7 @@ void ServerPacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BY
 	string msg = pkt.msg();
 
 	Protocol::S_ChatMsg sendPkt;
-	sendPkt.set_msg(msg.c_str());
+	sendPkt.set_msg(msg);
 
 	string name = G_Room->GetPlayerName(id);
 
