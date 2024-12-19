@@ -3,6 +3,10 @@
 #include "BufferWriter.h"
 #include "Protocol.pb.h"
 
+// 
+using PacketHandlerFunc = std::function<bool(shared_ptr<PacketSession>&, BYTE*, int32)>; 
+extern PacketHandlerFunc G_PacketHandler[UINT16_MAX]; // 32767 + 32768
+
 // 규약
 enum PacketID
 {
@@ -15,36 +19,71 @@ enum PacketID
 	C_CHATMSG = 102
 };
 
-class ServerPacketHandler
+// 우리가 만들 핸들러함수
+// Custom Handlders
+bool Handler_INVALID(shared_ptr<PacketSession>& session, BYTE* buffer, int32 len);
+
+bool Handle_C_PlayerInfo(shared_ptr<PacketSession>& session, Protocol::C_PlayerInfo& pkt);
+bool Handle_C_ChatMsg(shared_ptr<PacketSession>& session, Protocol::C_ChatMsg& pkt);
+
+class Server_PacketHandler
 {
 public:
-	static void HandlePacket(shared_ptr<PacketSession> session,BYTE* buffer, int32 len);
+	static void Init()
+	{
+		for (int i = 0; i < UINT16_MAX; i++)
+		{
+			G_PacketHandler[i] = Handler_INVALID;
+		}
 
-	static void Handle_C_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
-	static void Handle_C_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len);
+		G_PacketHandler[C_PLAYER_INFO] = [](shared_ptr<PacketSession>& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PlayerInfo>(Handle_C_PlayerInfo, session, buffer, len); };
+		G_PacketHandler[C_CHATMSG] = [](shared_ptr<PacketSession>& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ChatMsg>(Handle_C_ChatMsg, session, buffer, len); };
+	}
 
-	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_PlayerInfo& pkt);
-	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_EnterRoom& pkt);
-	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_ChatMsg& pkt);
+	static bool HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
+	{
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+
+		return G_PacketHandler[header->id](session, buffer, len);
+	}
+
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_PlayerInfo& pkt) { return _MakeSendBuffer(pkt, S_PLAYER_INFO); }
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_EnterRoom& pkt) { return _MakeSendBuffer(pkt, S_ENTEROOM); }
+	static shared_ptr<SendBuffer> MakeSendBuffer(Protocol::S_ChatMsg& pkt) { return _MakeSendBuffer(pkt, S_CHATMSG); }
+
+private:
+	template<typename T>
+	static shared_ptr<SendBuffer> _MakeSendBuffer(T& pkt, uint16 pktId)
+	{
+		// 공용header 만들기
+		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong()); // ByteSizeLong
+		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+
+		shared_ptr<SendBuffer> sendBuffer = make_shared<SendBuffer>(packetSize);
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
+		header->id = pktId;
+		header->size = packetSize;
+
+		ASSERT_CRASH(pkt.SerializeToArray(&(header[1]), dataSize));
+
+		sendBuffer->Ready(packetSize);
+		return sendBuffer;
+	}
+
+	// process : Deletegate로 Packet 처리
+	template<typename PacketType, typename ProcessFunc>
+	static bool HandlePacket(ProcessFunc func, shared_ptr<PacketSession>& session, BYTE* buffer, int32 len)
+	{
+		PacketType pkt;
+		if(pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
+			return false;
+
+
+		return func(session, pkt);
+	}
 };
 
-template<typename T>
-shared_ptr<SendBuffer> _MakeSendBuffer(T& pkt, uint16 pktId)
-{
-	// 공용header 만들기
-	const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong()); // ByteSizeLong
-	const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
-	shared_ptr<SendBuffer> sendBuffer = make_shared<SendBuffer>(packetSize);
-	PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
-	header->id = pktId;
-	header->size = packetSize;
-
-	ASSERT_CRASH(pkt.SerializeToArray(&(header[1]), dataSize));
-
-	sendBuffer->Ready(packetSize);
-	return sendBuffer;
-}
 
 /* Packet Writer
 

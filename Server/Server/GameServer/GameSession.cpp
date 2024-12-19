@@ -30,7 +30,7 @@ int32 GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 
 	cout << "Paket ID : " << header.id << "  Size : " << header.size << endl;
 
-	ServerPacketHandler::HandlePacket(static_pointer_cast<PacketSession>(shared_from_this()), buffer, len);
+	Server_PacketHandler::HandlePacket(static_pointer_cast<PacketSession>(shared_from_this()), buffer, len);
 
 	return len;
 }

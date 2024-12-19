@@ -21,6 +21,8 @@ Room* G_Room = nullptr;
 
 int main()
 {
+	Server_PacketHandler::Init();
+
 	CoreGlobal::Create();
 	G_GameSessionManager = new GameSessionManager();
 

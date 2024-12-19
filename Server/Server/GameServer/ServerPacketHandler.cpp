@@ -6,7 +6,8 @@
 #include "Room.h"
 #include "Player.h"
 
-void ServerPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
+/*
+void Server_PacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
 	// TODO : Recv했을 때 패킷 파싱하고 분석
 	BufferReader br(buffer, len);
@@ -32,7 +33,7 @@ void ServerPacketHandler::HandlePacket(shared_ptr<PacketSession> session, BYTE* 
 	}
 }
 
-void ServerPacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
+void Server_PacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
 	shared_ptr<GameSession> gameSession = static_pointer_cast<GameSession>(session);
 
@@ -64,7 +65,7 @@ void ServerPacketHandler::Handle_C_PlayerInfo(shared_ptr<PacketSession> session,
 	return ;
 }
 
-void ServerPacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
+void Server_PacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BYTE* buffer, int32 len)
 {
 	shared_ptr<GameSession> gameSession = static_pointer_cast<GameSession>(session);
 
@@ -84,19 +85,65 @@ void ServerPacketHandler::Handle_C_ChatMsg(shared_ptr<PacketSession> session, BY
 
 	G_Room->BroadCast(MakeSendBuffer(sendPkt));
 }
+*/
 
-shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_PlayerInfo& pkt)
+////////////////////
+///  Delegate //////
+///////////////////
+
+PacketHandlerFunc G_PacketHandler[UINT16_MAX];
+
+bool Handler_INVALID(shared_ptr<PacketSession>& session, BYTE* buffer, int32 len)
 {
-	return _MakeSendBuffer<Protocol::S_PlayerInfo>(pkt, S_PLAYER_INFO);
+	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+	// header->id...??
+	// Log
+
+	return false;
 }
 
-shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_EnterRoom& pkt)
+bool Handle_C_PlayerInfo(shared_ptr<PacketSession>& session, Protocol::C_PlayerInfo& pkt)
 {
-	return _MakeSendBuffer<Protocol::S_EnterRoom>(pkt, S_ENTEROOM);
+	cout << "클라이언트가 보낸 정보" << endl;
+	cout << "Name : " << pkt.name() << endl;
+	cout << "ID : " << pkt.id() << endl;
+	cout << "HP : " << pkt.hp() << endl;
+	cout << "ATK : " << pkt.atk() << endl;
+
+	shared_ptr<GameSession> gameSession = static_pointer_cast<GameSession>(session);
+
+	shared_ptr<Player> newPlayer = make_shared<Player>();
+	newPlayer->name = pkt.name();
+	newPlayer->playerId = pkt.id();
+	newPlayer->hp = pkt.hp();
+	newPlayer->atk = pkt.atk();
+	newPlayer->_ownerSession = gameSession;
+
+	gameSession->_curPlayer = newPlayer;
+	G_Room->Enter(newPlayer);
+
+	Protocol::S_EnterRoom sendPkt;
+	sendPkt.set_success(true);
+
+	session->Send(Server_PacketHandler::MakeSendBuffer(sendPkt));
+
+	return true;
 }
 
-shared_ptr<SendBuffer> ServerPacketHandler::MakeSendBuffer(Protocol::S_ChatMsg& pkt)
+bool Handle_C_ChatMsg(shared_ptr<PacketSession>& session, Protocol::C_ChatMsg& pkt)
 {
-	return _MakeSendBuffer<Protocol::S_ChatMsg>(pkt, S_CHATMSG);
-}
+	uint64 id = pkt.id();
+	string msg = pkt.msg();
 
+	Protocol::S_ChatMsg sendPkt;
+	sendPkt.set_msg(msg);
+
+	string name = G_Room->GetPlayerName(id);
+	if (name == "")	return false;
+
+	sendPkt.set_name(name);
+
+	G_Room->BroadCast(Server_PacketHandler::MakeSendBuffer(sendPkt));
+
+	return true;
+}
